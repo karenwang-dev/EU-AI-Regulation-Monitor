@@ -1,0 +1,20 @@
+battery
+Packaging
+Products
+consumer electronics
+chemical substances
+radio equipment
+safety
+green claims
+display
+data
+cybersecurity
+accessibility
+repair
+
+1. 是否是新的法规
+2. 是否修改旧法规
+3. 生效日期
+4. 影响国家
+5. 涉及产品
+6. 输出JSON
