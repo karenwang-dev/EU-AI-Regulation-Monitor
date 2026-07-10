@@ -8,36 +8,47 @@ def main():
     sources = load_sources()
 
 
-    first_source = sources[0]
+    for source in sources:
+
+        if not source["enabled"]:
+            continue
 
 
-    print(
-        "开始抓取:"
-    )
+        print()
+        print("=" * 50)
 
-    print(
-        first_source["name"]
-    )
-
-
-    result = crawl_url(
-        first_source["url"]
-    )
+        print(
+            f"开始抓取: {source['name']}"
+        )
 
 
-    file = save_raw_content(
-        first_source["id"],
-        result.markdown
-    )
+        try:
+
+            result = crawl_url(
+                source["url"]
+            )
 
 
-    print()
+            file = save_raw_content(
+                source["id"],
+                result.markdown
+            )
 
-    print(
-        "保存成功:"
-    )
 
-    print(file)
+            print(
+                "保存成功:"
+            )
+
+            print(file)
+
+
+        except Exception as e:
+
+            print(
+                "抓取失败:"
+            )
+
+            print(e)
 
 
 
