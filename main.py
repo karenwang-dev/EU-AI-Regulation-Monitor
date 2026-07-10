@@ -1,27 +1,23 @@
-from app.analyzer import analyze_content
-from app.storage import save_result
+from app.source_loader import load_sources
 
 
 def main():
 
-    test_content = """
+    sources = load_sources()
 
-    European Commission published new requirements
-    for connected devices and smart televisions.
+    print("=" * 50)
 
-    """
+    print("Monitoring Sources")
 
-    result = analyze_content(
-        test_content
-    )
+    print("=" * 50)
 
-    file = save_result(result)
+    for source in sources:
 
-    print()
+        print(f"{source['name']}")
 
-    print("保存成功：")
+        print(source["url"])
 
-    print(file)
+        print()
 
 
 if __name__ == "__main__":

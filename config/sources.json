@@ -1,0 +1,75 @@
+{
+  "sources": [
+    {
+      "id": "ec",
+      "name": "European Commission",
+      "enabled": true,
+      "type": "regulation_policy",
+      "region": "EU",
+      "language": "en",
+      "priority": "high",
+      "crawl_interval": "daily",
+      "url": "https://commission.europa.eu/index_en",
+      "tags": [
+        "EU Regulation",
+        "Digital Policy",
+        "Green Deal",
+        "Product Compliance",
+        "Smart TV"
+      ]
+    },
+    {
+      "id": "eu_portal",
+      "name": "European Union Portal",
+      "enabled": true,
+      "type": "regulation_policy",
+      "region": "EU",
+      "language": "en",
+      "priority": "high",
+      "crawl_interval": "daily",
+      "url": "https://european-union.europa.eu/index_en",
+      "tags": [
+        "EU Law",
+        "EU Policy",
+        "Consumer Electronics",
+        "Digital Regulation"
+      ]
+    },
+    {
+      "id": "boe",
+      "name": "Boletín Oficial del Estado (BOE)",
+      "enabled": true,
+      "type": "national_regulation",
+      "country": "Spain",
+      "region": "EU",
+      "language": "es",
+      "priority": "medium",
+      "crawl_interval": "weekly",
+      "url": "https://www.boe.es/",
+      "tags": [
+        "Spain Regulation",
+        "Electronics",
+        "Energy",
+        "Environment"
+      ]
+    },
+    {
+      "id": "bmukn",
+      "name": "Federal Ministry for the Environment (BMUKN)",
+      "enabled": true,
+      "type": "national_policy",
+      "country": "Germany",
+      "region": "EU",
+      "language": "de",
+      "priority": "medium",
+      "crawl_interval": "weekly",
+      "url": "https://www.bundesumweltministerium.de/en",
+      "tags": [
+        "Germany Regulation",
+        "Environment",
+        "Energy Efficiency",
+        "Electronic Products"
+      ]
+    }
+  ]
+}
