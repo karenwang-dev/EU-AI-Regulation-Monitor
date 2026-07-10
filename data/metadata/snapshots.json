@@ -1,0 +1,30 @@
+[
+  {
+    "source_id": "ec",
+    "url": "https://commission.europa.eu/index_en",
+    "timestamp": "2026-07-10T17:23:15.654417",
+    "file": "data\\raw\\2026-07-10\\ec_172315.md",
+    "hash": "2fe2547a328e09dde6b26baa2ef2a40fe227c93c6805ea9d763bd4e0ee795e80"
+  },
+  {
+    "source_id": "eu_portal",
+    "url": "https://european-union.europa.eu/index_en",
+    "timestamp": "2026-07-10T17:23:19.267298",
+    "file": "data\\raw\\2026-07-10\\eu_portal_172319.md",
+    "hash": "f692f540e9cc2653d343b73abfcb71f51139bc2c6214193484570404a25a9a1c"
+  },
+  {
+    "source_id": "boe",
+    "url": "https://www.boe.es/",
+    "timestamp": "2026-07-10T17:23:26.625132",
+    "file": "data\\raw\\2026-07-10\\boe_172326.md",
+    "hash": "90f4c6a0399cbaa397740c3c65951ef19526e8f7ac45597b24b5ced6207b2869"
+  },
+  {
+    "source_id": "bmukn",
+    "url": "https://www.bundesumweltministerium.de/en",
+    "timestamp": "2026-07-10T17:23:28.517097",
+    "file": "data\\raw\\2026-07-10\\bmukn_172328.md",
+    "hash": "958c982f0c08794ba7a4fda872722a42d3203caff8387cc5a7005d2dd265cf85"
+  }
+]

@@ -1,6 +1,6 @@
 from app.source_loader import load_sources
 from app.firecrawl_service import crawl_url
-from app.raw_storage import save_raw_content
+from app.snapshot_manager import save_snapshot
 
 
 def main():
@@ -29,9 +29,10 @@ def main():
             )
 
 
-            file = save_raw_content(
+            file = save_snapshot(
                 source["id"],
-                result.markdown
+                result.markdown,
+                source["url"]
             )
 
 
