@@ -151,3 +151,5 @@ xlsxwriter==3.2.9
 xmlrunner==1.7.7
 zc.lockfile==4.0
 APScheduler==3.11.2
+fastapi==0.116.1
+uvicorn==0.35.0
