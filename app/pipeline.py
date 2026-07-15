@@ -2,6 +2,7 @@ from app.crawler.service import crawl
 from app.source.source_loader import load_monitors
 from app.analysis.diff_processor import create_diff_result
 from app.ai.impact_analyzer import analyze_change_impact
+from app.notification.notifier import notify_if_needed
 from app.storage.service import (
     get_latest_snapshot,
     save_analysis,
@@ -32,6 +33,7 @@ class MonitoringPipeline:
         save_diff_fn=save_diff,
         analyze_change_impact_fn=analyze_change_impact,
         save_analysis_fn=save_analysis,
+        notify_if_needed_fn=notify_if_needed,
         load_sources_fn=load_monitors,
     ):
         self.crawl_fn = crawl_fn
@@ -41,6 +43,7 @@ class MonitoringPipeline:
         self.save_diff_fn = save_diff_fn
         self.analyze_change_impact_fn = analyze_change_impact_fn
         self.save_analysis_fn = save_analysis_fn
+        self.notify_if_needed_fn = notify_if_needed_fn
         self.load_sources_fn = load_sources_fn
 
     def process_source(self, source: dict) -> dict:
@@ -101,6 +104,11 @@ class MonitoringPipeline:
                 snapshot["id"],
                 impact,
             )
+            notification_result = self.notify_if_needed_fn(
+                source,
+                impact,
+                snapshot["id"],
+            )
 
             return {
                 "source_id": source_id,
@@ -111,6 +119,7 @@ class MonitoringPipeline:
                 "analysis_id": analysis_record["id"],
                 "first_snapshot": False,
                 "message": "Content changed; diff stored and impact analyzed.",
+                "notification": notification_result,
                 "diff": {
                     "source_id": saved_diff["source_id"],
                     "old_snapshot_id": saved_diff["old_snapshot_id"],

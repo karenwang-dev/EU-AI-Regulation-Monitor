@@ -1,0 +1,13 @@
+{
+  "enabled": false,
+  "from_address": "regulation-monitor@example.com",
+  "to_addresses": [
+    "compliance-team@example.com"
+  ],
+  "smtp_host": "smtp.example.com",
+  "smtp_port": 587,
+  "smtp_username": "",
+  "smtp_password_env": "SMTP_PASSWORD",
+  "use_tls": true,
+  "subject_prefix": "[AI Regulation Monitor]"
+}

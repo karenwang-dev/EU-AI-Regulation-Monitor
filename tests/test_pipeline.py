@@ -79,6 +79,9 @@ class TestMonitoringPipeline(unittest.TestCase):
             save_diff_fn=self.store.save_diff,
             analyze_change_impact_fn=analyze_fn,
             save_analysis_fn=self.store.save_analysis,
+            notify_if_needed_fn=MagicMock(
+                return_value={"sent": False, "skipped": True, "reason": "test"}
+            ),
             load_sources_fn=lambda: [self._monitor_config()],
         )
 
@@ -187,6 +190,7 @@ class TestMonitoringPipeline(unittest.TestCase):
             save_diff_fn=self.store.save_diff,
             analyze_change_impact_fn=analyze_mock,
             save_analysis_fn=self.store.save_analysis,
+            notify_if_needed_fn=MagicMock(),
             load_sources_fn=lambda: [
                 {
                     **self._monitor_config(),
