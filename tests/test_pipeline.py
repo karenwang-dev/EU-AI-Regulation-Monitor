@@ -1,12 +1,12 @@
 import gc
-import json
 import tempfile
 import unittest
 from pathlib import Path
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 from app.pipeline import MonitoringPipeline, normalize_source
-from app.storage.service import StorageService, calculate_hash
+from app.analysis.diff_processor import create_diff_result
+from app.storage.service import StorageService
 
 
 class TestMonitoringPipeline(unittest.TestCase):
@@ -53,24 +53,13 @@ class TestMonitoringPipeline(unittest.TestCase):
             "frequency": "daily",
         }
 
-    def _build_pipeline(
-        self,
-        crawl_fn,
-        analyze_fn=None,
-        clean_fn=None,
-    ) -> MonitoringPipeline:
-        analyze_fn = analyze_fn or MagicMock(
-            return_value={"impact_level": "High", "summary": "Changed"}
-        )
-        clean_fn = clean_fn or MagicMock(side_effect=lambda text: text)
-
+    def _build_pipeline(self, crawl_fn) -> MonitoringPipeline:
         return MonitoringPipeline(
             crawl_fn=crawl_fn,
             save_snapshot_fn=self.store.save_snapshot,
             get_latest_snapshot_fn=self.store.get_latest_snapshot,
-            clean_content_fn=clean_fn,
-            analyze_content_fn=analyze_fn,
-            save_analysis_fn=self.store.save_analysis,
+            create_diff_result_fn=create_diff_result,
+            save_diff_fn=self.store.save_diff,
             load_sources_fn=lambda: [self._monitor_config()],
         )
 
@@ -82,22 +71,20 @@ class TestMonitoringPipeline(unittest.TestCase):
         self.assertEqual(normalized["category"], "EU Policy")
         self.assertEqual(normalized["frequency"], "daily")
 
-    def test_pipeline_processes_enabled_sources_with_mocked_crawler(self):
+    def test_first_snapshot_has_no_diff(self):
         crawl_mock = MagicMock(
             return_value=self._crawl_result(markdown="# First capture")
         )
         pipeline = self._build_pipeline(crawl_fn=crawl_mock)
 
-        results = pipeline.run()
+        result = pipeline.process_source(self._monitor_config())
 
-        crawl_mock.assert_called_once()
-        self.assertEqual(len(results), 1)
-        self.assertEqual(results[0]["source_id"], "ec")
-        self.assertEqual(results[0]["status"], "analyzed")
-        self.assertIsNotNone(results[0]["snapshot_id"])
-        self.assertIsNotNone(results[0]["analysis_id"])
+        self.assertEqual(result["status"], "first_snapshot")
+        self.assertTrue(result["first_snapshot"])
+        self.assertIsNone(result["diff_id"])
+        self.assertEqual(len(self.store.get_diff_history("ec")), 0)
 
-    def test_unchanged_content_skips_ai_analysis(self):
+    def test_unchanged_content_skips_diff(self):
         markdown = "# Stable regulation page"
         self.store.save_snapshot(
             self._crawl_result(
@@ -112,23 +99,15 @@ class TestMonitoringPipeline(unittest.TestCase):
                 timestamp="2026-07-15T12:00:00",
             )
         )
-        analyze_mock = MagicMock()
-        pipeline = self._build_pipeline(
-            crawl_fn=crawl_mock,
-            analyze_fn=analyze_mock,
-        )
+        pipeline = self._build_pipeline(crawl_fn=crawl_mock)
 
         result = pipeline.process_source(self._monitor_config())
 
         self.assertEqual(result["status"], "skipped")
-        self.assertIsNone(result["analysis_id"])
-        analyze_mock.assert_not_called()
-        self.assertEqual(
-            len(self.store.get_analysis_history("ec")),
-            0,
-        )
+        self.assertIsNone(result["diff_id"])
+        self.assertEqual(len(self.store.get_diff_history("ec")), 0)
 
-    def test_changed_content_triggers_ai_analysis(self):
+    def test_changed_content_creates_and_stores_diff(self):
         self.store.save_snapshot(
             self._crawl_result(
                 markdown="# Old version",
@@ -138,34 +117,22 @@ class TestMonitoringPipeline(unittest.TestCase):
 
         crawl_mock = MagicMock(
             return_value=self._crawl_result(
-                markdown="# New version with updates",
+                markdown="# New version\nAdded regulation section",
                 timestamp="2026-07-15T12:00:00",
             )
         )
-        analyze_mock = MagicMock(
-            return_value={
-                "impact_level": "Medium",
-                "summary": "Regulation updated",
-            }
-        )
-        clean_mock = MagicMock(side_effect=lambda text: text.strip())
-        pipeline = self._build_pipeline(
-            crawl_fn=crawl_mock,
-            analyze_fn=analyze_mock,
-            clean_fn=clean_mock,
-        )
+        pipeline = self._build_pipeline(crawl_fn=crawl_mock)
 
         result = pipeline.process_source(self._monitor_config())
 
-        self.assertEqual(result["status"], "analyzed")
-        self.assertIsNotNone(result["analysis_id"])
-        crawl_mock.assert_called_once()
-        clean_mock.assert_called_once_with("# New version with updates")
-        analyze_mock.assert_called_once_with("# New version with updates")
+        self.assertEqual(result["status"], "changed")
+        self.assertIsNotNone(result["diff_id"])
+        self.assertIn("Added regulation section", result["diff"]["added_content"])
 
-        history = self.store.get_analysis_history("ec")
+        history = self.store.get_diff_history("ec")
         self.assertEqual(len(history), 1)
-        self.assertEqual(history[0]["analysis"]["impact_level"], "Medium")
+        self.assertTrue(history[0]["changed"])
+        self.assertIn("Added regulation section", history[0]["added_content"])
 
     def test_disabled_sources_are_not_processed(self):
         crawl_mock = MagicMock(
@@ -175,9 +142,7 @@ class TestMonitoringPipeline(unittest.TestCase):
             crawl_fn=crawl_mock,
             save_snapshot_fn=self.store.save_snapshot,
             get_latest_snapshot_fn=self.store.get_latest_snapshot,
-            clean_content_fn=MagicMock(side_effect=lambda text: text),
-            analyze_content_fn=MagicMock(),
-            save_analysis_fn=self.store.save_analysis,
+            save_diff_fn=self.store.save_diff,
             load_sources_fn=lambda: [
                 {
                     **self._monitor_config(),

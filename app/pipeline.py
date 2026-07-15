@@ -1,10 +1,9 @@
-from app.ai.analyzer import analyze_content
-from app.ai.content_cleaner import clean_content
 from app.crawler.service import crawl
 from app.source.source_loader import load_monitors
+from app.analysis.diff_processor import create_diff_result
 from app.storage.service import (
     get_latest_snapshot,
-    save_analysis,
+    save_diff,
     save_snapshot,
 )
 
@@ -19,6 +18,7 @@ def normalize_source(monitor: dict) -> dict:
         "frequency": monitor["frequency"],
     }
 
+
 class MonitoringPipeline:
 
     def __init__(
@@ -26,17 +26,15 @@ class MonitoringPipeline:
         crawl_fn=crawl,
         save_snapshot_fn=save_snapshot,
         get_latest_snapshot_fn=get_latest_snapshot,
-        clean_content_fn=clean_content,
-        analyze_content_fn=analyze_content,
-        save_analysis_fn=save_analysis,
+        create_diff_result_fn=create_diff_result,
+        save_diff_fn=save_diff,
         load_sources_fn=load_monitors,
     ):
         self.crawl_fn = crawl_fn
         self.save_snapshot_fn = save_snapshot_fn
         self.get_latest_snapshot_fn = get_latest_snapshot_fn
-        self.clean_content_fn = clean_content_fn
-        self.analyze_content_fn = analyze_content_fn
-        self.save_analysis_fn = save_analysis_fn
+        self.create_diff_result_fn = create_diff_result_fn
+        self.save_diff_fn = save_diff_fn
         self.load_sources_fn = load_sources_fn
 
     def process_source(self, source: dict) -> dict:
@@ -48,35 +46,64 @@ class MonitoringPipeline:
             crawl_result = self.crawl_fn(normalized)
             snapshot = self.save_snapshot_fn(crawl_result)
 
-            if (
-                previous_snapshot is not None
-                and previous_snapshot["hash"] == snapshot["hash"]
-            ):
+            if previous_snapshot is None:
+                return {
+                    "source_id": source_id,
+                    "name": normalized["name"],
+                    "status": "first_snapshot",
+                    "snapshot_id": snapshot["id"],
+                    "diff_id": None,
+                    "first_snapshot": True,
+                    "message": "First snapshot captured; no diff available.",
+                }
+
+            if previous_snapshot["hash"] == snapshot["hash"]:
                 return {
                     "source_id": source_id,
                     "name": normalized["name"],
                     "status": "skipped",
                     "snapshot_id": snapshot["id"],
-                    "analysis_id": None,
-                    "message": "Content unchanged; AI analysis skipped.",
+                    "diff_id": None,
+                    "first_snapshot": False,
+                    "message": "Content unchanged; diff and AI analysis skipped.",
                 }
 
-            cleaned_content = self.clean_content_fn(
-                crawl_result["markdown"]
+            diff_result = self.create_diff_result_fn(
+                source_id,
+                previous_snapshot,
+                snapshot,
             )
-            analysis = self.analyze_content_fn(cleaned_content)
-            analysis_record = self.save_analysis_fn(
-                snapshot["id"],
-                analysis,
-            )
+
+            if diff_result is None:
+                return {
+                    "source_id": source_id,
+                    "name": normalized["name"],
+                    "status": "skipped",
+                    "snapshot_id": snapshot["id"],
+                    "diff_id": None,
+                    "first_snapshot": False,
+                    "message": "Content unchanged; diff and AI analysis skipped.",
+                }
+
+            saved_diff = self.save_diff_fn(diff_result)
 
             return {
                 "source_id": source_id,
                 "name": normalized["name"],
-                "status": "analyzed",
+                "status": "changed",
                 "snapshot_id": snapshot["id"],
-                "analysis_id": analysis_record["id"],
-                "message": "Content changed; AI analysis completed.",
+                "diff_id": saved_diff["id"],
+                "first_snapshot": False,
+                "message": "Content changed; diff stored.",
+                "diff": {
+                    "source_id": saved_diff["source_id"],
+                    "old_snapshot_id": saved_diff["old_snapshot_id"],
+                    "new_snapshot_id": saved_diff["new_snapshot_id"],
+                    "changed": saved_diff["changed"],
+                    "added_content": saved_diff["added_content"],
+                    "removed_content": saved_diff["removed_content"],
+                    "diff_text": saved_diff["diff_text"],
+                },
             }
 
         except Exception as error:
@@ -85,7 +112,8 @@ class MonitoringPipeline:
                 "name": normalized.get("name", source_id),
                 "status": "error",
                 "snapshot_id": None,
-                "analysis_id": None,
+                "diff_id": None,
+                "first_snapshot": False,
                 "message": str(error),
             }
 

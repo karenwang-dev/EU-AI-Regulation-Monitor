@@ -1,6 +1,6 @@
 from firecrawl import FirecrawlApp
 
-from app.config import FIRECRAWL_API_KEY
+from app.core.config import FIRECRAWL_API_KEY
 
 
 app = FirecrawlApp(
