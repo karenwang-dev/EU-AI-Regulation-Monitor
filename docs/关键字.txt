@@ -18,3 +18,18 @@ repair
 4. 影响国家
 5. 涉及产品
 6. 输出JSON
+
+https://commission.europa.eu/index_en
+AI Act 专用
+https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai
+产品法规监控
+
+增加：https://single-market-economy.ec.europa.eu/sectors/electrical-and-electronic-engineering-industries_en
+
+CE / RED / EMC
+https://single-market-economy.ec.europa.eu/sectors/electrical-and-electronic-engineering-industries_en
+
+
+https://european-union.europa.eu/index_en
+https://www.boe.es/
+BMUKN: Federal Ministry for the Environment, Climate Protection, Nature Conservation and Nuclear Safety

@@ -1,56 +1,55 @@
-from app.source_loader import load_sources
-from app.firecrawl_service import crawl_url
-from app.snapshot_manager import save_snapshot
+from app.crawler.crawler import crawl
+from app.ai.analyzer import analyze_content
+from app.storage.storage import save_result
+from app.ai.content_cleaner import clean_content
 
 
 def main():
 
-    sources = load_sources()
+    print("=" * 60)
+
+    print("开始抓取法规网站...")
+
+    result = crawl(
+        "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai"
+    )
+
+    print(
+        "原始内容长度:",
+        len(result.markdown)
+    )
 
 
-    for source in sources:
+    print("开始清洗内容...")
 
-        if not source["enabled"]:
-            continue
+    clean_markdown = clean_content(
+        result.markdown
+    )
 
-
-        print()
-        print("=" * 50)
-
-        print(
-            f"开始抓取: {source['name']}"
-        )
+    print(
+        "清洗后长度:",
+        len(clean_markdown)
+    )
 
 
-        try:
+    print("开始AI分析...")
 
-            result = crawl_url(
-                source["url"]
-            )
+    analysis = analyze_content(
+        clean_markdown
+    )
 
-
-            file = save_snapshot(
-                source["id"],
-                result.markdown,
-                source["url"]
-            )
+    print("AI分析完成,开始保存...")
 
 
-            print(
-                "保存成功:"
-            )
+    print("保存结果...")
 
-            print(file)
+    save_result(
+        analysis
+    )
 
+    print("完成!")
 
-        except Exception as e:
-
-            print(
-                "抓取失败:"
-            )
-
-            print(e)
-
+    print("=" * 60)
 
 
 if __name__ == "__main__":

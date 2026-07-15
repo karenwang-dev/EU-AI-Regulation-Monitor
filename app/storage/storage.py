@@ -4,6 +4,10 @@ from datetime import datetime
 
 
 OUTPUT_DIR = Path("output")
+RAW_DIR = Path("data/raw")
+
+
+OUTPUT_DIR = Path("output")
 
 
 def save_result(result: dict):
@@ -33,5 +37,25 @@ def save_result(result: dict):
             indent=4,
             ensure_ascii=False
         )
+
+    return file
+
+def save_markdown(source_id: str, markdown: str):
+
+    today = datetime.now().strftime("%Y-%m-%d")
+
+    folder = RAW_DIR / today
+
+    folder.mkdir(
+        parents=True,
+        exist_ok=True
+    )
+
+    file = folder / f"{source_id}.md"
+
+    file.write_text(
+        markdown,
+        encoding="utf-8"
+    )
 
     return file
