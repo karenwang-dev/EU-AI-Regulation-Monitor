@@ -1,8 +1,10 @@
 from app.crawler.service import crawl
 from app.source.source_loader import load_monitors
 from app.analysis.diff_processor import create_diff_result
+from app.ai.impact_analyzer import analyze_change_impact
 from app.storage.service import (
     get_latest_snapshot,
+    save_analysis,
     save_diff,
     save_snapshot,
 )
@@ -28,6 +30,8 @@ class MonitoringPipeline:
         get_latest_snapshot_fn=get_latest_snapshot,
         create_diff_result_fn=create_diff_result,
         save_diff_fn=save_diff,
+        analyze_change_impact_fn=analyze_change_impact,
+        save_analysis_fn=save_analysis,
         load_sources_fn=load_monitors,
     ):
         self.crawl_fn = crawl_fn
@@ -35,6 +39,8 @@ class MonitoringPipeline:
         self.get_latest_snapshot_fn = get_latest_snapshot_fn
         self.create_diff_result_fn = create_diff_result_fn
         self.save_diff_fn = save_diff_fn
+        self.analyze_change_impact_fn = analyze_change_impact_fn
+        self.save_analysis_fn = save_analysis_fn
         self.load_sources_fn = load_sources_fn
 
     def process_source(self, source: dict) -> dict:
@@ -53,6 +59,7 @@ class MonitoringPipeline:
                     "status": "first_snapshot",
                     "snapshot_id": snapshot["id"],
                     "diff_id": None,
+                    "analysis_id": None,
                     "first_snapshot": True,
                     "message": "First snapshot captured; no diff available.",
                 }
@@ -64,6 +71,7 @@ class MonitoringPipeline:
                     "status": "skipped",
                     "snapshot_id": snapshot["id"],
                     "diff_id": None,
+                    "analysis_id": None,
                     "first_snapshot": False,
                     "message": "Content unchanged; diff and AI analysis skipped.",
                 }
@@ -81,20 +89,28 @@ class MonitoringPipeline:
                     "status": "skipped",
                     "snapshot_id": snapshot["id"],
                     "diff_id": None,
+                    "analysis_id": None,
                     "first_snapshot": False,
                     "message": "Content unchanged; diff and AI analysis skipped.",
                 }
 
             saved_diff = self.save_diff_fn(diff_result)
 
+            impact = self.analyze_change_impact_fn(saved_diff, source)
+            analysis_record = self.save_analysis_fn(
+                snapshot["id"],
+                impact,
+            )
+
             return {
                 "source_id": source_id,
                 "name": normalized["name"],
-                "status": "changed",
+                "status": "analyzed",
                 "snapshot_id": snapshot["id"],
                 "diff_id": saved_diff["id"],
+                "analysis_id": analysis_record["id"],
                 "first_snapshot": False,
-                "message": "Content changed; diff stored.",
+                "message": "Content changed; diff stored and impact analyzed.",
                 "diff": {
                     "source_id": saved_diff["source_id"],
                     "old_snapshot_id": saved_diff["old_snapshot_id"],
@@ -104,6 +120,7 @@ class MonitoringPipeline:
                     "removed_content": saved_diff["removed_content"],
                     "diff_text": saved_diff["diff_text"],
                 },
+                "impact": impact,
             }
 
         except Exception as error:
@@ -113,17 +130,25 @@ class MonitoringPipeline:
                 "status": "error",
                 "snapshot_id": None,
                 "diff_id": None,
+                "analysis_id": None,
                 "first_snapshot": False,
                 "message": str(error),
             }
 
-    def run(self) -> list[dict]:
+    def run(self, frequency: str | None = None) -> list[dict]:
         sources = self.load_sources_fn()
         enabled_sources = [
             source
             for source in sources
             if source.get("enabled", True)
         ]
+
+        if frequency is not None:
+            enabled_sources = [
+                source
+                for source in enabled_sources
+                if source.get("frequency") == frequency
+            ]
 
         results = []
         for source in enabled_sources:
@@ -135,5 +160,5 @@ class MonitoringPipeline:
         return results
 
 
-def run_pipeline() -> list[dict]:
-    return MonitoringPipeline().run()
+def run_pipeline(frequency: str | None = None) -> list[dict]:
+    return MonitoringPipeline().run(frequency=frequency)
