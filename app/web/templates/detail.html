@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="mb-4">
+    <a href="/changes" class="text-decoration-none">&larr; Back to Changes</a>
+    <h1 class="h3 mt-2">{{ regulation_name }}</h1>
+    {% if monitor_url %}
+    <p class="text-muted mb-0"><a href="{{ monitor_url }}" target="_blank">{{ monitor_url }}</a></p>
+    {% endif %}
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-header">AI Impact Analysis</div>
+            <div class="card-body">
+                {% if analysis %}
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">Impact Level</dt>
+                    <dd class="col-sm-8">{{ analysis.impact_level }}</dd>
+                    <dt class="col-sm-4">Confidence</dt>
+                    <dd class="col-sm-8">{{ analysis.confidence }}</dd>
+                    <dt class="col-sm-4">Affected Modules</dt>
+                    <dd class="col-sm-8">
+                        {% if analysis.affected_modules %}
+                            {{ analysis.affected_modules|join(", ") }}
+                        {% else %}
+                            None
+                        {% endif %}
+                    </dd>
+                    <dt class="col-sm-4">Reason</dt>
+                    <dd class="col-sm-8">{{ analysis.reason }}</dd>
+                </dl>
+                {% else %}
+                <p class="text-muted mb-0">No AI analysis available for this change.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-header">Recommended Actions</div>
+            <div class="card-body">
+                {% if analysis and analysis.recommended_actions %}
+                <ul class="mb-0">
+                    {% for action in analysis.recommended_actions %}
+                    <li>{{ action }}</li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="text-muted mb-0">No recommended actions available.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow-sm mt-4">
+    <div class="card-header">Diff Content</div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <h2 class="h6">Added Content</h2>
+                {% if diff.added_content %}
+                <pre class="bg-white border rounded p-3 small">{{ diff.added_content|join("\n") }}</pre>
+                {% else %}
+                <p class="text-muted">None</p>
+                {% endif %}
+            </div>
+            <div class="col-md-6">
+                <h2 class="h6">Removed Content</h2>
+                {% if diff.removed_content %}
+                <pre class="bg-white border rounded p-3 small">{{ diff.removed_content|join("\n") }}</pre>
+                {% else %}
+                <p class="text-muted">None</p>
+                {% endif %}
+            </div>
+        </div>
+        <h2 class="h6 mt-3">Unified Diff</h2>
+        <pre class="bg-white border rounded p-3 small">{{ diff.diff_text }}</pre>
+    </div>
+</div>
+{% endblock %}
