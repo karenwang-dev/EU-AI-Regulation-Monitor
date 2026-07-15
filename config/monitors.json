@@ -1,0 +1,96 @@
+{
+  "monitors": [
+    {
+      "id": "eu_ai_act",
+      "name": "EU AI Act",
+      "url": "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai",
+      "keywords": [
+        "AI Act",
+        "artificial intelligence",
+        "cybersecurity",
+        "consumer electronics",
+        "smart TV"
+      ],
+      "category": "AI Regulation",
+      "frequency": "daily",
+      "enabled": true
+    },
+    {
+      "id": "eu_product_compliance",
+      "name": "EU Electrical and Electronic Products",
+      "url": "https://single-market-economy.ec.europa.eu/sectors/electrical-and-electronic-engineering-industries_en",
+      "keywords": [
+        "radio equipment",
+        "RED",
+        "EMC",
+        "CE",
+        "display",
+        "consumer electronics",
+        "cybersecurity",
+        "energy efficiency"
+      ],
+      "category": "Product Compliance",
+      "frequency": "weekly",
+      "enabled": true
+    },
+    {
+      "id": "ec",
+      "name": "European Commission",
+      "url": "https://commission.europa.eu/index_en",
+      "keywords": [
+        "EU Regulation",
+        "Digital Policy",
+        "Product Compliance",
+        "Smart TV",
+        "cybersecurity"
+      ],
+      "category": "EU Policy",
+      "frequency": "daily",
+      "enabled": true
+    },
+    {
+      "id": "eu_portal",
+      "name": "European Union Portal",
+      "url": "https://european-union.europa.eu/index_en",
+      "keywords": [
+        "EU Law",
+        "EU Policy",
+        "Consumer Electronics",
+        "Digital Regulation"
+      ],
+      "category": "EU Policy",
+      "frequency": "daily",
+      "enabled": true
+    },
+    {
+      "id": "boe",
+      "name": "Boletín Oficial del Estado (BOE)",
+      "url": "https://www.boe.es/",
+      "keywords": [
+        "Spain Regulation",
+        "Electronics",
+        "Energy",
+        "Environment",
+        "consumer electronics"
+      ],
+      "category": "National Regulation",
+      "frequency": "weekly",
+      "enabled": true
+    },
+    {
+      "id": "bmukn",
+      "name": "Federal Ministry for the Environment (BMUKN)",
+      "url": "https://www.bundesumweltministerium.de/en",
+      "keywords": [
+        "Germany Regulation",
+        "Environment",
+        "Energy Efficiency",
+        "Electronic Products",
+        "repair"
+      ],
+      "category": "National Policy",
+      "frequency": "weekly",
+      "enabled": true
+    }
+  ]
+}
