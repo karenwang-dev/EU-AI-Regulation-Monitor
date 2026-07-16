@@ -1,0 +1,12 @@
+{% macro impact_badge(level) %}
+{% set normalized = level|upper %}
+{% if normalized == "HIGH" %}
+<span class="badge rounded-pill text-bg-danger">{{ normalized }}</span>
+{% elif normalized == "MEDIUM" %}
+<span class="badge rounded-pill text-bg-warning text-dark">{{ normalized }}</span>
+{% elif normalized == "LOW" %}
+<span class="badge rounded-pill text-bg-success">{{ normalized }}</span>
+{% else %}
+<span class="badge rounded-pill text-bg-secondary">{{ normalized }}</span>
+{% endif %}
+{% endmacro %}

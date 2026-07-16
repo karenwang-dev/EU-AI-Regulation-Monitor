@@ -1,64 +1,88 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-        <h1 class="h3 mb-1">Regulation Monitoring Dashboard</h1>
-        <p class="text-muted mb-0">Internal overview for TV product compliance monitoring</p>
-    </div>
+<div class="page-header">
+    <h1 class="h3 mb-1">Regulation Monitoring Dashboard</h1>
+    <p class="text-muted mb-0">Internal overview for TV product compliance monitoring</p>
 </div>
 
 <div class="row g-3 mb-4">
-    <div class="col-md-3">
-        <div class="card shadow-sm">
+    <div class="col-6 col-lg-4 col-xl-2">
+        <div class="card shadow-sm stat-card border-0">
             <div class="card-body">
-                <div class="text-muted small">Monitors</div>
+                <div class="text-muted small">Total Monitors</div>
                 <div class="display-6">{{ monitor_count }}</div>
             </div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card shadow-sm">
+    <div class="col-6 col-lg-4 col-xl-2">
+        <div class="card shadow-sm stat-card border-0">
             <div class="card-body">
-                <div class="text-muted small">Changed (Last Run)</div>
-                <div class="display-6">{{ changed_count }}</div>
+                <div class="text-muted small">Last Run</div>
+                <div class="fs-5 fw-semibold">{{ last_run_display }}</div>
             </div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card shadow-sm">
+    <div class="col-6 col-lg-4 col-xl-2">
+        <div class="card shadow-sm stat-card border-0">
             <div class="card-body">
-                <div class="text-muted small">Analyzed (Last Run)</div>
-                <div class="display-6">{{ analyzed_count }}</div>
+                <div class="text-muted small">Today's Changes</div>
+                <div class="display-6">{{ todays_changes_count }}</div>
             </div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card shadow-sm border-danger">
+    <div class="col-6 col-lg-4 col-xl-2">
+        <div class="card shadow-sm stat-card border-danger">
             <div class="card-body">
                 <div class="text-muted small">High Risk</div>
                 <div class="display-6 text-danger">{{ high_risk_count }}</div>
             </div>
         </div>
     </div>
+    <div class="col-6 col-lg-4 col-xl-2">
+        <div class="card shadow-sm stat-card border-warning">
+            <div class="card-body">
+                <div class="text-muted small">Medium</div>
+                <div class="display-6 text-warning">{{ medium_risk_count }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-4 col-xl-2">
+        <div class="card shadow-sm stat-card border-success">
+            <div class="card-body">
+                <div class="text-muted small">Low</div>
+                <div class="display-6 text-success">{{ low_risk_count }}</div>
+            </div>
+        </div>
+    </div>
 </div>
 
-<div class="card shadow-sm">
-    <div class="card-header">Last Run</div>
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-white">Last Run Details</div>
     <div class="card-body">
         {% if last_run %}
-        <dl class="row mb-0">
-            <dt class="col-sm-3">Timestamp</dt>
-            <dd class="col-sm-9">{{ last_run.timestamp }}</dd>
-            <dt class="col-sm-3">Total Monitors</dt>
-            <dd class="col-sm-9">{{ last_run.total_monitors }}</dd>
-            <dt class="col-sm-3">Changed</dt>
-            <dd class="col-sm-9">{{ last_run.changed_count }}</dd>
-            <dt class="col-sm-3">Analyzed</dt>
-            <dd class="col-sm-9">{{ last_run.analyzed_count }}</dd>
-            <dt class="col-sm-3">Failed</dt>
-            <dd class="col-sm-9">{{ last_run.failed_count }}</dd>
-        </dl>
+        <div class="row g-3">
+            <div class="col-md-3">
+                <div class="text-muted small">Timestamp</div>
+                <div>{{ last_run.timestamp }}</div>
+            </div>
+            <div class="col-md-3">
+                <div class="text-muted small">Total Monitors</div>
+                <div>{{ last_run.total_monitors }}</div>
+            </div>
+            <div class="col-md-2">
+                <div class="text-muted small">Changed</div>
+                <div>{{ last_run.changed_count }}</div>
+            </div>
+            <div class="col-md-2">
+                <div class="text-muted small">Analyzed</div>
+                <div>{{ last_run.analyzed_count }}</div>
+            </div>
+            <div class="col-md-2">
+                <div class="text-muted small">Failed</div>
+                <div>{{ last_run.failed_count }}</div>
+            </div>
+        </div>
         {% else %}
         <p class="text-muted mb-0">No pipeline runs recorded yet.</p>
         {% endif %}

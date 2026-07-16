@@ -1,36 +1,54 @@
 {% extends "base.html" %}
+{% from "_macros.html" import impact_badge %}
 
 {% block content %}
-<div class="mb-4">
+<div class="page-header">
     <a href="/changes" class="text-decoration-none">&larr; Back to Changes</a>
-    <h1 class="h3 mt-2">{{ regulation_name }}</h1>
+    <h1 class="h3 mt-2 mb-1">{{ regulation_name }}</h1>
     {% if monitor_url %}
-    <p class="text-muted mb-0"><a href="{{ monitor_url }}" target="_blank">{{ monitor_url }}</a></p>
+    <p class="text-muted mb-1"><a href="{{ monitor_url }}" target="_blank">{{ monitor_url }}</a></p>
+    {% endif %}
+    {% if change_date %}
+    <p class="text-muted small mb-0">Detected on {{ change_date }}</p>
     {% endif %}
 </div>
 
 <div class="row g-4">
-    <div class="col-lg-6">
-        <div class="card shadow-sm h-100">
-            <div class="card-header">AI Impact Analysis</div>
+    <div class="col-lg-7">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-header bg-white">Impact Analysis</div>
             <div class="card-body">
                 {% if analysis %}
-                <dl class="row mb-0">
-                    <dt class="col-sm-4">Impact Level</dt>
-                    <dd class="col-sm-8">{{ analysis.impact_level }}</dd>
-                    <dt class="col-sm-4">Confidence</dt>
-                    <dd class="col-sm-8">{{ analysis.confidence }}</dd>
-                    <dt class="col-sm-4">Affected Modules</dt>
-                    <dd class="col-sm-8">
+                <div class="row g-3 mb-3">
+                    <div class="col-sm-6">
+                        <div class="text-muted small">Impact Level</div>
+                        <div class="mt-1">{{ impact_badge(analysis.impact_level) }}</div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="text-muted small">Confidence</div>
+                        <div class="mt-1">
+                            <span class="badge text-bg-light text-dark border">{{ analysis.confidence }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <div class="text-muted small">Affected Modules</div>
+                    <div class="mt-1">
                         {% if analysis.affected_modules %}
-                            {{ analysis.affected_modules|join(", ") }}
+                            {% for module in analysis.affected_modules %}
+                            <span class="badge text-bg-light text-dark border module-badge">{{ module }}</span>
+                            {% endfor %}
                         {% else %}
-                            None
+                            <span class="text-muted">None</span>
                         {% endif %}
-                    </dd>
-                    <dt class="col-sm-4">Reason</dt>
-                    <dd class="col-sm-8">{{ analysis.reason }}</dd>
-                </dl>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="text-muted small">Reason</div>
+                    <p class="mb-0 mt-1">{{ analysis.reason }}</p>
+                </div>
                 {% else %}
                 <p class="text-muted mb-0">No AI analysis available for this change.</p>
                 {% endif %}
@@ -38,14 +56,14 @@
         </div>
     </div>
 
-    <div class="col-lg-6">
-        <div class="card shadow-sm h-100">
-            <div class="card-header">Recommended Actions</div>
+    <div class="col-lg-5">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-header bg-white">Recommended Actions</div>
             <div class="card-body">
                 {% if analysis and analysis.recommended_actions %}
-                <ul class="mb-0">
+                <ul class="list-group list-group-flush">
                     {% for action in analysis.recommended_actions %}
-                    <li>{{ action }}</li>
+                    <li class="list-group-item px-0">{{ action }}</li>
                     {% endfor %}
                 </ul>
                 {% else %}
@@ -56,29 +74,40 @@
     </div>
 </div>
 
-<div class="card shadow-sm mt-4">
-    <div class="card-header">Diff Content</div>
+<div class="card shadow-sm border-0 mt-4">
+    <div class="card-header bg-white">Diff Content</div>
     <div class="card-body">
-        <div class="row">
+        <div class="row g-4">
             <div class="col-md-6">
-                <h2 class="h6">Added Content</h2>
+                <h2 class="h6 text-success">Added</h2>
                 {% if diff.added_content %}
-                <pre class="bg-white border rounded p-3 small">{{ diff.added_content|join("\n") }}</pre>
+                <div class="diff-block diff-added">{{ diff.added_content|join("\n") }}</div>
                 {% else %}
                 <p class="text-muted">None</p>
                 {% endif %}
             </div>
             <div class="col-md-6">
-                <h2 class="h6">Removed Content</h2>
+                <h2 class="h6 text-danger">Removed</h2>
                 {% if diff.removed_content %}
-                <pre class="bg-white border rounded p-3 small">{{ diff.removed_content|join("\n") }}</pre>
+                <div class="diff-block diff-removed">{{ diff.removed_content|join("\n") }}</div>
                 {% else %}
                 <p class="text-muted">None</p>
                 {% endif %}
             </div>
         </div>
-        <h2 class="h6 mt-3">Unified Diff</h2>
-        <pre class="bg-white border rounded p-3 small">{{ diff.diff_text }}</pre>
+
+        {% if diff.diff_text %}
+        <div class="mt-4">
+            <button class="btn btn-sm btn-outline-secondary" type="button"
+                data-bs-toggle="collapse" data-bs-target="#unifiedDiff" aria-expanded="false"
+                aria-controls="unifiedDiff">
+                Show Unified Diff
+            </button>
+            <div class="collapse mt-3" id="unifiedDiff">
+                <div class="diff-block">{{ diff.diff_text }}</div>
+            </div>
+        </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

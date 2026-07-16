@@ -1,57 +1,110 @@
 {% extends "base.html" %}
+{% from "_macros.html" import impact_badge %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="h3 mb-0">Regulation Changes</h1>
+<div class="page-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+    <div>
+        <h1 class="h3 mb-1">Regulation Changes</h1>
+        <p class="text-muted mb-0">Review detected regulation updates and their TV product impact.</p>
+    </div>
+    <div class="text-muted small">
+        Showing {{ changes|length }} of {{ total_items }} change(s)
+    </div>
 </div>
 
-<div class="card shadow-sm">
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3 align-items-end">
+            <div class="col-md-5">
+                <label for="searchQuery" class="form-label">Keyword Search</label>
+                <input
+                    type="text"
+                    class="form-control"
+                    id="searchQuery"
+                    name="q"
+                    value="{{ query }}"
+                    placeholder="Search regulation, keyword, module..."
+                >
+            </div>
+            <div class="col-md-3">
+                <label for="impactFilter" class="form-label">Impact Level</label>
+                <select class="form-select" id="impactFilter" name="impact">
+                    <option value="">All levels</option>
+                    <option value="HIGH" {% if impact_filter == "HIGH" %}selected{% endif %}>HIGH</option>
+                    <option value="MEDIUM" {% if impact_filter == "MEDIUM" %}selected{% endif %}>MEDIUM</option>
+                    <option value="LOW" {% if impact_filter == "LOW" %}selected{% endif %}>LOW</option>
+                    <option value="NONE" {% if impact_filter == "NONE" %}selected{% endif %}>NONE</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">Apply</button>
+            </div>
+            <div class="col-md-2">
+                <a href="/changes" class="btn btn-outline-secondary w-100">Reset</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card shadow-sm border-0">
     <div class="table-responsive">
-        <table class="table table-hover mb-0">
-            <thead>
+        <table class="table table-hover mb-0 align-middle">
+            <thead class="table-light">
                 <tr>
                     <th>Regulation</th>
                     <th>Date</th>
                     <th>Impact Level</th>
                     <th>Affected Modules</th>
-                    <th></th>
+                    <th class="text-end">Action</th>
                 </tr>
             </thead>
             <tbody>
                 {% for change in changes %}
                 <tr>
-                    <td>{{ change.regulation_name }}</td>
-                    <td>{{ change.date }}</td>
                     <td>
-                        {% set level = change.impact_level|upper %}
-                        {% if level == "HIGH" %}
-                        <span class="badge text-bg-danger">{{ level }}</span>
-                        {% elif level == "MEDIUM" %}
-                        <span class="badge text-bg-warning">{{ level }}</span>
-                        {% elif level == "LOW" %}
-                        <span class="badge text-bg-info">{{ level }}</span>
-                        {% else %}
-                        <span class="badge text-bg-secondary">{{ level }}</span>
-                        {% endif %}
+                        <div class="fw-semibold">{{ change.regulation_name }}</div>
+                        <div class="text-muted small">{{ change.summary }}</div>
                     </td>
+                    <td>{{ change.date }}</td>
+                    <td>{{ impact_badge(change.impact_level) }}</td>
                     <td>
                         {% if change.affected_modules %}
-                            {{ change.affected_modules|join(", ") }}
+                            {% for module in change.affected_modules %}
+                            <span class="badge text-bg-light text-dark border module-badge">{{ module }}</span>
+                            {% endfor %}
                         {% else %}
                             <span class="text-muted">None</span>
                         {% endif %}
                     </td>
-                    <td>
+                    <td class="text-end">
                         <a class="btn btn-sm btn-outline-primary" href="/detail/{{ change.diff_id }}">View</a>
                     </td>
                 </tr>
                 {% else %}
                 <tr>
-                    <td colspan="5" class="text-muted">No regulation changes recorded yet.</td>
+                    <td colspan="5" class="text-muted py-4 text-center">No regulation changes match your filters.</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
+
+    {% if total_pages > 1 %}
+    <div class="card-footer bg-white d-flex justify-content-between align-items-center">
+        <span class="text-muted small">Page {{ page }} of {{ total_pages }}</span>
+        <nav aria-label="Changes pagination">
+            <ul class="pagination pagination-sm mb-0">
+                <li class="page-item {% if page <= 1 %}disabled{% endif %}">
+                    <a class="page-link"
+                       href="/changes?q={{ query }}&impact={{ impact_filter }}&page={{ page - 1 }}">Previous</a>
+                </li>
+                <li class="page-item {% if page >= total_pages %}disabled{% endif %}">
+                    <a class="page-link"
+                       href="/changes?q={{ query }}&impact={{ impact_filter }}&page={{ page + 1 }}">Next</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
 </div>
 {% endblock %}
