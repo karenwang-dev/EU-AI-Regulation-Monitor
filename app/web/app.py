@@ -21,6 +21,7 @@ from app.knowledge.statistics import (
     fetch_all_knowledge_items,
 )
 from app.knowledge.timeline import build_regulation_timeline
+from app.web.knowledge_helper import resolve_related_regulations
 from app.web.source_helper import (
     build_source_tree,
     enrich_changes_with_source_metadata,
@@ -484,6 +485,7 @@ def create_dashboard_app(
             item.get("title", ""),
             knowledge_items=all_items,
         )
+        related_regulations = resolve_related_regulations(item, storage)
 
         return templates.TemplateResponse(
             request,
@@ -500,6 +502,7 @@ def create_dashboard_app(
                 ),
                 "similar_items": similar_items,
                 "timeline": timeline,
+                "related_regulations": related_regulations,
             },
         )
 

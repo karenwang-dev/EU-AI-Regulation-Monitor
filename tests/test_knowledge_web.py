@@ -128,6 +128,8 @@ class TestKnowledgeWeb(unittest.TestCase):
         self.assertIn(b"Cybersecurity obligations for connected devices.", content)
         self.assertIn(b"Affected Countries", content)
         self.assertIn(b"Key Requirements", content)
+        self.assertIn(b"Related Regulations", content)
+        self.assertIn(b"No related regulations found.", content)
         self.assertIn(b"Open Original Page", content)
         self.assertIn(b"https://example.com/ai-act", content)
         self.assertIn(str(self.snapshot_id).encode(), content)
@@ -174,6 +176,178 @@ class TestKnowledgeWeb(unittest.TestCase):
         self.assertIn(b"Knowledge Base", content)
         self.assertIn(b'href="/knowledge"', content)
         self.assertIn(b"nav-link active", content)
+
+    @mock.patch("app.web.app.load_monitors", autospec=True)
+    def test_detail_related_regulations_render(self, mock_load_monitors):
+        mock_load_monitors.return_value = [self.monitor]
+
+        base_item = self.store.save_knowledge_item(
+            {
+                "snapshot_id": self.snapshot_id,
+                "source_id": "eu_ai_act",
+                "title": "EU AI Act Original",
+                "category": "AI Regulation",
+                "regulation_type": "NEW",
+                "summary": "Original obligations.",
+                "effective_date": "2026-06-01",
+                "countries": ["EU"],
+                "products": ["Smart TV"],
+                "modules": ["AI Features"],
+                "requirements": ["Assess embedded high-risk AI systems"],
+                "actions": ["Initial compliance review"],
+                "confidence": "HIGH",
+            }
+        )
+
+        related_item = self.store.save_knowledge_item(
+            {
+                "snapshot_id": self.snapshot_id,
+                "source_id": "eu_ai_act",
+                "title": "EU AI Act Amendment",
+                "category": "AI Regulation",
+                "regulation_type": "AMENDMENT",
+                "summary": "Updated obligations.",
+                "effective_date": "2028-08-02",
+                "countries": ["EU"],
+                "products": ["Smart TV"],
+                "modules": ["AI Features"],
+                "requirements": ["Updated assessment scope"],
+                "actions": ["Update compliance checklist"],
+                "relationships": [
+                    {
+                        "knowledge_id": base_item["id"],
+                        "relation": "AMENDMENT",
+                        "confidence": 0.92,
+                        "reason": "Same regulation title with later publish date",
+                    }
+                ],
+                "confidence": "HIGH",
+            }
+        )
+
+        response = self.client.get(f"/knowledge/{related_item['id']}")
+
+        self.assertEqual(response.status_code, 200)
+        content = response.content
+        self.assertIn(b"Related Regulations", content)
+        self.assertIn(b"EU AI Act Original", content)
+        self.assertIn(b"AMENDMENT", content)
+        self.assertIn(b"text-bg-danger", content)
+        self.assertIn(b"92%", content)
+        self.assertIn(b"progress-bar", content)
+        self.assertIn(
+            b"Same regulation title with later publish date",
+            content,
+        )
+        self.assertIn(
+            f'href="/knowledge/{base_item["id"]}"'.encode(),
+            content,
+        )
+
+    @mock.patch("app.web.app.load_monitors", autospec=True)
+    def test_detail_related_regulations_missing_target(self, mock_load_monitors):
+        mock_load_monitors.return_value = [self.monitor]
+
+        orphan = self.store.save_knowledge_item(
+            {
+                "snapshot_id": self.snapshot_id,
+                "source_id": "eu_ai_act",
+                "title": "EU AI Act Orphan Link",
+                "category": "AI Regulation",
+                "regulation_type": "AMENDMENT",
+                "summary": "Item with broken relationship.",
+                "effective_date": "2028-08-02",
+                "countries": ["EU"],
+                "products": ["Smart TV"],
+                "modules": ["AI Features"],
+                "requirements": ["Updated assessment scope"],
+                "actions": ["Update compliance checklist"],
+                "relationships": [
+                    {
+                        "knowledge_id": 99999,
+                        "relation": "RELATED",
+                        "confidence": 0.7,
+                        "reason": "Missing related record",
+                    }
+                ],
+                "confidence": "HIGH",
+            }
+        )
+
+        response = self.client.get(f"/knowledge/{orphan['id']}")
+
+        self.assertEqual(response.status_code, 200)
+        content = response.content
+        self.assertIn(b"Related Regulations", content)
+        self.assertIn(b"No related regulations found.", content)
+
+    @mock.patch("app.web.app.load_monitors", autospec=True)
+    def test_detail_related_regulations_badge_variants(self, mock_load_monitors):
+        mock_load_monitors.return_value = [self.monitor]
+
+        targets = {}
+        for relation, title in [
+            ("GUIDANCE", "EU AI Act Guidance"),
+            ("IMPLEMENTATION", "EU AI Act Implementation"),
+            ("RELATED", "EU AI Act Related"),
+            ("REPLACED_BY", "EU AI Act Replaced"),
+            ("SUPERSEDES", "EU AI Act Supersedes"),
+        ]:
+            targets[relation] = self.store.save_knowledge_item(
+                {
+                    "snapshot_id": self.snapshot_id,
+                    "source_id": "eu_ai_act",
+                    "title": title,
+                    "category": "AI Regulation",
+                    "regulation_type": "NEW",
+                    "summary": f"{relation} summary.",
+                    "effective_date": "2026-06-01",
+                    "countries": ["EU"],
+                    "products": ["Smart TV"],
+                    "modules": ["AI Features"],
+                    "requirements": ["Requirement"],
+                    "actions": ["Action"],
+                    "confidence": "HIGH",
+                }
+            )
+
+        viewer = self.store.save_knowledge_item(
+            {
+                "snapshot_id": self.snapshot_id,
+                "source_id": "eu_ai_act",
+                "title": "EU AI Act Relationship Viewer",
+                "category": "AI Regulation",
+                "regulation_type": "NEW",
+                "summary": "Shows all badge variants.",
+                "effective_date": "2026-06-01",
+                "countries": ["EU"],
+                "products": ["Smart TV"],
+                "modules": ["AI Features"],
+                "requirements": ["Requirement"],
+                "actions": ["Action"],
+                "relationships": [
+                    {
+                        "knowledge_id": targets[relation]["id"],
+                        "relation": relation,
+                        "confidence": 0.75,
+                        "reason": f"{relation} relationship reason",
+                    }
+                    for relation in targets
+                ],
+                "confidence": "HIGH",
+            }
+        )
+
+        response = self.client.get(f"/knowledge/{viewer['id']}")
+
+        self.assertEqual(response.status_code, 200)
+        content = response.content
+        self.assertIn(b"text-bg-warning", content)
+        self.assertIn(b"text-bg-primary", content)
+        self.assertIn(b"text-bg-success", content)
+        self.assertIn(b"text-bg-dark", content)
+        self.assertIn(b"badge-relation-supersedes", content)
+        self.assertIn(b"75%", content)
 
 
 if __name__ == "__main__":

@@ -133,6 +133,49 @@
         </div>
 
         <div class="card shadow-sm border-0 mt-4">
+            <div class="card-header bg-white">Related Regulations</div>
+            <div class="card-body">
+                {% if related_regulations %}
+                <div class="list-group list-group-flush">
+                    {% for related in related_regulations %}
+                    <div class="list-group-item px-0">
+                        <div class="d-flex justify-content-between align-items-start gap-3 mb-2">
+                            <div>
+                                <a href="{{ related.detail_url }}" class="fw-semibold text-decoration-none">
+                                    {{ related.title }}
+                                </a>
+                                <div class="mt-2">
+                                    <span class="badge {{ related.badge_class }}">{{ related.relation }}</span>
+                                </div>
+                            </div>
+                            <span class="fw-semibold">{{ related.confidence_percent }}%</span>
+                        </div>
+                        <div
+                            class="progress mb-2"
+                            role="progressbar"
+                            aria-valuenow="{{ related.confidence_percent }}"
+                            aria-valuemin="0"
+                            aria-valuemax="100"
+                            style="height: 8px;"
+                        >
+                            <div
+                                class="progress-bar"
+                                style="width: {{ related.confidence_percent }}%;"
+                            ></div>
+                        </div>
+                        {% if related.reason %}
+                        <div class="text-muted small">{{ related.reason }}</div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-muted mb-0">No related regulations found.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="card shadow-sm border-0 mt-4">
             <div class="card-header bg-white">Regulation Timeline</div>
             <div class="card-body">
                 {% if timeline %}
