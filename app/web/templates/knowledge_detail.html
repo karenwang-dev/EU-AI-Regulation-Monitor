@@ -1,0 +1,200 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <a href="/knowledge" class="text-decoration-none">&larr; Back to Knowledge Base</a>
+    <h1 class="h3 mt-2 mb-1">{{ item.title or "N/A" }}</h1>
+    {% if item.created_at %}
+    <p class="text-muted small mb-0">Created on {{ item.created_at_display or item.created_at }}</p>
+    {% endif %}
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-white">Overview</div>
+            <div class="card-body">
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <div class="text-muted small">Category</div>
+                        <div>{{ item.category or "N/A" }}</div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="text-muted small">Regulation Type</div>
+                        <div>{{ item.regulation_type or "N/A" }}</div>
+                    </div>
+                </div>
+                <div>
+                    <div class="text-muted small">Summary</div>
+                    <p class="mb-0 mt-1">{{ item.summary or "N/A" }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-white">Scope</div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <div class="text-muted small">Affected Countries</div>
+                    <div class="mt-1">
+                        {% if item.countries %}
+                            {% for country in item.countries %}
+                            <span class="badge text-bg-light text-dark border module-badge">{{ country }}</span>
+                            {% endfor %}
+                        {% else %}
+                            <span class="text-muted">N/A</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <div class="text-muted small">Affected Products</div>
+                    <div class="mt-1">
+                        {% if item.products %}
+                            {% for product in item.products %}
+                            <span class="badge text-bg-light text-dark border module-badge">{{ product }}</span>
+                            {% endfor %}
+                        {% else %}
+                            <span class="text-muted">N/A</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div>
+                    <div class="text-muted small">Affected Modules</div>
+                    <div class="mt-1">
+                        {% if item.modules %}
+                            {% for module in item.modules %}
+                            <span class="badge text-bg-light text-dark border module-badge">{{ module }}</span>
+                            {% endfor %}
+                        {% else %}
+                            <span class="text-muted">N/A</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white">Compliance</div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <div class="text-muted small">Key Requirements</div>
+                    {% if item.requirements %}
+                    <ul class="mb-0 mt-1 ps-3">
+                        {% for requirement in item.requirements %}
+                        <li>{{ requirement }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <p class="text-muted mb-0 mt-1">N/A</p>
+                    {% endif %}
+                </div>
+                <div>
+                    <div class="text-muted small">Actions Required</div>
+                    {% if item.actions %}
+                    <ul class="mb-0 mt-1 ps-3">
+                        {% for action in item.actions %}
+                        <li>{{ action }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <p class="text-muted mb-0 mt-1">N/A</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm border-0 mt-4">
+            <div class="card-header bg-white">Similar Regulations</div>
+            <div class="card-body">
+                {% if similar_items %}
+                <div class="list-group list-group-flush">
+                    {% for similar in similar_items %}
+                    <div class="list-group-item px-0">
+                        <div class="d-flex justify-content-between align-items-start gap-3">
+                            <div>
+                                <a href="/knowledge/{{ similar.id }}" class="fw-semibold text-decoration-none">
+                                    {{ similar.title or "N/A" }}
+                                </a>
+                                <div class="text-muted small mt-1">
+                                    {{ similar.reason | join(", ") }}
+                                </div>
+                            </div>
+                            <span class="badge text-bg-primary">
+                                {{ "%.0f"|format(similar.similarity * 100) }}%
+                            </span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-muted mb-0">No similar regulations found.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="card shadow-sm border-0 mt-4">
+            <div class="card-header bg-white">Regulation Timeline</div>
+            <div class="card-body">
+                {% if timeline %}
+                <div class="list-group list-group-flush">
+                    {% for event in timeline %}
+                    <div class="list-group-item px-0">
+                        <div class="d-flex flex-wrap align-items-center gap-2 mb-1">
+                            <span class="fw-semibold">{{ event.date }}</span>
+                            <span class="badge text-bg-light text-dark border">{{ event.type }}</span>
+                        </div>
+                        <div>{{ event.summary }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-muted mb-0">No timeline events available.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-header bg-white">Source</div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <div class="text-muted small">Source URL</div>
+                    <div>
+                        {% if source_url %}
+                        <a href="{{ source_url }}" target="_blank" rel="noopener noreferrer">{{ source_url }}</a>
+                        {% else %}
+                        <span class="text-muted">N/A</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <div class="text-muted small">Monitor Name</div>
+                    <div>{{ monitor_name or "N/A" }}</div>
+                </div>
+                <div class="mb-3">
+                    <div class="text-muted small">Snapshot ID</div>
+                    <div>{{ item.snapshot_id if item.snapshot_id is not none else "N/A" }}</div>
+                </div>
+                <div class="mb-3">
+                    <div class="text-muted small">Diff ID</div>
+                    <div>{{ diff_id if diff_id is not none else "N/A" }}</div>
+                </div>
+                <div class="mb-3">
+                    <div class="text-muted small">Confidence</div>
+                    <div>{{ item.confidence or "N/A" }}</div>
+                </div>
+                <div class="mb-3">
+                    <div class="text-muted small">Effective Date</div>
+                    <div>{{ item.effective_date or "N/A" }}</div>
+                </div>
+                {% if source_url %}
+                <a class="btn btn-outline-primary" href="{{ source_url }}" target="_blank" rel="noopener noreferrer">
+                    Open Original Page
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

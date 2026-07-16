@@ -74,6 +74,34 @@ CREATE TABLE IF NOT EXISTS crawl_cache (
 
 CREATE INDEX IF NOT EXISTS idx_crawl_cache_url
     ON crawl_cache(url);
+
+CREATE TABLE IF NOT EXISTS knowledge_items (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    snapshot_id INTEGER,
+    source_id TEXT,
+    title TEXT,
+    category TEXT,
+    regulation_type TEXT,
+    summary TEXT,
+    effective_date TEXT,
+    countries_json TEXT,
+    products_json TEXT,
+    modules_json TEXT,
+    requirements_json TEXT,
+    actions_json TEXT,
+    confidence TEXT,
+    created_at TEXT,
+    FOREIGN KEY (snapshot_id) REFERENCES snapshots(id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_knowledge_items_source_id
+    ON knowledge_items(source_id);
+
+CREATE INDEX IF NOT EXISTS idx_knowledge_items_category
+    ON knowledge_items(category);
+
+CREATE INDEX IF NOT EXISTS idx_knowledge_items_created_at
+    ON knowledge_items(created_at);
 """
 
 
@@ -505,6 +533,173 @@ class StorageService:
             for row in rows
         ]
 
+    def _serialize_json_list(self, values) -> str:
+        if values is None:
+            return json.dumps([], ensure_ascii=False)
+        return json.dumps(values, ensure_ascii=False)
+
+    def _deserialize_json_list(self, value: str | None) -> list:
+        if not value:
+            return []
+        return json.loads(value)
+
+    def _row_to_knowledge_item(
+        self,
+        row: sqlite3.Row,
+        *,
+        list_only: bool = False,
+    ) -> dict:
+        modules = self._deserialize_json_list(row["modules_json"])
+        if list_only:
+            return {
+                "id": row["id"],
+                "title": row["title"],
+                "category": row["category"],
+                "modules": modules,
+            }
+
+        return {
+            "id": row["id"],
+            "snapshot_id": row["snapshot_id"],
+            "source_id": row["source_id"],
+            "title": row["title"],
+            "category": row["category"],
+            "regulation_type": row["regulation_type"],
+            "summary": row["summary"],
+            "effective_date": row["effective_date"],
+            "countries": self._deserialize_json_list(row["countries_json"]),
+            "products": self._deserialize_json_list(row["products_json"]),
+            "modules": modules,
+            "requirements": self._deserialize_json_list(
+                row["requirements_json"]
+            ),
+            "actions": self._deserialize_json_list(row["actions_json"]),
+            "confidence": row["confidence"],
+            "created_at": row["created_at"],
+        }
+
+    def save_knowledge_item(self, item: dict) -> dict:
+        created_at = datetime.now().isoformat()
+        countries = item.get("countries", [])
+        products = item.get("products", [])
+        modules = item.get("modules", [])
+        requirements = item.get("requirements", [])
+        actions = item.get("actions", [])
+
+        with self._connect() as connection:
+            cursor = connection.execute(
+                """
+                INSERT INTO knowledge_items (
+                    snapshot_id,
+                    source_id,
+                    title,
+                    category,
+                    regulation_type,
+                    summary,
+                    effective_date,
+                    countries_json,
+                    products_json,
+                    modules_json,
+                    requirements_json,
+                    actions_json,
+                    confidence,
+                    created_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    item.get("snapshot_id"),
+                    item.get("source_id", ""),
+                    item.get("title", ""),
+                    item.get("category", ""),
+                    item.get("regulation_type", ""),
+                    item.get("summary", ""),
+                    item.get("effective_date", ""),
+                    self._serialize_json_list(countries),
+                    self._serialize_json_list(products),
+                    self._serialize_json_list(modules),
+                    self._serialize_json_list(requirements),
+                    self._serialize_json_list(actions),
+                    item.get("confidence", ""),
+                    created_at,
+                ),
+            )
+            item_id = cursor.lastrowid
+            row = connection.execute(
+                "SELECT * FROM knowledge_items WHERE id = ?",
+                (item_id,),
+            ).fetchone()
+
+        if row is None:
+            raise ValueError(f"Failed to save knowledge item: {item_id}")
+
+        return self._row_to_knowledge_item(row)
+
+    def get_knowledge_item(self, item_id: int) -> dict | None:
+        with self._connect() as connection:
+            row = connection.execute(
+                "SELECT * FROM knowledge_items WHERE id = ?",
+                (item_id,),
+            ).fetchone()
+
+        if row is None:
+            return None
+
+        return self._row_to_knowledge_item(row)
+
+    def get_knowledge_items(
+        self,
+        category: str | None = None,
+        module: str | None = None,
+        limit: int = 50,
+    ) -> list[dict]:
+        query = "SELECT * FROM knowledge_items WHERE 1=1"
+        params: list = []
+
+        if category is not None:
+            query += " AND category = ?"
+            params.append(category)
+
+        if module is not None:
+            query += " AND modules_json LIKE ?"
+            params.append(f'%"{module}"%')
+
+        query += " ORDER BY created_at DESC LIMIT ?"
+        params.append(limit)
+
+        with self._connect() as connection:
+            rows = connection.execute(query, params).fetchall()
+
+        return [
+            self._row_to_knowledge_item(row, list_only=True)
+            for row in rows
+        ]
+
+    def search_knowledge(
+        self,
+        query: str,
+        limit: int = 50,
+    ) -> list[dict]:
+        pattern = f"%{query}%"
+
+        with self._connect() as connection:
+            rows = connection.execute(
+                """
+                SELECT * FROM knowledge_items
+                WHERE title LIKE ?
+                   OR summary LIKE ?
+                   OR requirements_json LIKE ?
+                   OR modules_json LIKE ?
+                ORDER BY created_at DESC
+                LIMIT ?
+                """,
+                (pattern, pattern, pattern, pattern, limit),
+            ).fetchall()
+
+        return [
+            self._row_to_knowledge_item(row, list_only=True)
+            for row in rows
+        ]
+
 
 _default_service: StorageService | None = None
 
@@ -554,3 +749,27 @@ def save_diff(diff_result: dict) -> dict:
 
 def get_diff_history(source_id: str) -> list[dict]:
     return _get_service().get_diff_history(source_id)
+
+
+def save_knowledge_item(item: dict) -> dict:
+    return _get_service().save_knowledge_item(item)
+
+
+def get_knowledge_item(item_id: int) -> dict | None:
+    return _get_service().get_knowledge_item(item_id)
+
+
+def get_knowledge_items(
+    category: str | None = None,
+    module: str | None = None,
+    limit: int = 50,
+) -> list[dict]:
+    return _get_service().get_knowledge_items(
+        category=category,
+        module=module,
+        limit=limit,
+    )
+
+
+def search_knowledge(query: str, limit: int = 50) -> list[dict]:
+    return _get_service().search_knowledge(query, limit=limit)

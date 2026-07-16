@@ -122,6 +122,7 @@ class TestMonitoringPipeline(unittest.TestCase):
             "analyze_change_impact_fn": analyze_fn,
             "extract_regulation_fn": extract_regulation_fn,
             "save_analysis_fn": self.store.save_analysis,
+            "save_knowledge_item_fn": self.store.save_knowledge_item,
             "notify_if_needed_fn": MagicMock(
                 return_value={"sent": False, "skipped": True, "reason": "test"}
             ),
@@ -229,6 +230,7 @@ class TestMonitoringPipeline(unittest.TestCase):
         self.assertEqual(result["status"], "analyzed")
         self.assertIsNotNone(result["diff_id"])
         self.assertIsNotNone(result["analysis_id"])
+        self.assertIsNotNone(result["knowledge_id"])
         self.assertEqual(result["impact"]["impact_level"], "HIGH")
         self.assertEqual(
             result["regulation_extraction"]["regulation_type"],

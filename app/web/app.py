@@ -14,6 +14,13 @@ from app.web.api import (
     _get_diff_by_id,
 )
 from app.web.monitor_api import register_monitor_routes
+from app.web.knowledge_api import register_knowledge_routes
+from app.knowledge.similarity import find_similar_knowledge
+from app.knowledge.statistics import (
+    build_knowledge_statistics,
+    fetch_all_knowledge_items,
+)
+from app.knowledge.timeline import build_regulation_timeline
 from app.web.source_helper import (
     build_source_tree,
     enrich_changes_with_source_metadata,
@@ -239,6 +246,83 @@ def _paginate_changes(
     }
 
 
+def _format_knowledge_timestamp(timestamp: str) -> str:
+    if not timestamp:
+        return "N/A"
+
+    try:
+        parsed = datetime.fromisoformat(timestamp)
+        return parsed.strftime("%Y-%m-%d %H:%M")
+    except ValueError:
+        return timestamp
+
+
+def _get_knowledge_filter_options(storage: StorageService) -> tuple[list[str], list[str]]:
+    with storage._connect() as connection:
+        category_rows = connection.execute(
+            """
+            SELECT DISTINCT category
+            FROM knowledge_items
+            WHERE category IS NOT NULL AND category != ''
+            ORDER BY category
+            """
+        ).fetchall()
+        module_rows = connection.execute(
+            "SELECT modules_json FROM knowledge_items"
+        ).fetchall()
+
+    categories = [row["category"] for row in category_rows]
+    modules: set[str] = set()
+    for row in module_rows:
+        for module in json.loads(row["modules_json"] or "[]"):
+            if str(module).strip():
+                modules.add(str(module).strip())
+
+    return categories, sorted(modules)
+
+
+def _enrich_knowledge_list_items(
+    storage: StorageService,
+    items: list[dict],
+) -> list[dict]:
+    enriched: list[dict] = []
+    for item in items:
+        full_item = storage.get_knowledge_item(item["id"]) or {}
+        created_at = full_item.get("created_at", "")
+        enriched.append(
+            {
+                **item,
+                "created_at": created_at,
+                "created_at_display": _format_knowledge_timestamp(created_at),
+            }
+        )
+    return enriched
+
+
+def _get_diff_id_for_snapshot(
+    storage: StorageService,
+    snapshot_id: int | None,
+) -> int | None:
+    if snapshot_id is None:
+        return None
+
+    with storage._connect() as connection:
+        row = connection.execute(
+            """
+            SELECT id FROM diffs
+            WHERE new_snapshot_id = ?
+            ORDER BY created_at DESC, id DESC
+            LIMIT 1
+            """,
+            (snapshot_id,),
+        ).fetchone()
+
+    if row is None:
+        return None
+
+    return row["id"]
+
+
 def create_dashboard_app(
     storage_service: StorageService | None = None,
     history_file: Path | None = None,
@@ -247,6 +331,7 @@ def create_dashboard_app(
     storage = storage_service or _get_service()
     app = FastAPI(title="AI Regulation Monitor Dashboard")
     register_monitor_routes(app, monitors_file=monitors_file)
+    register_knowledge_routes(app, storage_service=storage)
 
     def _latest_run():
         if history_file:
@@ -323,6 +408,98 @@ def create_dashboard_app(
             {
                 "title": "Manage Monitors",
                 "active_page": "manage",
+            },
+        )
+
+    @app.get("/knowledge")
+    def knowledge_page(
+        request: Request,
+        q: str = "",
+        category: str = "",
+        module: str = "",
+        limit: int = 50,
+    ):
+        if q.strip():
+            items = storage.search_knowledge(q.strip(), limit=limit)
+        else:
+            items = storage.get_knowledge_items(
+                category=category or None,
+                module=module or None,
+                limit=limit,
+            )
+
+        categories, modules = _get_knowledge_filter_options(storage)
+
+        return templates.TemplateResponse(
+            request,
+            "knowledge.html",
+            {
+                "title": "Knowledge Base",
+                "active_page": "knowledge",
+                "items": _enrich_knowledge_list_items(storage, items),
+                "query": q,
+                "category_filter": category,
+                "module_filter": module,
+                "categories": categories,
+                "modules": modules,
+            },
+        )
+
+    @app.get("/knowledge/statistics")
+    def knowledge_statistics_page(request: Request):
+        items = fetch_all_knowledge_items(storage)
+        statistics = build_knowledge_statistics(items)
+
+        return templates.TemplateResponse(
+            request,
+            "knowledge_statistics.html",
+            {
+                "title": "Knowledge Statistics",
+                "active_page": "knowledge",
+                "statistics": statistics,
+            },
+        )
+
+    @app.get("/knowledge/{item_id}")
+    def knowledge_detail_page(request: Request, item_id: int):
+        item = storage.get_knowledge_item(item_id)
+        if item is None:
+            raise HTTPException(status_code=404, detail="Knowledge item not found")
+
+        monitor_map = _get_monitor_map()
+        monitor = monitor_map.get(item.get("source_id", ""), {})
+        snapshot = _get_snapshot_by_id(storage, item.get("snapshot_id"))
+        source_url = snapshot.get("url", "") if snapshot else monitor.get("url", "")
+
+        detail_item = {
+            **item,
+            "created_at_display": _format_knowledge_timestamp(
+                item.get("created_at", "")
+            ),
+        }
+
+        all_items = fetch_all_knowledge_items(storage)
+        similar_items = find_similar_knowledge(item, all_items, threshold=0.8)
+        timeline = build_regulation_timeline(
+            item.get("title", ""),
+            knowledge_items=all_items,
+        )
+
+        return templates.TemplateResponse(
+            request,
+            "knowledge_detail.html",
+            {
+                "title": item.get("title") or "Knowledge Detail",
+                "active_page": "knowledge",
+                "item": detail_item,
+                "monitor_name": monitor.get("name", item.get("source_id", "")),
+                "source_url": source_url,
+                "diff_id": _get_diff_id_for_snapshot(
+                    storage,
+                    item.get("snapshot_id"),
+                ),
+                "similar_items": similar_items,
+                "timeline": timeline,
             },
         )
 

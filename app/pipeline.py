@@ -8,6 +8,7 @@ from app.ai.regulation_extractor import (
     EXTRACTION_MODE_DIFF,
     extract_regulation,
 )
+from app.knowledge.builder import build_knowledge_item
 from app.notification.notifier import notify_if_needed
 from app.storage.service import (
     _get_service,
@@ -16,6 +17,7 @@ from app.storage.service import (
     get_snapshot_by_id,
     save_analysis,
     save_diff,
+    save_knowledge_item,
     save_snapshot,
     update_crawl_cache,
 )
@@ -64,6 +66,8 @@ class MonitoringPipeline:
         analyze_change_impact_fn=analyze_change_impact,
         extract_regulation_fn=extract_regulation,
         save_analysis_fn=save_analysis,
+        build_knowledge_item_fn=build_knowledge_item,
+        save_knowledge_item_fn=save_knowledge_item,
         notify_if_needed_fn=notify_if_needed,
         load_sources_fn=load_monitors,
         resolve_monitor_urls_fn=resolve_monitor_urls,
@@ -81,6 +85,8 @@ class MonitoringPipeline:
         self.analyze_change_impact_fn = analyze_change_impact_fn
         self.extract_regulation_fn = extract_regulation_fn
         self.save_analysis_fn = save_analysis_fn
+        self.build_knowledge_item_fn = build_knowledge_item_fn
+        self.save_knowledge_item_fn = save_knowledge_item_fn
         self.notify_if_needed_fn = notify_if_needed_fn
         self.load_sources_fn = load_sources_fn
         self.resolve_monitor_urls_fn = resolve_monitor_urls_fn
@@ -228,6 +234,22 @@ class MonitoringPipeline:
             snapshot["id"],
             impact,
         )
+
+        knowledge_id = None
+        try:
+            knowledge_item = self.build_knowledge_item_fn(
+                snapshot,
+                source,
+                impact,
+            )
+            if knowledge_item:
+                saved_knowledge = self.save_knowledge_item_fn(
+                    knowledge_item
+                )
+                knowledge_id = saved_knowledge["id"]
+        except Exception:
+            knowledge_id = None
+
         notification_result = self.notify_if_needed_fn(
             source,
             impact,
@@ -239,6 +261,7 @@ class MonitoringPipeline:
             "status": "analyzed",
             "diff_id": saved_diff["id"],
             "analysis_id": analysis_record["id"],
+            "knowledge_id": knowledge_id,
             "first_snapshot": False,
             "message": (
                 f"{base_result['message_prefix']} Content changed; "
