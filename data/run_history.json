@@ -1,0 +1,23 @@
+[
+  {
+    "timestamp": "2026-07-16T09:10:33.639547",
+    "total_monitors": 6,
+    "changed_count": 0,
+    "analyzed_count": 0,
+    "failed_count": 0
+  },
+  {
+    "timestamp": "2026-07-16T09:20:43.424910",
+    "total_monitors": 6,
+    "changed_count": 0,
+    "analyzed_count": 0,
+    "failed_count": 0
+  },
+  {
+    "timestamp": "2026-07-16T10:23:01.444178",
+    "total_monitors": 6,
+    "changed_count": 0,
+    "analyzed_count": 0,
+    "failed_count": 0
+  }
+]

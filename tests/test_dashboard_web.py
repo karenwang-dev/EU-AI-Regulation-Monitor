@@ -167,6 +167,60 @@ class TestDashboardWeb(unittest.TestCase):
         self.assertIn(b"New cybersecurity requirements affect connected TVs.", content)
 
     @mock.patch("app.web.app.load_monitors", autospec=True)
+    def test_detail_page_renders_evidence_section(self, mock_load_monitors):
+        mock_load_monitors.return_value = [self.monitor]
+        latest_snapshot = self.store.get_latest_snapshot("ec")
+
+        self.store.save_analysis(
+            latest_snapshot["id"],
+            {
+                "impact_level": "HIGH",
+                "affected_modules": ["Network", "AI Features"],
+                "reason": "New cybersecurity requirements affect connected TVs.",
+                "recommended_actions": ["Review OTA security controls"],
+                "confidence": "HIGH",
+                "evidence": [
+                    {
+                        "source_id": "ec",
+                        "name": "European Commission",
+                        "url": "https://example.com/ec",
+                        "snapshot_id": latest_snapshot["id"],
+                        "diff_id": self.diff_id,
+                        "timestamp": "2026-07-15T12:00:00",
+                    }
+                ],
+            },
+        )
+
+        response = self.client.get(f"/detail/{self.diff_id}")
+
+        self.assertEqual(response.status_code, 200)
+        content = response.content
+        self.assertIn(b"Evidence / Source References", content)
+        self.assertIn(b"Snapshot ID", content)
+        self.assertIn(b"Diff ID", content)
+        self.assertIn(b"Open Original Page", content)
+        self.assertIn(b"View Diff", content)
+        self.assertIn(b"https://example.com/ec", content)
+        self.assertIn(str(self.diff_id).encode(), content)
+
+    @mock.patch("app.web.app.load_monitors", autospec=True)
+    def test_detail_page_renders_evidence_fallback_without_stored_field(
+        self,
+        mock_load_monitors,
+    ):
+        mock_load_monitors.return_value = [self.monitor]
+
+        response = self.client.get(f"/detail/{self.diff_id}")
+
+        self.assertEqual(response.status_code, 200)
+        content = response.content
+        self.assertIn(b"Evidence / Source References", content)
+        self.assertIn(b"European Commission", content)
+        self.assertIn(b"Open Original Page", content)
+        self.assertIn(b"View Diff", content)
+
+    @mock.patch("app.web.app.load_monitors", autospec=True)
     def test_monitors_page_highlights_navigation(self, mock_load_monitors):
         mock_load_monitors.return_value = [self.monitor]
 

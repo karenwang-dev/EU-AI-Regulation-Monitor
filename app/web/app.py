@@ -54,6 +54,28 @@ def _get_analysis_by_snapshot_id(
     }
 
 
+def _build_evidence_for_detail(
+    analysis: dict | None,
+    diff: dict,
+    monitor: dict,
+) -> list[dict]:
+    if analysis:
+        evidence = analysis.get("evidence", [])
+        if evidence:
+            return evidence
+
+    return [
+        {
+            "source_id": diff.get("source_id", monitor.get("id", "")),
+            "name": monitor.get("name", diff.get("source_id", "Unknown")),
+            "url": monitor.get("url", ""),
+            "snapshot_id": diff.get("new_snapshot_id"),
+            "diff_id": diff.get("id"),
+            "timestamp": diff.get("created_at", ""),
+        }
+    ]
+
+
 def _count_high_risk_analyses(storage: StorageService) -> int:
     return _count_analyses_by_impact(storage).get("HIGH", 0)
 
@@ -300,6 +322,7 @@ def create_dashboard_app(
         )
         monitor_map = _get_monitor_map()
         monitor = monitor_map.get(diff["source_id"], {})
+        analysis_data = analysis["analysis"] if analysis else None
 
         return templates.TemplateResponse(
             request,
@@ -308,8 +331,13 @@ def create_dashboard_app(
                 "title": "Change Detail",
                 "active_page": "changes",
                 "diff": diff,
-                "analysis": analysis["analysis"] if analysis else None,
+                "analysis": analysis_data,
                 "analysis_id": analysis["id"] if analysis else None,
+                "evidence": _build_evidence_for_detail(
+                    analysis_data,
+                    diff,
+                    monitor,
+                ),
                 "regulation_name": monitor.get("name", diff["source_id"]),
                 "monitor_url": monitor.get("url", ""),
                 "change_date": diff.get("created_at", ""),

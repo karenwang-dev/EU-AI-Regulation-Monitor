@@ -96,5 +96,131 @@
     "timestamp": "2026-07-15T19:29:46.910192",
     "file": "data\\raw\\2026-07-15\\bmukn_192946.md",
     "hash": "958c982f0c08794ba7a4fda872722a42d3203caff8387cc5a7005d2dd265cf85"
+  },
+  {
+    "source_id": "eu_ai_act",
+    "url": "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai",
+    "timestamp": "2026-07-16T09:10:14.225658",
+    "file": "data\\raw\\2026-07-16\\eu_ai_act_091014.md",
+    "hash": "98d13b9b837c17eab15050f514018ef333eb80b2d0e04c7efb94d6a9ea3dbd3a"
+  },
+  {
+    "source_id": "eu_product_compliance",
+    "url": "https://single-market-economy.ec.europa.eu/sectors/electrical-and-electronic-engineering-industries_en",
+    "timestamp": "2026-07-16T09:10:18.992164",
+    "file": "data\\raw\\2026-07-16\\eu_product_compliance_091018.md",
+    "hash": "966e6a80890bfc2afd2664ef7c4dabc803b33255a193845d1bb9545ff599ba40"
+  },
+  {
+    "source_id": "ec",
+    "url": "https://commission.europa.eu/index_en",
+    "timestamp": "2026-07-16T09:10:22.375809",
+    "file": "data\\raw\\2026-07-16\\ec_091022.md",
+    "hash": "17d5bd6f89c693143ee10f7d7d68c1ebbf815102e53ef9093893ac9772824926"
+  },
+  {
+    "source_id": "eu_portal",
+    "url": "https://european-union.europa.eu/index_en",
+    "timestamp": "2026-07-16T09:10:24.768320",
+    "file": "data\\raw\\2026-07-16\\eu_portal_091024.md",
+    "hash": "da2b3b8dc2d6265f32fb1f75f31c90d9f7a5a72887da8dc1515fe96ec892821c"
+  },
+  {
+    "source_id": "boe",
+    "url": "https://www.boe.es/",
+    "timestamp": "2026-07-16T09:10:26.905400",
+    "file": "data\\raw\\2026-07-16\\boe_091026.md",
+    "hash": "90f4c6a0399cbaa397740c3c65951ef19526e8f7ac45597b24b5ced6207b2869"
+  },
+  {
+    "source_id": "bmukn",
+    "url": "https://www.bundesumweltministerium.de/en",
+    "timestamp": "2026-07-16T09:10:33.617253",
+    "file": "data\\raw\\2026-07-16\\bmukn_091033.md",
+    "hash": "958c982f0c08794ba7a4fda872722a42d3203caff8387cc5a7005d2dd265cf85"
+  },
+  {
+    "source_id": "eu_ai_act",
+    "url": "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai",
+    "timestamp": "2026-07-16T09:20:37.485575",
+    "file": "data\\raw\\2026-07-16\\eu_ai_act_092037.md",
+    "hash": "98d13b9b837c17eab15050f514018ef333eb80b2d0e04c7efb94d6a9ea3dbd3a"
+  },
+  {
+    "source_id": "eu_product_compliance",
+    "url": "https://single-market-economy.ec.europa.eu/sectors/electrical-and-electronic-engineering-industries_en",
+    "timestamp": "2026-07-16T09:20:38.473546",
+    "file": "data\\raw\\2026-07-16\\eu_product_compliance_092038.md",
+    "hash": "966e6a80890bfc2afd2664ef7c4dabc803b33255a193845d1bb9545ff599ba40"
+  },
+  {
+    "source_id": "ec",
+    "url": "https://commission.europa.eu/index_en",
+    "timestamp": "2026-07-16T09:20:39.494168",
+    "file": "data\\raw\\2026-07-16\\ec_092039.md",
+    "hash": "17d5bd6f89c693143ee10f7d7d68c1ebbf815102e53ef9093893ac9772824926"
+  },
+  {
+    "source_id": "eu_portal",
+    "url": "https://european-union.europa.eu/index_en",
+    "timestamp": "2026-07-16T09:20:40.614730",
+    "file": "data\\raw\\2026-07-16\\eu_portal_092040.md",
+    "hash": "da2b3b8dc2d6265f32fb1f75f31c90d9f7a5a72887da8dc1515fe96ec892821c"
+  },
+  {
+    "source_id": "boe",
+    "url": "https://www.boe.es/",
+    "timestamp": "2026-07-16T09:20:41.629771",
+    "file": "data\\raw\\2026-07-16\\boe_092041.md",
+    "hash": "90f4c6a0399cbaa397740c3c65951ef19526e8f7ac45597b24b5ced6207b2869"
+  },
+  {
+    "source_id": "bmukn",
+    "url": "https://www.bundesumweltministerium.de/en",
+    "timestamp": "2026-07-16T09:20:42.719797",
+    "file": "data\\raw\\2026-07-16\\bmukn_092042.md",
+    "hash": "958c982f0c08794ba7a4fda872722a42d3203caff8387cc5a7005d2dd265cf85"
+  },
+  {
+    "source_id": "eu_ai_act",
+    "url": "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai",
+    "timestamp": "2026-07-16T10:22:56.134628",
+    "file": "data\\raw\\2026-07-16\\eu_ai_act_102256.md",
+    "hash": "98d13b9b837c17eab15050f514018ef333eb80b2d0e04c7efb94d6a9ea3dbd3a"
+  },
+  {
+    "source_id": "eu_product_compliance",
+    "url": "https://single-market-economy.ec.europa.eu/sectors/electrical-and-electronic-engineering-industries_en",
+    "timestamp": "2026-07-16T10:22:57.143043",
+    "file": "data\\raw\\2026-07-16\\eu_product_compliance_102257.md",
+    "hash": "966e6a80890bfc2afd2664ef7c4dabc803b33255a193845d1bb9545ff599ba40"
+  },
+  {
+    "source_id": "ec",
+    "url": "https://commission.europa.eu/index_en",
+    "timestamp": "2026-07-16T10:22:58.278408",
+    "file": "data\\raw\\2026-07-16\\ec_102258.md",
+    "hash": "17d5bd6f89c693143ee10f7d7d68c1ebbf815102e53ef9093893ac9772824926"
+  },
+  {
+    "source_id": "eu_portal",
+    "url": "https://european-union.europa.eu/index_en",
+    "timestamp": "2026-07-16T10:22:59.317127",
+    "file": "data\\raw\\2026-07-16\\eu_portal_102259.md",
+    "hash": "da2b3b8dc2d6265f32fb1f75f31c90d9f7a5a72887da8dc1515fe96ec892821c"
+  },
+  {
+    "source_id": "boe",
+    "url": "https://www.boe.es/",
+    "timestamp": "2026-07-16T10:23:00.324476",
+    "file": "data\\raw\\2026-07-16\\boe_102300.md",
+    "hash": "90f4c6a0399cbaa397740c3c65951ef19526e8f7ac45597b24b5ced6207b2869"
+  },
+  {
+    "source_id": "bmukn",
+    "url": "https://www.bundesumweltministerium.de/en",
+    "timestamp": "2026-07-16T10:23:01.427758",
+    "file": "data\\raw\\2026-07-16\\bmukn_102301.md",
+    "hash": "958c982f0c08794ba7a4fda872722a42d3203caff8387cc5a7005d2dd265cf85"
   }
 ]

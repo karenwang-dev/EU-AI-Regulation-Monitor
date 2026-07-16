@@ -178,6 +178,19 @@ class TestMonitoringPipeline(unittest.TestCase):
         self.assertEqual(history[0]["analysis"]["impact_level"], "HIGH")
         self.assertIn("Network", history[0]["analysis"]["affected_modules"])
 
+        analysis = history[0]["analysis"]
+        self.assertIn("evidence", analysis)
+        self.assertEqual(len(analysis["evidence"]), 1)
+
+        evidence = analysis["evidence"][0]
+        self.assertEqual(evidence["source_id"], "ec")
+        self.assertEqual(evidence["name"], "European Commission")
+        self.assertEqual(evidence["url"], "https://example.com/ec")
+        self.assertEqual(evidence["snapshot_id"], result["snapshot_id"])
+        self.assertEqual(evidence["diff_id"], result["diff_id"])
+        self.assertEqual(evidence["timestamp"], "2026-07-15T12:00:00")
+        self.assertEqual(result["impact"]["evidence"], analysis["evidence"])
+
     def test_disabled_sources_are_not_processed(self):
         crawl_mock = MagicMock(
             return_value=self._crawl_result()

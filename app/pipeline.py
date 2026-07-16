@@ -100,6 +100,16 @@ class MonitoringPipeline:
             saved_diff = self.save_diff_fn(diff_result)
 
             impact = self.analyze_change_impact_fn(saved_diff, source)
+            impact["evidence"] = [
+                {
+                    "source_id": source["id"],
+                    "name": source["name"],
+                    "url": source["url"],
+                    "snapshot_id": snapshot["id"],
+                    "diff_id": saved_diff["id"],
+                    "timestamp": snapshot["timestamp"],
+                }
+            ]
             analysis_record = self.save_analysis_fn(
                 snapshot["id"],
                 impact,
