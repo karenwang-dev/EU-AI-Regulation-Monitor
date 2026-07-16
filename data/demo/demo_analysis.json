@@ -1,0 +1,18 @@
+{
+  "snapshot_id": 1,
+  "source_id": "eu_ai_act",
+  "impact_level": "MEDIUM",
+  "affected_modules": [
+    "AI features",
+    "Voice assistant",
+    "Cybersecurity controls"
+  ],
+  "reason": "Updated guidance on high-risk AI system obligations for consumer devices with embedded AI capabilities.",
+  "recommended_actions": [
+    "Review AI feature classification against EU AI Act risk tiers",
+    "Update technical documentation for voice assistant components",
+    "Schedule internal compliance review for Q3"
+  ],
+  "confidence": "HIGH",
+  "note": "Example analysis for demo purposes only. Not loaded by the application."
+}

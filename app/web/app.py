@@ -43,12 +43,48 @@ from app.web.source_helper import (
 from app.scheduler_status import get_scheduler_health_status
 from app.config.validator import validate_configuration
 from app.core.logging import get_logger
+from app.version import APP_NAME, APP_VERSION
 
 
 TEMPLATES_DIR = Path(__file__).resolve().parent / "templates"
 templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
 CHANGES_PAGE_SIZE = 20
 logger = get_logger(__name__)
+
+ARCHITECTURE_COMPONENTS = [
+    {
+        "name": "Web Dashboard",
+        "description": "Jinja2 UI for monitors, changes, knowledge, insights, and reports.",
+    },
+    {
+        "name": "FastAPI",
+        "description": "HTTP server, REST APIs, health checks, and page routing.",
+    },
+    {
+        "name": "Scheduler",
+        "description": "APScheduler jobs for daily/weekly monitors and report generation.",
+    },
+    {
+        "name": "Crawler",
+        "description": "Firecrawl-based fetching with caching and link discovery.",
+    },
+    {
+        "name": "AI Analyzer",
+        "description": "OpenAI impact analysis and regulation extraction.",
+    },
+    {
+        "name": "Knowledge Base",
+        "description": "Structured regulation storage, search, and relationships.",
+    },
+    {
+        "name": "Report Generator",
+        "description": "Weekly report assembly, AI narrative, and email delivery.",
+    },
+    {
+        "name": "Storage",
+        "description": "SQLite database, raw snapshots, and report JSON files.",
+    },
+]
 
 
 def _check_database_health(storage: StorageService) -> str:
@@ -430,6 +466,24 @@ def create_dashboard_app(
         else:
             status_code = 200
         return JSONResponse(content=payload, status_code=status_code)
+
+    @app.get("/about")
+    def about_page(request: Request):
+        config_result = validate_configuration()
+        return templates.TemplateResponse(
+            request,
+            "about.html",
+            {
+                "title": "About",
+                "active_page": "about",
+                "app_name": APP_NAME,
+                "app_version": APP_VERSION,
+                "config_status": config_result["status"],
+                "missing_config": config_result["missing"],
+                "config_warnings": config_result["warnings"],
+                "architecture_components": ARCHITECTURE_COMPONENTS,
+            },
+        )
 
     @app.get("/")
     def dashboard_home(request: Request):

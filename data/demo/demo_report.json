@@ -1,0 +1,47 @@
+{
+  "id": "2026-07-16_weekly_report_demo",
+  "title": "Weekly Regulation Monitoring Report",
+  "generated_at": "2026-07-16T08:30:00",
+  "period": {
+    "start": "2026-07-09",
+    "end": "2026-07-16"
+  },
+  "summary": {
+    "total_changes": 2,
+    "high_risk": 0,
+    "medium_risk": 1,
+    "low_risk": 1,
+    "affected_modules": [
+      "AI features",
+      "Browser / HbbTV",
+      "Cybersecurity controls"
+    ]
+  },
+  "executive_summary": "One MEDIUM-risk EU AI Act update and one LOW-risk product compliance notice during the reporting period. No immediate blocking compliance actions required.",
+  "key_changes": [
+    {
+      "title": "EU AI Act",
+      "summary": "Guidance update on high-risk AI obligations for consumer electronics.",
+      "impact_level": "MEDIUM",
+      "affected_modules": ["AI features", "Voice assistant"],
+      "recommended_actions": [
+        "Review AI feature risk classification",
+        "Update compliance documentation"
+      ],
+      "source_url": "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai"
+    },
+    {
+      "title": "EU Product Compliance",
+      "summary": "Minor update to radio equipment directive references.",
+      "impact_level": "LOW",
+      "affected_modules": ["Cybersecurity controls"],
+      "recommended_actions": [
+        "Monitor for formal publication of amended annexes"
+      ],
+      "source_url": "https://single-market-economy.ec.europa.eu/sectors/electrical-and-electronic-engineering-industries_en"
+    }
+  ],
+  "risk_summary": "No HIGH-risk changes. One MEDIUM and one LOW item require monitoring and documentation updates.",
+  "email_status": "Disabled",
+  "note": "Example report for demo purposes only. Not loaded by the application."
+}

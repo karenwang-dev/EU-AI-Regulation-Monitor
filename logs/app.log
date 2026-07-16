@@ -137,3 +137,54 @@
 2026-07-16 17:07:51 INFO [regulation_monitor.main] - Changed: 0
 2026-07-16 17:07:51 INFO [regulation_monitor.main] - Analyzed: 0
 2026-07-16 17:07:51 INFO [regulation_monitor.main] - Failed: 0
+2026-07-16 17:09:53 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-16 17:09:53 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-16 17:09:56 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-16 17:09:56 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-16 17:10:25 INFO [regulation_monitor.main] ============================================================
+2026-07-16 17:10:25 INFO [regulation_monitor.main] Weekly Regulation Report Generation
+2026-07-16 17:10:25 INFO [regulation_monitor.main] ============================================================
+2026-07-16 17:10:25 INFO [regulation_monitor.main] Report saved:
+2026-07-16 17:10:25 INFO [regulation_monitor.main] - ID: 2026-07-16_weekly_report
+2026-07-16 17:10:25 INFO [regulation_monitor.main] - Generated at: 2026-07-16T08:30:00
+2026-07-16 17:10:25 INFO [regulation_monitor.main] - Total changes: 1
+2026-07-16 17:10:25 INFO [regulation_monitor.main] - High risk: 1
+2026-07-16 17:10:25 INFO [regulation_monitor.main] ============================================================
+2026-07-16 17:10:28 WARNING [regulation_monitor.__main__] SMTP_PASSWORD is not set (optional)
+2026-07-16 17:10:28 INFO [regulation_monitor.__main__] Configuration validation passed
+2026-07-16 17:10:28 INFO [regulation_monitor.__main__] ============================================================
+2026-07-16 17:10:28 INFO [regulation_monitor.__main__] Weekly Regulation Report Generation
+2026-07-16 17:10:28 INFO [regulation_monitor.__main__] ============================================================
+2026-07-16 17:10:54 INFO [regulation_monitor.__main__] Report saved:
+2026-07-16 17:10:54 INFO [regulation_monitor.__main__] - ID: 2026-07-16_weekly_report_10
+2026-07-16 17:10:54 INFO [regulation_monitor.__main__] - Generated at: 2026-07-16T17:10:28.766160
+2026-07-16 17:10:54 INFO [regulation_monitor.__main__] - Total changes: 2
+2026-07-16 17:10:54 INFO [regulation_monitor.__main__] - High risk: 0
+2026-07-16 17:10:54 INFO [regulation_monitor.__main__] ============================================================
+2026-07-16 17:10:55 INFO [regulation_monitor.app.report.scheduler] ============================================================
+2026-07-16 17:10:55 INFO [regulation_monitor.app.report.scheduler] Weekly report generation started
+2026-07-16 17:10:55 INFO [regulation_monitor.app.report.scheduler] ============================================================
+2026-07-16 17:10:55 INFO [regulation_monitor.app.report.scheduler] Weekly report generation completed
+2026-07-16 17:10:55 INFO [regulation_monitor.app.report.scheduler] Report ID: 2026-07-16_weekly_report
+2026-07-16 17:10:55 INFO [regulation_monitor.app.report.scheduler] Total changes: 2
+2026-07-16 17:10:55 INFO [regulation_monitor.app.report.scheduler] ============================================================
+2026-07-16 17:10:56 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-16 17:10:56 INFO [regulation_monitor.app.scheduler] Scheduled run started: daily monitors
+2026-07-16 17:10:56 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-16 17:10:56 INFO [regulation_monitor.app.scheduler] Scheduled run completed
+2026-07-16 17:10:56 INFO [regulation_monitor.app.scheduler] Total=1 Changed=1 Analyzed=1 Failed=0
+2026-07-16 17:10:56 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-16 17:10:59 INFO [regulation_monitor.main] ============================================================
+2026-07-16 17:10:59 INFO [regulation_monitor.main] AI Regulation Monitoring Pipeline
+2026-07-16 17:10:59 INFO [regulation_monitor.main] Running once for all enabled monitors
+2026-07-16 17:10:59 INFO [regulation_monitor.main] ============================================================
+2026-07-16 17:10:59 INFO [regulation_monitor.main] ============================================================
+2026-07-16 17:10:59 INFO [regulation_monitor.main] Pipeline Summary
+2026-07-16 17:10:59 INFO [regulation_monitor.main] ============================================================
+2026-07-16 17:10:59 INFO [regulation_monitor.main] - EU AI Act: skipped (snapshot=1, diff=None, analysis=None)
+2026-07-16 17:10:59 INFO [regulation_monitor.main] ============================================================
+2026-07-16 17:10:59 INFO [regulation_monitor.main] Run history saved:
+2026-07-16 17:10:59 INFO [regulation_monitor.main] - Total monitors: 1
+2026-07-16 17:10:59 INFO [regulation_monitor.main] - Changed: 0
+2026-07-16 17:10:59 INFO [regulation_monitor.main] - Analyzed: 0
+2026-07-16 17:10:59 INFO [regulation_monitor.main] - Failed: 0

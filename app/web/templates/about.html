@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="h3 mb-1">About</h1>
+    <p class="text-muted mb-0">Internal regulation monitoring platform overview</p>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h2 class="h5 card-title">Application</h2>
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">Name</dt>
+                    <dd class="col-sm-8">{{ app_name }}</dd>
+                    <dt class="col-sm-4">Version</dt>
+                    <dd class="col-sm-8"><span class="badge bg-secondary">{{ app_version }}</span></dd>
+                    <dt class="col-sm-4">Purpose</dt>
+                    <dd class="col-sm-8">Monitor EU regulation sources, detect changes, analyze impact, and produce compliance reports for Smart TV and connected device teams.</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h2 class="h5 card-title">Configuration Status</h2>
+                <dl class="row mb-0">
+                    <dt class="col-sm-5">Overall</dt>
+                    <dd class="col-sm-7">
+                        {% if config_status == "ok" %}
+                        <span class="badge bg-success">OK</span>
+                        {% else %}
+                        <span class="badge bg-warning text-dark">Warning</span>
+                        {% endif %}
+                    </dd>
+                    <dt class="col-sm-5">Required variables</dt>
+                    <dd class="col-sm-7">
+                        {% if missing_config %}
+                        <span class="text-danger">{{ missing_config | join(", ") }}</span>
+                        {% else %}
+                        <span class="text-success">All set</span>
+                        {% endif %}
+                    </dd>
+                    <dt class="col-sm-5">Warnings</dt>
+                    <dd class="col-sm-7">
+                        {% if config_warnings %}
+                        <ul class="mb-0 ps-3">
+                            {% for warning in config_warnings %}
+                            <li class="small">{{ warning }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% else %}
+                        <span class="text-muted">None</span>
+                        {% endif %}
+                    </dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h2 class="h5 card-title">Architecture Components</h2>
+                <div class="row g-3">
+                    {% for component in architecture_components %}
+                    <div class="col-md-6 col-lg-4">
+                        <div class="border rounded p-3 h-100 bg-white">
+                            <div class="fw-semibold">{{ component.name }}</div>
+                            <div class="small text-muted">{{ component.description }}</div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h2 class="h5 card-title">Documentation</h2>
+                <ul class="mb-0">
+                    <li><code>docs/architecture.md</code> — system design and data flow</li>
+                    <li><code>docs/user-guide.md</code> — day-to-day usage</li>
+                    <li><code>docs/configuration.md</code> — environment variables</li>
+                    <li><code>docs/deployment.md</code> — Docker deployment</li>
+                    <li><code>data/demo/</code> — sample snapshot, analysis, and report JSON files</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
