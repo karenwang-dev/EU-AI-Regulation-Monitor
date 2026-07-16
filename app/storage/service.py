@@ -543,6 +543,33 @@ class StorageService:
             return []
         return json.loads(value)
 
+    def _serialize_actions_payload(self, item: dict) -> str:
+        actions = item.get("actions", [])
+        relationships = item.get("relationships", [])
+        if relationships:
+            payload = {
+                "actions": actions,
+                "relationships": relationships,
+            }
+            return json.dumps(payload, ensure_ascii=False)
+        return json.dumps(actions, ensure_ascii=False)
+
+    def _deserialize_actions_payload(
+        self,
+        value: str | None,
+    ) -> tuple[list, list]:
+        if not value:
+            return [], []
+        data = json.loads(value)
+        if isinstance(data, dict):
+            return (
+                list(data.get("actions", [])),
+                list(data.get("relationships", [])),
+            )
+        if isinstance(data, list):
+            return data, []
+        return [], []
+
     def _row_to_knowledge_item(
         self,
         row: sqlite3.Row,
@@ -550,6 +577,9 @@ class StorageService:
         list_only: bool = False,
     ) -> dict:
         modules = self._deserialize_json_list(row["modules_json"])
+        actions, relationships = self._deserialize_actions_payload(
+            row["actions_json"]
+        )
         if list_only:
             return {
                 "id": row["id"],
@@ -573,7 +603,8 @@ class StorageService:
             "requirements": self._deserialize_json_list(
                 row["requirements_json"]
             ),
-            "actions": self._deserialize_json_list(row["actions_json"]),
+            "actions": actions,
+            "relationships": relationships,
             "confidence": row["confidence"],
             "created_at": row["created_at"],
         }
@@ -584,7 +615,7 @@ class StorageService:
         products = item.get("products", [])
         modules = item.get("modules", [])
         requirements = item.get("requirements", [])
-        actions = item.get("actions", [])
+        actions_payload = self._serialize_actions_payload(item)
 
         with self._connect() as connection:
             cursor = connection.execute(
@@ -618,7 +649,7 @@ class StorageService:
                     self._serialize_json_list(products),
                     self._serialize_json_list(modules),
                     self._serialize_json_list(requirements),
-                    self._serialize_json_list(actions),
+                    actions_payload,
                     item.get("confidence", ""),
                     created_at,
                 ),

@@ -9,6 +9,7 @@ from app.ai.regulation_extractor import (
     extract_regulation,
 )
 from app.knowledge.builder import build_knowledge_item
+from app.knowledge.statistics import fetch_all_knowledge_items
 from app.notification.notifier import notify_if_needed
 from app.storage.service import (
     _get_service,
@@ -67,6 +68,7 @@ class MonitoringPipeline:
         extract_regulation_fn=extract_regulation,
         save_analysis_fn=save_analysis,
         build_knowledge_item_fn=build_knowledge_item,
+        fetch_all_knowledge_items_fn=None,
         save_knowledge_item_fn=save_knowledge_item,
         notify_if_needed_fn=notify_if_needed,
         load_sources_fn=load_monitors,
@@ -86,6 +88,11 @@ class MonitoringPipeline:
         self.extract_regulation_fn = extract_regulation_fn
         self.save_analysis_fn = save_analysis_fn
         self.build_knowledge_item_fn = build_knowledge_item_fn
+        if fetch_all_knowledge_items_fn is None:
+            fetch_all_knowledge_items_fn = lambda: fetch_all_knowledge_items(
+                _get_service()
+            )
+        self.fetch_all_knowledge_items_fn = fetch_all_knowledge_items_fn
         self.save_knowledge_item_fn = save_knowledge_item_fn
         self.notify_if_needed_fn = notify_if_needed_fn
         self.load_sources_fn = load_sources_fn
@@ -237,10 +244,12 @@ class MonitoringPipeline:
 
         knowledge_id = None
         try:
+            existing_items = self.fetch_all_knowledge_items_fn()
             knowledge_item = self.build_knowledge_item_fn(
                 snapshot,
                 source,
                 impact,
+                existing_items,
             )
             if knowledge_item:
                 saved_knowledge = self.save_knowledge_item_fn(

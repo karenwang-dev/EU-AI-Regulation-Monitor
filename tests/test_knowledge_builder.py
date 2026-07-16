@@ -8,6 +8,7 @@ from app.analysis.diff_processor import create_diff_result
 from app.ai.regulation_extractor import EXTRACTION_MODE_DIFF
 from app.crawler.crawl_cache import should_crawl
 from app.knowledge.builder import build_knowledge_item
+from app.knowledge.statistics import fetch_all_knowledge_items
 from app.pipeline import MonitoringPipeline
 from app.storage.service import StorageService
 
@@ -86,6 +87,35 @@ class TestKnowledgeBuilder(unittest.TestCase):
         )
         self.assertEqual(item["actions"], ["Update compliance checklist"])
         self.assertEqual(item["confidence"], "HIGH")
+        self.assertEqual(item["relationships"], [])
+
+    def test_build_with_existing_items_detects_relationships(self):
+        existing = [
+            {
+                "id": 1,
+                "title": "EU AI Act Update",
+                "category": "AI Regulation",
+                "regulation_type": "NEW",
+                "effective_date": "2026-01-01",
+                "countries": ["EU"],
+                "products": ["Smart TV"],
+                "modules": ["AI Features", "Network"],
+            }
+        ]
+        extraction = self._extraction()
+        extraction["publish_date"] = "2028-01-01"
+
+        item = build_knowledge_item(
+            self._snapshot(),
+            self._monitor(),
+            {**self._analysis(), "regulation_extraction": extraction},
+            existing_items=existing,
+        )
+
+        self.assertIsNotNone(item)
+        self.assertEqual(len(item["relationships"]), 1)
+        self.assertEqual(item["relationships"][0]["knowledge_id"], 1)
+        self.assertEqual(item["relationships"][0]["relation"], "AMENDMENT")
 
     def test_build_without_extraction_returns_none(self):
         analysis = {
@@ -208,6 +238,9 @@ class TestKnowledgePipelineIntegration(unittest.TestCase):
                 return_value=self._regulation_extraction_result()
             ),
             save_analysis_fn=self.store.save_analysis,
+            fetch_all_knowledge_items_fn=lambda: fetch_all_knowledge_items(
+                self.store
+            ),
             save_knowledge_item_fn=(
                 save_knowledge_item_fn or self.store.save_knowledge_item
             ),

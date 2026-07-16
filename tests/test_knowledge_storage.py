@@ -120,6 +120,7 @@ class TestKnowledgeStorage(unittest.TestCase):
         ])
         self.assertEqual(loaded["actions"], ["Update compliance checklist"])
         self.assertEqual(loaded["confidence"], "HIGH")
+        self.assertEqual(loaded["relationships"], [])
         self.assertNotIn("countries_json", loaded)
 
     def test_get_knowledge_items_filter(self):
