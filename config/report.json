@@ -1,0 +1,7 @@
+{
+  "enabled": true,
+  "frequency": "weekly",
+  "day": "mon",
+  "hour": 8,
+  "minute": 30
+}

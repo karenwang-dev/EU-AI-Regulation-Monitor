@@ -172,7 +172,7 @@ class TestReportWeb(unittest.TestCase):
                 storage_service=self.store,
                 reports_dir=self.reports_dir,
                 build_weekly_report_fn=lambda **kwargs: report_data,
-                generate_weekly_report_fn=lambda data: generated,
+                generate_weekly_report_fn=lambda data, client=None: generated,
             )
         )
 

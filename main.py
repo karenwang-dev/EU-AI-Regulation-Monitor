@@ -1,6 +1,7 @@
 import sys
 
 from app.pipeline import run_pipeline
+from app.report.generation import create_and_save_weekly_report
 from app.run_history import get_latest_run, save_run_history
 from app.scheduler import start_scheduler
 from app.source.source_loader import load_monitors
@@ -77,11 +78,34 @@ def show_status() -> int:
     return 0
 
 
+def generate_report() -> int:
+    print("=" * 60)
+    print("Weekly Regulation Report Generation")
+    print("=" * 60)
+
+    stored_report = create_and_save_weekly_report()
+
+    print("\nReport saved:")
+    print(f"- ID: {stored_report.get('id', 'unknown')}")
+    print(f"- Generated at: {stored_report.get('generated_at', 'unknown')}")
+    print(
+        "- Total changes: "
+        f"{stored_report.get('summary', {}).get('total_changes', 0)}"
+    )
+    print(
+        "- High risk: "
+        f"{stored_report.get('summary', {}).get('high_risk', 0)}"
+    )
+    print("=" * 60)
+    return 0
+
+
 def print_usage() -> None:
     print("Usage:")
     print("  python main.py run-once")
     print("  python main.py scheduler")
     print("  python main.py status")
+    print("  python main.py generate-report")
     print("  python main.py run")
 
 
@@ -101,6 +125,9 @@ def main() -> int:
 
     if command == "status":
         return show_status()
+
+    if command == "generate-report":
+        return generate_report()
 
     print_usage()
     return 1

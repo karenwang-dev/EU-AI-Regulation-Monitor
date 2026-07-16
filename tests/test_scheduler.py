@@ -69,8 +69,15 @@ class TestScheduler(unittest.TestCase):
         scheduler = create_scheduler()
         job_ids = {job.id for job in scheduler.get_jobs()}
 
-        self.assertEqual(job_ids, {"daily_monitors", "weekly_monitors"})
-        self.assertEqual(len(scheduler.get_jobs()), 2)
+        self.assertEqual(
+            job_ids,
+            {
+                "daily_monitors",
+                "weekly_monitors",
+                "weekly_report_generation",
+            },
+        )
+        self.assertEqual(len(scheduler.get_jobs()), 3)
 
 
 class TestCliCommands(unittest.TestCase):

@@ -2,6 +2,7 @@ from apscheduler.schedulers.blocking import BlockingScheduler
 from apscheduler.triggers.cron import CronTrigger
 
 from app.pipeline import run_pipeline
+from app.report.scheduler import schedule_weekly_report
 from app.run_history import save_run_history
 from app.source.source_loader import ALLOWED_FREQUENCIES, load_monitors
 
@@ -47,6 +48,8 @@ def create_scheduler() -> BlockingScheduler:
         name="Weekly regulation monitors",
         replace_existing=True,
     )
+
+    schedule_weekly_report(scheduler)
 
     return scheduler
 
