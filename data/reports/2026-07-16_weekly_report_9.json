@@ -1,0 +1,74 @@
+{
+  "title": "Weekly Regulation Monitoring Report",
+  "generated_at": "2026-07-16T17:07:26.411260",
+  "period": {
+    "start": "2026-07-09",
+    "end": "2026-07-16"
+  },
+  "summary": {
+    "total_changes": 2,
+    "high_risk": 0,
+    "medium_risk": 0,
+    "low_risk": 1,
+    "affected_modules": [
+      "AI features",
+      "Browser / HbbTV",
+      "Cybersecurity controls",
+      "Network services",
+      "OTA update",
+      "Remote control / voice input",
+      "Voice assistant"
+    ]
+  },
+  "executive_summary": "Report period 2026-07-09 to 2026-07-16: 2 EU policy items tracked. No HIGH or MEDIUM risk changes. One LOW-risk European Commission item on child safety online may affect Browser/HbbTV, Voice assistant, AI features, Network services, Cybersecurity controls, OTA, and Remote control/voice input. One general EU portal item has no immediate actions. Compliance teams should review the EC report, complete child-safety gap assessments and DPIA updates, harden defaults for child profiles, prepare an OTA plan, and continue monitoring for follow-up actions.",
+  "key_changes": [
+    {
+      "title": "European Commission",
+      "summary": "Special panel report and recommendations on child safety online with potential implications for Smart TV apps, voice features, and connected services used by minors.",
+      "impact_level": "LOW",
+      "affected_modules": [
+        "Browser / HbbTV",
+        "Voice assistant",
+        "AI features",
+        "Network services",
+        "Cybersecurity controls",
+        "OTA update",
+        "Remote control / voice input"
+      ],
+      "recommended_actions": [
+        "Obtain and review the EC special panel report and recommendations on child safety online",
+        "Gap-assess parental controls, content filtering, safe search, and age-gating in Browser/HbbTV apps",
+        "Review data collection, profiling, and advertising practices for minors; disable by default where applicable",
+        "Conduct/refresh a child-focused DPIA for voice assistant, AI features, and network services",
+        "Harden default privacy and safety settings for child profiles and guest modes",
+        "Prepare an OTA plan to deploy child-safety improvements and updated consent flows",
+        "Set up monitoring for any EC follow-up or legislative proposals stemming from the report"
+      ],
+      "source_url": "https://commission.europa.eu/index_en",
+      "knowledge_id": null
+    },
+    {
+      "title": "European Union Portal",
+      "summary": "General EU policy monitoring related to children’s online safety and cybersecurity; no immediate compliance changes required.",
+      "impact_level": "NONE",
+      "affected_modules": [],
+      "recommended_actions": [
+        "No immediate compliance changes required",
+        "Monitor EU policy updates on children’s online safety for any forthcoming rules impacting connected devices",
+        "Continue tracking EU cybersecurity policy developments relevant to consumer IoT and AI features"
+      ],
+      "source_url": "https://european-union.europa.eu/index_en",
+      "knowledge_id": null
+    }
+  ],
+  "risk_summary": "Total changes: 2 (HIGH: 0, MEDIUM: 0, LOW: 1, NONE: 1). No HIGH or MEDIUM risk items this period. Primary focus: child-safety enhancements across Browser/HbbTV, Voice assistant, AI features, Network services, Cybersecurity controls, OTA, and Remote control/voice input; continue policy monitoring.",
+  "id": "2026-07-16_weekly_report_9",
+  "filename": "2026-07-16_weekly_report_9.json",
+  "email_status": "Failed",
+  "email_notification": {
+    "sent": false,
+    "skipped": false,
+    "status": "Failed",
+    "reason": "Email send failed: [Errno 11001] getaddrinfo failed"
+  }
+}

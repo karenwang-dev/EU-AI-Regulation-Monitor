@@ -1,6 +1,7 @@
 import sys
 
 from app.core.logging import get_logger
+from app.config.validator import validate_configuration
 from app.pipeline import run_pipeline
 from app.report.generation import create_and_save_weekly_report
 from app.run_history import get_latest_run, save_run_history
@@ -8,6 +9,19 @@ from app.scheduler import start_scheduler
 from app.source.source_loader import load_monitors
 
 logger = get_logger(__name__)
+
+
+def _run_startup_validation() -> None:
+    result = validate_configuration()
+    if result["missing"]:
+        logger.warning(
+            "Missing required configuration: %s",
+            ", ".join(result["missing"]),
+        )
+    for warning in result["warnings"]:
+        logger.warning(warning)
+    if result["status"] == "ok":
+        logger.info("Configuration validation passed")
 
 
 def _log_pipeline_summary(results: list[dict]) -> None:
@@ -120,6 +134,9 @@ def main() -> int:
         return 1
 
     command = sys.argv[1]
+
+    if command in {"run-once", "run", "scheduler", "status", "generate-report"}:
+        _run_startup_validation()
 
     if command == "run-once" or command == "run":
         return run_once()

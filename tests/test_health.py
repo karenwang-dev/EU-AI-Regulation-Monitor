@@ -27,9 +27,19 @@ class TestHealthEndpoint(unittest.TestCase):
     def tearDown(self):
         self.temp_dir.cleanup()
 
+    @patch("app.web.app.validate_configuration")
     @patch("app.web.app.get_scheduler_health_status")
-    def test_health_returns_ok_with_database(self, mock_scheduler_status):
+    def test_health_returns_ok_with_database(
+        self,
+        mock_scheduler_status,
+        mock_validate_configuration,
+    ):
         mock_scheduler_status.return_value = "unknown"
+        mock_validate_configuration.return_value = {
+            "status": "ok",
+            "missing": [],
+            "warnings": [],
+        }
 
         response = self.client.get("/health")
 
@@ -38,26 +48,45 @@ class TestHealthEndpoint(unittest.TestCase):
         self.assertEqual(payload["status"], "ok")
         self.assertEqual(payload["database"], "ok")
         self.assertEqual(payload["scheduler"], "unknown")
+        self.assertEqual(payload["configuration"], "ok")
+        self.assertEqual(payload["missing_config"], [])
         self.assertTrue(payload["timestamp"])
 
+    @patch("app.web.app.validate_configuration")
     @patch("app.web.app.get_scheduler_health_status")
-    def test_health_reflects_scheduler_status(self, mock_scheduler_status):
+    def test_health_reflects_scheduler_status(
+        self,
+        mock_scheduler_status,
+        mock_validate_configuration,
+    ):
         mock_scheduler_status.return_value = "ok"
+        mock_validate_configuration.return_value = {
+            "status": "ok",
+            "missing": [],
+            "warnings": [],
+        }
 
         response = self.client.get("/health")
 
         payload = response.json()
         self.assertEqual(payload["scheduler"], "ok")
 
+    @patch("app.web.app.validate_configuration")
     @patch("app.web.app._check_database_health")
     @patch("app.web.app.get_scheduler_health_status")
     def test_health_reports_database_error(
         self,
         mock_scheduler_status,
         mock_database_health,
+        mock_validate_configuration,
     ):
         mock_scheduler_status.return_value = "unknown"
         mock_database_health.return_value = "error"
+        mock_validate_configuration.return_value = {
+            "status": "ok",
+            "missing": [],
+            "warnings": [],
+        }
 
         response = self.client.get("/health")
 
@@ -71,6 +100,13 @@ class TestHealthEndpoint(unittest.TestCase):
         with patch(
             "app.scheduler_status.DEFAULT_STATUS_FILE",
             self.status_file,
+        ), patch(
+            "app.web.app.validate_configuration",
+            return_value={
+                "status": "ok",
+                "missing": [],
+                "warnings": [],
+            },
         ):
             app = create_dashboard_app(storage_service=self.store)
             client = TestClient(app)

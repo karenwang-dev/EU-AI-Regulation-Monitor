@@ -41,11 +41,14 @@ from app.web.source_helper import (
     format_depth_label,
 )
 from app.scheduler_status import get_scheduler_health_status
+from app.config.validator import validate_configuration
+from app.core.logging import get_logger
 
 
 TEMPLATES_DIR = Path(__file__).resolve().parent / "templates"
 templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
 CHANGES_PAGE_SIZE = 20
+logger = get_logger(__name__)
 
 
 def _check_database_health(storage: StorageService) -> str:
@@ -60,13 +63,24 @@ def _check_database_health(storage: StorageService) -> str:
 def _build_health_payload(storage: StorageService) -> dict:
     database_status = _check_database_health(storage)
     scheduler_status = get_scheduler_health_status()
-    overall_status = "ok" if database_status == "ok" else "error"
+    config_result = validate_configuration()
+    configuration_status = config_result["status"]
+    missing_config = config_result["missing"]
+
+    if database_status == "error":
+        overall_status = "error"
+    elif configuration_status != "ok":
+        overall_status = "warning"
+    else:
+        overall_status = "ok"
 
     return {
         "status": overall_status,
         "timestamp": datetime.now().isoformat(timespec="seconds"),
         "database": database_status,
         "scheduler": scheduler_status,
+        "configuration": configuration_status,
+        "missing_config": missing_config,
     }
 
 
@@ -379,6 +393,20 @@ def create_dashboard_app(
 ) -> FastAPI:
     storage = storage_service or _get_service()
     app = FastAPI(title="AI Regulation Monitor Dashboard")
+
+    @app.on_event("startup")
+    def validate_app_configuration() -> None:
+        result = validate_configuration()
+        if result["missing"]:
+            logger.warning(
+                "Missing required configuration: %s",
+                ", ".join(result["missing"]),
+            )
+        for warning in result["warnings"]:
+            logger.warning(warning)
+        if result["status"] == "ok":
+            logger.info("Configuration validation passed")
+
     register_monitor_routes(app, monitors_file=monitors_file)
     register_knowledge_routes(app, storage_service=storage)
     register_report_routes(
@@ -397,7 +425,10 @@ def create_dashboard_app(
     @app.get("/health")
     def health_check():
         payload = _build_health_payload(storage)
-        status_code = 200 if payload["status"] == "ok" else 503
+        if payload["status"] == "error":
+            status_code = 503
+        else:
+            status_code = 200
         return JSONResponse(content=payload, status_code=status_code)
 
     @app.get("/")
