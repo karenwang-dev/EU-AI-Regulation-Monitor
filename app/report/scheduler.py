@@ -3,7 +3,10 @@ from __future__ import annotations
 from apscheduler.schedulers.base import BaseScheduler
 from apscheduler.triggers.cron import CronTrigger
 
+from app.core.logging import get_logger
 from app.report.config import load_report_config, normalize_report_config
+
+logger = get_logger(__name__)
 
 
 def generate_weekly_report_job(
@@ -15,20 +18,19 @@ def generate_weekly_report_job(
 
         create_and_save_weekly_report_fn = create_and_save_weekly_report
 
-    print("=" * 60)
-    print("Weekly report generation started")
-    print("=" * 60)
+    logger.info("=" * 60)
+    logger.info("Weekly report generation started")
+    logger.info("=" * 60)
 
     stored_report = create_and_save_weekly_report_fn()
 
-    print("\n" + "=" * 60)
-    print("Weekly report generation completed")
-    print(f"Report ID: {stored_report.get('id', 'unknown')}")
-    print(
-        "Total changes: "
-        f"{stored_report.get('summary', {}).get('total_changes', 0)}"
+    logger.info("Weekly report generation completed")
+    logger.info("Report ID: %s", stored_report.get("id", "unknown"))
+    logger.info(
+        "Total changes: %s",
+        stored_report.get("summary", {}).get("total_changes", 0),
     )
-    print("=" * 60)
+    logger.info("=" * 60)
 
     return stored_report
 

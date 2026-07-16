@@ -1,43 +1,48 @@
 import sys
 
+from app.core.logging import get_logger
 from app.pipeline import run_pipeline
 from app.report.generation import create_and_save_weekly_report
 from app.run_history import get_latest_run, save_run_history
 from app.scheduler import start_scheduler
 from app.source.source_loader import load_monitors
 
+logger = get_logger(__name__)
 
-def _print_pipeline_summary(results: list[dict]) -> None:
-    print("\n" + "=" * 60)
-    print("Pipeline Summary")
-    print("=" * 60)
+
+def _log_pipeline_summary(results: list[dict]) -> None:
+    logger.info("=" * 60)
+    logger.info("Pipeline Summary")
+    logger.info("=" * 60)
 
     for result in results:
-        print(
-            f"- {result['name']}: {result['status']} "
-            f"(snapshot={result['snapshot_id']}, "
-            f"diff={result.get('diff_id')}, "
-            f"analysis={result.get('analysis_id')})"
+        logger.info(
+            "- %s: %s (snapshot=%s, diff=%s, analysis=%s)",
+            result["name"],
+            result["status"],
+            result["snapshot_id"],
+            result.get("diff_id"),
+            result.get("analysis_id"),
         )
 
-    print("=" * 60)
+    logger.info("=" * 60)
 
 
 def run_once() -> int:
-    print("=" * 60)
-    print("AI Regulation Monitoring Pipeline")
-    print("Running once for all enabled monitors")
-    print("=" * 60)
+    logger.info("=" * 60)
+    logger.info("AI Regulation Monitoring Pipeline")
+    logger.info("Running once for all enabled monitors")
+    logger.info("=" * 60)
 
     results = run_pipeline()
     history_entry = save_run_history(results)
-    _print_pipeline_summary(results)
+    _log_pipeline_summary(results)
 
-    print("\nRun history saved:")
-    print(f"- Total monitors: {history_entry['total_monitors']}")
-    print(f"- Changed: {history_entry['changed_count']}")
-    print(f"- Analyzed: {history_entry['analyzed_count']}")
-    print(f"- Failed: {history_entry['failed_count']}")
+    logger.info("Run history saved:")
+    logger.info("- Total monitors: %s", history_entry["total_monitors"])
+    logger.info("- Changed: %s", history_entry["changed_count"])
+    logger.info("- Analyzed: %s", history_entry["analyzed_count"])
+    logger.info("- Failed: %s", history_entry["failed_count"])
 
     return 0
 
@@ -79,24 +84,24 @@ def show_status() -> int:
 
 
 def generate_report() -> int:
-    print("=" * 60)
-    print("Weekly Regulation Report Generation")
-    print("=" * 60)
+    logger.info("=" * 60)
+    logger.info("Weekly Regulation Report Generation")
+    logger.info("=" * 60)
 
     stored_report = create_and_save_weekly_report()
 
-    print("\nReport saved:")
-    print(f"- ID: {stored_report.get('id', 'unknown')}")
-    print(f"- Generated at: {stored_report.get('generated_at', 'unknown')}")
-    print(
-        "- Total changes: "
-        f"{stored_report.get('summary', {}).get('total_changes', 0)}"
+    logger.info("Report saved:")
+    logger.info("- ID: %s", stored_report.get("id", "unknown"))
+    logger.info("- Generated at: %s", stored_report.get("generated_at", "unknown"))
+    logger.info(
+        "- Total changes: %s",
+        stored_report.get("summary", {}).get("total_changes", 0),
     )
-    print(
-        "- High risk: "
-        f"{stored_report.get('summary', {}).get('high_risk', 0)}"
+    logger.info(
+        "- High risk: %s",
+        stored_report.get("summary", {}).get("high_risk", 0),
     )
-    print("=" * 60)
+    logger.info("=" * 60)
     return 0
 
 

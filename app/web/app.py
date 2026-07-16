@@ -4,6 +4,7 @@ from math import ceil
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import JSONResponse
 from fastapi.templating import Jinja2Templates
 
 from app.run_history import get_latest_run
@@ -39,11 +40,34 @@ from app.web.source_helper import (
     extract_source_url_from_evidence,
     format_depth_label,
 )
+from app.scheduler_status import get_scheduler_health_status
 
 
 TEMPLATES_DIR = Path(__file__).resolve().parent / "templates"
 templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
 CHANGES_PAGE_SIZE = 20
+
+
+def _check_database_health(storage: StorageService) -> str:
+    try:
+        with storage._connect() as connection:
+            connection.execute("SELECT 1").fetchone()
+        return "ok"
+    except Exception:
+        return "error"
+
+
+def _build_health_payload(storage: StorageService) -> dict:
+    database_status = _check_database_health(storage)
+    scheduler_status = get_scheduler_health_status()
+    overall_status = "ok" if database_status == "ok" else "error"
+
+    return {
+        "status": overall_status,
+        "timestamp": datetime.now().isoformat(timespec="seconds"),
+        "database": database_status,
+        "scheduler": scheduler_status,
+    }
 
 
 def _get_analysis_by_snapshot_id(
@@ -369,6 +393,12 @@ def create_dashboard_app(
         if history_file:
             return get_latest_run(history_file=history_file)
         return get_latest_run()
+
+    @app.get("/health")
+    def health_check():
+        payload = _build_health_payload(storage)
+        status_code = 200 if payload["status"] == "ok" else 503
+        return JSONResponse(content=payload, status_code=status_code)
 
     @app.get("/")
     def dashboard_home(request: Request):

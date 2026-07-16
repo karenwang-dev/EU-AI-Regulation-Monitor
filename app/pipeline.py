@@ -1,3 +1,4 @@
+from app.core.logging import get_logger
 from app.crawler.service import crawl
 from app.crawler.crawl_cache import should_crawl
 from app.crawler.url_resolver import resolve_monitor_urls
@@ -22,6 +23,8 @@ from app.storage.service import (
     save_snapshot,
     update_crawl_cache,
 )
+
+logger = get_logger(__name__)
 
 
 def normalize_source(monitor: dict) -> dict:
@@ -434,11 +437,25 @@ class MonitoringPipeline:
                 if source.get("frequency") == frequency
             ]
 
+        logger.info(
+            "Pipeline run started for %s enabled source(s)",
+            len(enabled_sources),
+        )
+
         results = []
         for source in enabled_sources:
-            print(f"\nProcessing source: {source['name']} ({source['id']})")
+            logger.info(
+                "Processing source: %s (%s)",
+                source["name"],
+                source["id"],
+            )
             result = self.process_source(source)
-            print(f"  Status: {result['status']} - {result['message']}")
+            logger.info(
+                "Source %s status: %s - %s",
+                source["id"],
+                result["status"],
+                result["message"],
+            )
             results.append(result)
 
         return results
