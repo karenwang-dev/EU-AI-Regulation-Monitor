@@ -28,6 +28,10 @@ from app.web.insight_helper import (
     get_insight_filter_options,
 )
 from app.web.knowledge_helper import resolve_related_regulations
+from app.web.report_api import register_report_routes
+from app.report.ai_generator import generate_weekly_report
+from app.report.builder import build_weekly_report
+from app.report.storage import get_latest_report
 from app.web.source_helper import (
     build_source_tree,
     enrich_changes_with_source_metadata,
@@ -330,15 +334,36 @@ def _get_diff_id_for_snapshot(
     return row["id"]
 
 
+def _format_report_timestamp(timestamp: str) -> str:
+    if not timestamp:
+        return "N/A"
+
+    try:
+        parsed = datetime.fromisoformat(timestamp)
+        return parsed.strftime("%Y-%m-%d %H:%M")
+    except ValueError:
+        return timestamp
+
+
 def create_dashboard_app(
     storage_service: StorageService | None = None,
     history_file: Path | None = None,
     monitors_file: Path | None = None,
+    reports_dir: Path | None = None,
+    build_weekly_report_fn=None,
+    generate_weekly_report_fn=None,
 ) -> FastAPI:
     storage = storage_service or _get_service()
     app = FastAPI(title="AI Regulation Monitor Dashboard")
     register_monitor_routes(app, monitors_file=monitors_file)
     register_knowledge_routes(app, storage_service=storage)
+    register_report_routes(
+        app,
+        storage_service=storage,
+        reports_dir=reports_dir,
+        build_weekly_report_fn=build_weekly_report_fn or build_weekly_report,
+        generate_weekly_report_fn=generate_weekly_report_fn or generate_weekly_report,
+    )
 
     def _latest_run():
         if history_file:
@@ -449,6 +474,40 @@ def create_dashboard_app(
                 "module_filter": module,
                 "categories": categories,
                 "modules": modules,
+            },
+        )
+
+    @app.get("/reports")
+    def reports_page(request: Request):
+        report = get_latest_report(reports_dir=reports_dir)
+        summary = report.get("summary", {}) if report else {
+            "total_changes": 0,
+            "high_risk": 0,
+            "medium_risk": 0,
+            "low_risk": 0,
+            "affected_modules": [],
+        }
+        report_view = None
+        key_changes = []
+
+        if report:
+            report_view = {
+                **report,
+                "generated_at_display": _format_report_timestamp(
+                    report.get("generated_at", "")
+                ),
+            }
+            key_changes = report.get("key_changes", [])
+
+        return templates.TemplateResponse(
+            request,
+            "report.html",
+            {
+                "title": "Weekly Reports",
+                "active_page": "reports",
+                "report": report_view,
+                "summary": summary,
+                "key_changes": key_changes,
             },
         )
 

@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+{% from "_macros.html" import impact_badge %}
+
+{% block content %}
+<div class="page-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+    <div>
+        <h1 class="h3 mb-1">Weekly Reports</h1>
+        <p class="text-muted mb-0">AI-generated weekly compliance monitoring reports.</p>
+    </div>
+    <div class="d-flex flex-column align-items-md-end gap-2">
+        <button
+            type="button"
+            class="btn btn-primary btn-sm"
+            id="generateReportBtn"
+            onclick="generateLatestReport()"
+        >
+            Generate Latest Report
+        </button>
+        {% if report and report.generated_at %}
+        <div class="text-muted small">
+            Latest report generated on {{ report.generated_at_display or report.generated_at }}
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-6 col-lg-3">
+        <div class="card shadow-sm stat-card border-0">
+            <div class="card-body">
+                <div class="text-muted small">Total Changes</div>
+                <div class="display-6">{{ summary.total_changes }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card shadow-sm stat-card border-danger border-0">
+            <div class="card-body">
+                <div class="text-muted small">High Risk</div>
+                <div class="display-6 text-danger">{{ summary.high_risk }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card shadow-sm stat-card border-warning border-0">
+            <div class="card-body">
+                <div class="text-muted small">Medium Risk</div>
+                <div class="display-6 text-warning">{{ summary.medium_risk }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card shadow-sm stat-card border-0">
+            <div class="card-body">
+                <div class="text-muted small">Affected Modules</div>
+                <div class="mt-2">
+                    {% if summary.affected_modules %}
+                        {% for module in summary.affected_modules %}
+                        <span class="badge text-bg-light text-dark border module-badge">{{ module }}</span>
+                        {% endfor %}
+                    {% else %}
+                        <span class="text-muted">N/A</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-header bg-white">Executive Summary</div>
+    <div class="card-body">
+        {% if report and report.executive_summary %}
+        <p class="mb-0">{{ report.executive_summary }}</p>
+        {% else %}
+        <p class="text-muted mb-0">No executive summary available.</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-header bg-white">Key Changes</div>
+    <div class="table-responsive">
+        <table class="table table-hover mb-0 align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Title</th>
+                    <th>Impact Level</th>
+                    <th>Affected Modules</th>
+                    <th>Recommended Actions</th>
+                    <th>Source</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if key_changes %}
+                    {% for change in key_changes %}
+                    <tr>
+                        <td class="fw-semibold">{{ change.title or "N/A" }}</td>
+                        <td>{{ impact_badge(change.impact_level or "NONE") }}</td>
+                        <td>
+                            {% if change.affected_modules %}
+                                {% for module in change.affected_modules %}
+                                <span class="badge text-bg-light text-dark border module-badge">{{ module }}</span>
+                                {% endfor %}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if change.recommended_actions %}
+                            <ul class="mb-0 ps-3">
+                                {% for action in change.recommended_actions %}
+                                <li>{{ action }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if change.source_url %}
+                            <a href="{{ change.source_url }}" target="_blank" rel="noopener noreferrer">
+                                {{ change.source_url }}
+                            </a>
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center text-muted py-4">
+                            No key changes available.
+                        </td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-white">Risk Summary</div>
+    <div class="card-body">
+        {% if report and report.risk_summary %}
+        <p class="mb-0">{{ report.risk_summary }}</p>
+        {% else %}
+        <p class="text-muted mb-0">No risk summary available.</p>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+async function generateLatestReport() {
+    const button = document.getElementById("generateReportBtn");
+    button.disabled = true;
+    button.textContent = "Generating...";
+
+    try {
+        const response = await fetch("/api/reports/generate", {
+            method: "POST",
+        });
+        if (!response.ok) {
+            throw new Error("Report generation failed");
+        }
+        window.location.reload();
+    } catch (error) {
+        button.disabled = false;
+        button.textContent = "Generate Latest Report";
+        alert("Unable to generate report. Please try again.");
+    }
+}
+</script>
+{% endblock %}
