@@ -1,0 +1,28 @@
+services:
+  dashboard:
+    container_name: ai-regulation-dashboard
+    build: .
+    image: ai-regulation-monitor
+    command: uvicorn app.web.app:app --host 0.0.0.0 --port 8080
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data
+      - ./config:/app/config
+      - ./logs:/app/logs
+    restart: unless-stopped
+
+  scheduler:
+    container_name: ai-regulation-scheduler
+    build: .
+    image: ai-regulation-monitor
+    command: python main.py scheduler
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data
+      - ./config:/app/config
+      - ./logs:/app/logs
+    restart: unless-stopped
