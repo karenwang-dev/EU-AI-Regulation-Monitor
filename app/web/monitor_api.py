@@ -9,6 +9,7 @@ from app.source.source_loader import (
     ALLOWED_FREQUENCIES,
     MONITORS_FILE,
     MonitorConfigError,
+    normalize_legacy_source,
     validate_monitor,
 )
 
@@ -34,6 +35,9 @@ class MonitorCreateRequest(BaseModel):
     category: str
     frequency: str
     enabled: bool = True
+    crawl_mode: str = "single"
+    max_depth: int = 0
+    max_pages: int = 1
 
 
 class MonitorUpdateRequest(BaseModel):
@@ -43,6 +47,9 @@ class MonitorUpdateRequest(BaseModel):
     category: str | None = None
     frequency: str | None = None
     enabled: bool | None = None
+    crawl_mode: str | None = None
+    max_depth: int | None = None
+    max_pages: int | None = None
 
 
 class MonitorStore:
@@ -60,13 +67,16 @@ class MonitorStore:
         return data.get("monitors", [])
 
     def _write_monitors(self, monitors: list[dict]) -> None:
+        normalized_monitors = []
         for index, monitor in enumerate(monitors):
-            validate_monitor(monitor, index=index)
+            normalized = normalize_legacy_source(monitor)
+            validate_monitor(normalized, index=index)
+            normalized_monitors.append(normalized)
 
         self.monitors_file.parent.mkdir(parents=True, exist_ok=True)
         with open(self.monitors_file, "w", encoding="utf-8") as file:
             json.dump(
-                {"monitors": monitors},
+                {"monitors": normalized_monitors},
                 file,
                 indent=2,
                 ensure_ascii=False,
@@ -74,10 +84,13 @@ class MonitorStore:
             file.write("\n")
 
     def list_monitors(self) -> list[dict]:
-        return self._read_monitors()
+        return [
+            normalize_legacy_source(monitor)
+            for monitor in self._read_monitors()
+        ]
 
     def get_monitor(self, monitor_id: str) -> dict | None:
-        for monitor in self._read_monitors():
+        for monitor in self.list_monitors():
             if monitor["id"] == monitor_id:
                 return monitor
         return None
@@ -94,16 +107,19 @@ class MonitorStore:
             "category": payload.category.strip(),
             "frequency": payload.frequency.strip(),
             "enabled": payload.enabled,
+            "crawl_mode": payload.crawl_mode.strip(),
+            "max_depth": payload.max_depth,
+            "max_pages": payload.max_pages,
         }
 
         try:
-            validate_monitor(monitor)
+            validate_monitor(normalize_legacy_source(monitor))
         except MonitorConfigError as error:
             raise ValueError(str(error)) from error
 
         monitors.append(monitor)
         self._write_monitors(monitors)
-        return monitor
+        return normalize_legacy_source(monitor)
 
     def update_monitor(
         self,
@@ -133,13 +149,20 @@ class MonitorStore:
                 monitor["frequency"] = payload.frequency.strip()
             if payload.enabled is not None:
                 monitor["enabled"] = payload.enabled
+            if payload.crawl_mode is not None:
+                monitor["crawl_mode"] = payload.crawl_mode.strip()
+            if payload.max_depth is not None:
+                monitor["max_depth"] = payload.max_depth
+            if payload.max_pages is not None:
+                monitor["max_pages"] = payload.max_pages
 
             try:
-                validate_monitor(monitor, index=index)
+                validate_monitor(normalize_legacy_source(monitor), index=index)
             except MonitorConfigError as error:
                 raise ValueError(str(error)) from error
 
-            updated_monitor = monitor
+            updated_monitor = normalize_legacy_source(monitor)
+            monitors[index] = monitor
             break
 
         if updated_monitor is None:

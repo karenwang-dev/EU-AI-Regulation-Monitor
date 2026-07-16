@@ -196,29 +196,140 @@ class TestDashboardWeb(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         content = response.content
-        self.assertIn(b"Evidence / Source References", content)
+        self.assertIn(b"Source References", content)
         self.assertIn(b"Snapshot ID", content)
         self.assertIn(b"Diff ID", content)
+        self.assertIn(b"Parent Monitor", content)
         self.assertIn(b"Open Original Page", content)
         self.assertIn(b"View Diff", content)
         self.assertIn(b"https://example.com/ec", content)
         self.assertIn(str(self.diff_id).encode(), content)
 
     @mock.patch("app.web.app.load_monitors", autospec=True)
-    def test_detail_page_renders_evidence_fallback_without_stored_field(
-        self,
-        mock_load_monitors,
-    ):
+    def test_detail_page_renders_multiple_source_references(self, mock_load_monitors):
+        mock_load_monitors.return_value = [self.monitor]
+        latest_snapshot = self.store.get_latest_snapshot("ec")
+
+        self.store.save_analysis(
+            latest_snapshot["id"],
+            {
+                "impact_level": "HIGH",
+                "affected_modules": ["Network"],
+                "reason": "Multiple pages changed.",
+                "recommended_actions": ["Review both pages"],
+                "confidence": "HIGH",
+                "evidence": [
+                    {
+                        "source_id": "ec",
+                        "parent_monitor_id": "ec",
+                        "name": "European Commission",
+                        "url": "https://example.com/ec",
+                        "snapshot_id": latest_snapshot["id"],
+                        "diff_id": self.diff_id,
+                        "timestamp": "2026-07-15T12:00:00",
+                        "discovered_depth": 0,
+                    },
+                    {
+                        "source_id": "ec",
+                        "parent_monitor_id": "ec",
+                        "name": "AI Act Policy",
+                        "url": "https://example.com/ec/ai-act",
+                        "snapshot_id": 99,
+                        "diff_id": 100,
+                        "timestamp": "2026-07-15T13:00:00",
+                        "discovered_depth": 1,
+                    },
+                ],
+            },
+        )
+
+        response = self.client.get(f"/detail/{self.diff_id}")
+
+        self.assertEqual(response.status_code, 200)
+        content = response.content
+        self.assertIn(b"Main Page", content)
+        self.assertIn(b"Discovered Page", content)
+        self.assertIn(b"AI Act Policy", content)
+        self.assertIn(b"https://example.com/ec/ai-act", content)
+
+    @mock.patch("app.web.app.load_monitors", autospec=True)
+    def test_detail_page_legacy_analysis_fallback(self, mock_load_monitors):
         mock_load_monitors.return_value = [self.monitor]
 
         response = self.client.get(f"/detail/{self.diff_id}")
 
         self.assertEqual(response.status_code, 200)
         content = response.content
-        self.assertIn(b"Evidence / Source References", content)
+        self.assertIn(b"Source References", content)
         self.assertIn(b"European Commission", content)
+        self.assertIn(b"Main Page", content)
+        self.assertIn(b"Parent Monitor", content)
         self.assertIn(b"Open Original Page", content)
         self.assertIn(b"View Diff", content)
+
+    @mock.patch("app.web.app.load_monitors", autospec=True)
+    def test_changes_page_shows_changed_pages_and_source_urls(self, mock_load_monitors):
+        mock_load_monitors.return_value = [self.monitor]
+
+        old_snapshot_two = self.store.save_snapshot(
+            {
+                "source_id": "ec",
+                "url": "https://example.com/ec/ai-act",
+                "title": "AI Act Policy",
+                "markdown": "# Old AI Act",
+                "timestamp": "2026-07-15T09:00:00",
+            }
+        )
+        new_snapshot_two = self.store.save_snapshot(
+            {
+                "source_id": "ec",
+                "url": "https://example.com/ec/ai-act",
+                "title": "AI Act Policy",
+                "markdown": "# New AI Act\nAdded section",
+                "timestamp": "2026-07-15T13:00:00",
+            }
+        )
+        self.store.save_diff(
+            {
+                "source_id": "ec",
+                "old_snapshot_id": old_snapshot_two["id"],
+                "new_snapshot_id": new_snapshot_two["id"],
+                "changed": True,
+                "added_content": ["Added section"],
+                "removed_content": ["Old AI Act"],
+                "diff_text": "+Added section",
+                "created_at": datetime.now().isoformat(),
+            }
+        )
+        self.store.save_analysis(
+            new_snapshot_two["id"],
+            {
+                "impact_level": "MEDIUM",
+                "affected_modules": ["AI Features"],
+                "reason": "Discovered page changed.",
+                "recommended_actions": ["Review AI Act page"],
+                "confidence": "MEDIUM",
+                "evidence": [
+                    {
+                        "source_id": "ec",
+                        "parent_monitor_id": "ec",
+                        "name": "AI Act Policy",
+                        "url": "https://example.com/ec/ai-act",
+                        "snapshot_id": new_snapshot_two["id"],
+                        "discovered_depth": 1,
+                    }
+                ],
+            },
+        )
+
+        response = self.client.get("/changes")
+
+        self.assertEqual(response.status_code, 200)
+        content = response.content
+        self.assertIn(b"2 changed page(s)", content)
+        self.assertIn(b"2 source URL(s)", content)
+        self.assertIn(b"https://example.com/ec/ai-act", content)
+        self.assertIn(b"Discovered Page", content)
 
     @mock.patch("app.web.app.load_monitors", autospec=True)
     def test_monitors_page_highlights_navigation(self, mock_load_monitors):

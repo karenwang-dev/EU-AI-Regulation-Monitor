@@ -14,6 +14,13 @@ from app.web.api import (
     _get_diff_by_id,
 )
 from app.web.monitor_api import register_monitor_routes
+from app.web.source_helper import (
+    build_source_tree,
+    enrich_changes_with_source_metadata,
+    extract_discovered_depth_from_evidence,
+    extract_source_url_from_evidence,
+    format_depth_label,
+)
 
 
 TEMPLATES_DIR = Path(__file__).resolve().parent / "templates"
@@ -54,26 +61,20 @@ def _get_analysis_by_snapshot_id(
     }
 
 
-def _build_evidence_for_detail(
-    analysis: dict | None,
-    diff: dict,
-    monitor: dict,
-) -> list[dict]:
-    if analysis:
-        evidence = analysis.get("evidence", [])
-        if evidence:
-            return evidence
+def _get_snapshot_by_id(
+    storage: StorageService,
+    snapshot_id: int,
+) -> dict | None:
+    with storage._connect() as connection:
+        row = connection.execute(
+            "SELECT * FROM snapshots WHERE id = ?",
+            (snapshot_id,),
+        ).fetchone()
 
-    return [
-        {
-            "source_id": diff.get("source_id", monitor.get("id", "")),
-            "name": monitor.get("name", diff.get("source_id", "Unknown")),
-            "url": monitor.get("url", ""),
-            "snapshot_id": diff.get("new_snapshot_id"),
-            "diff_id": diff.get("id"),
-            "timestamp": diff.get("created_at", ""),
-        }
-    ]
+    if row is None:
+        return None
+
+    return storage._row_to_snapshot(row)
 
 
 def _count_high_risk_analyses(storage: StorageService) -> int:
@@ -146,13 +147,24 @@ def _get_changes_for_dashboard(
                 diff["new_snapshot_id"],
             )
             impact = analysis["analysis"] if analysis else {}
-            monitor = monitor_map.get(diff["source_id"], {})
+            monitor_info = monitor_map.get(diff["source_id"], {})
+            snapshot = _get_snapshot_by_id(storage, diff["new_snapshot_id"])
+            source_url = extract_source_url_from_evidence(
+                impact,
+                snapshot,
+                monitor_info,
+            )
+            discovered_depth = extract_discovered_depth_from_evidence(
+                impact,
+                snapshot,
+                monitor_info,
+            )
 
             changes.append(
                 {
                     "diff_id": diff["id"],
                     "analysis_id": analysis["id"] if analysis else None,
-                    "regulation_name": monitor.get(
+                    "regulation_name": monitor_info.get(
                         "name",
                         diff["source_id"],
                     ),
@@ -160,12 +172,16 @@ def _get_changes_for_dashboard(
                     "date": diff["created_at"],
                     "impact_level": impact.get("impact_level", "NONE"),
                     "affected_modules": impact.get("affected_modules", []),
-                    "keywords": monitor.get("keywords", []),
+                    "keywords": monitor_info.get("keywords", []),
                     "summary": _build_change_summary(diff),
+                    "source_url": source_url,
+                    "discovered_depth": discovered_depth,
+                    "depth_label": format_depth_label(discovered_depth),
                 }
             )
 
     changes.sort(key=lambda item: item["date"], reverse=True)
+    changes = enrich_changes_with_source_metadata(changes)
 
     if limit is None:
         return changes
@@ -323,6 +339,14 @@ def create_dashboard_app(
         monitor_map = _get_monitor_map()
         monitor = monitor_map.get(diff["source_id"], {})
         analysis_data = analysis["analysis"] if analysis else None
+        snapshot = _get_snapshot_by_id(storage, diff["new_snapshot_id"])
+        source_tree = build_source_tree(
+            analysis_data.get("evidence", []) if analysis_data else None,
+            monitor,
+            diff=diff,
+            monitor_map=monitor_map,
+            snapshot=snapshot,
+        )
 
         return templates.TemplateResponse(
             request,
@@ -333,11 +357,7 @@ def create_dashboard_app(
                 "diff": diff,
                 "analysis": analysis_data,
                 "analysis_id": analysis["id"] if analysis else None,
-                "evidence": _build_evidence_for_detail(
-                    analysis_data,
-                    diff,
-                    monitor,
-                ),
+                "source_tree": source_tree,
                 "regulation_name": monitor.get("name", diff["source_id"]),
                 "monitor_url": monitor.get("url", ""),
                 "change_date": diff.get("created_at", ""),

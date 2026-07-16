@@ -125,6 +125,68 @@ class TestSourceLoader(unittest.TestCase):
         self.assertEqual(monitor["keywords"], ["Spain Regulation"])
         self.assertEqual(monitor["category"], "national_regulation")
         self.assertEqual(monitor["frequency"], "weekly")
+        self.assertEqual(monitor["crawl_mode"], "single")
+        self.assertEqual(monitor["max_depth"], 0)
+        self.assertEqual(monitor["max_pages"], 1)
+
+    def test_normalize_legacy_source_applies_crawl_defaults(self):
+        legacy = self._valid_monitor()
+        monitor = normalize_legacy_source(legacy)
+
+        self.assertEqual(monitor["crawl_mode"], "single")
+        self.assertEqual(monitor["max_depth"], 0)
+        self.assertEqual(monitor["max_pages"], 1)
+
+    def test_validate_monitor_accepts_smart_crawl_config(self):
+        monitor = self._valid_monitor()
+        monitor["crawl_mode"] = "smart"
+        monitor["max_depth"] = 2
+        monitor["max_pages"] = 10
+        validate_monitor(monitor)
+
+    def test_validate_monitor_rejects_invalid_crawl_mode(self):
+        monitor = self._valid_monitor()
+        monitor["crawl_mode"] = "deep"
+
+        with self.assertRaises(MonitorConfigError) as error:
+            validate_monitor(monitor)
+
+        self.assertIn("crawl_mode must be one of", str(error.exception))
+
+    def test_validate_monitor_rejects_negative_max_depth(self):
+        monitor = self._valid_monitor()
+        monitor["max_depth"] = -1
+
+        with self.assertRaises(MonitorConfigError) as error:
+            validate_monitor(monitor)
+
+        self.assertIn("max_depth must be >= 0", str(error.exception))
+
+    def test_validate_monitor_rejects_invalid_max_pages(self):
+        monitor = self._valid_monitor()
+        monitor["max_pages"] = 0
+
+        with self.assertRaises(MonitorConfigError) as error:
+            validate_monitor(monitor)
+
+        self.assertIn("max_pages must be > 0", str(error.exception))
+
+    def test_load_monitors_applies_defaults_for_legacy_monitor(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            monitors_file = Path(temp_dir) / "monitors.json"
+            monitors_file.write_text(
+                json.dumps({"monitors": [self._valid_monitor()]}),
+                encoding="utf-8",
+            )
+
+            monitors = load_monitors(
+                monitors_file=monitors_file,
+                sources_file=Path(temp_dir) / "missing-sources.json",
+            )
+
+            self.assertEqual(monitors[0]["crawl_mode"], "single")
+            self.assertEqual(monitors[0]["max_depth"], 0)
+            self.assertEqual(monitors[0]["max_pages"], 1)
 
     def test_project_monitors_json_loads_successfully(self):
         monitors = load_monitors()
@@ -132,6 +194,14 @@ class TestSourceLoader(unittest.TestCase):
         self.assertGreaterEqual(len(monitors), 6)
         self.assertTrue(all("keywords" in monitor for monitor in monitors))
         self.assertTrue(all("category" in monitor for monitor in monitors))
+        self.assertTrue(all(monitor["crawl_mode"] in {"single", "smart"} for monitor in monitors))
+        self.assertTrue(all(isinstance(monitor["max_depth"], int) for monitor in monitors))
+        self.assertTrue(all(isinstance(monitor["max_pages"], int) for monitor in monitors))
+
+        eu_ai_act = next(monitor for monitor in monitors if monitor["id"] == "eu_ai_act")
+        self.assertEqual(eu_ai_act["crawl_mode"], "smart")
+        self.assertEqual(eu_ai_act["max_depth"], 2)
+        self.assertEqual(eu_ai_act["max_pages"], 10)
 
     def test_load_sources_is_alias_for_load_monitors(self):
         with tempfile.TemporaryDirectory() as temp_dir:

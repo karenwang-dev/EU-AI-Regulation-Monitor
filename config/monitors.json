@@ -13,7 +13,10 @@
       ],
       "category": "AI Regulation",
       "frequency": "daily",
-      "enabled": true
+      "enabled": true,
+      "crawl_mode": "smart",
+      "max_depth": 2,
+      "max_pages": 10
     },
     {
       "id": "eu_product_compliance",

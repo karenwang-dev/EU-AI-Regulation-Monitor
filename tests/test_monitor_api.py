@@ -46,6 +46,31 @@ class TestMonitorApi(unittest.TestCase):
         monitors = response.json()
         self.assertEqual(len(monitors), 1)
         self.assertEqual(monitors[0]["id"], "eu_ai_act")
+        self.assertEqual(monitors[0]["crawl_mode"], "single")
+        self.assertEqual(monitors[0]["max_depth"], 0)
+        self.assertEqual(monitors[0]["max_pages"], 1)
+
+    def test_create_monitor_with_smart_crawl_config(self):
+        response = self.client.post(
+            "/api/monitors",
+            json={
+                "name": "Smart Regulation",
+                "url": "https://example.com/smart-regulation",
+                "keywords": ["smart TV"],
+                "category": "Product Compliance",
+                "frequency": "weekly",
+                "enabled": True,
+                "crawl_mode": "smart",
+                "max_depth": 2,
+                "max_pages": 10,
+            },
+        )
+
+        self.assertEqual(response.status_code, 201)
+        created = response.json()
+        self.assertEqual(created["crawl_mode"], "smart")
+        self.assertEqual(created["max_depth"], 2)
+        self.assertEqual(created["max_pages"], 10)
 
     def test_create_monitor(self):
         response = self.client.post(
@@ -124,6 +149,72 @@ class TestMonitorApi(unittest.TestCase):
 
         self.assertEqual(response.status_code, 400)
         self.assertIn("frequency must be one of", response.json()["detail"])
+
+    def test_invalid_crawl_mode_rejected(self):
+        response = self.client.post(
+            "/api/monitors",
+            json={
+                "name": "Bad Crawl Monitor",
+                "url": "https://example.com/bad-crawl",
+                "keywords": ["smart TV"],
+                "category": "Other",
+                "frequency": "daily",
+                "enabled": True,
+                "crawl_mode": "deep",
+                "max_depth": 1,
+                "max_pages": 5,
+            },
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("crawl_mode must be one of", response.json()["detail"])
+
+    def test_invalid_max_depth_rejected(self):
+        response = self.client.post(
+            "/api/monitors",
+            json={
+                "name": "Bad Depth Monitor",
+                "url": "https://example.com/bad-depth",
+                "keywords": ["smart TV"],
+                "category": "Other",
+                "frequency": "daily",
+                "enabled": True,
+                "crawl_mode": "single",
+                "max_depth": -1,
+                "max_pages": 5,
+            },
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("max_depth must be >= 0", response.json()["detail"])
+
+    def test_invalid_max_pages_rejected(self):
+        response = self.client.post(
+            "/api/monitors",
+            json={
+                "name": "Bad Pages Monitor",
+                "url": "https://example.com/bad-pages",
+                "keywords": ["smart TV"],
+                "category": "Other",
+                "frequency": "daily",
+                "enabled": True,
+                "crawl_mode": "single",
+                "max_depth": 0,
+                "max_pages": 0,
+            },
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("max_pages must be > 0", response.json()["detail"])
+
+    def test_manage_monitors_page_renders_crawl_fields(self):
+        response = self.client.get("/manage-monitors")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b"Crawl Mode", response.content)
+        self.assertIn(b"Max Depth", response.content)
+        self.assertIn(b"Max Pages", response.content)
+        self.assertIn(b"Smart Discovery", response.content)
 
     def test_generate_monitor_id_avoids_duplicates(self):
         store = MonitorStore(monitors_file=self.monitors_file)

@@ -19,13 +19,14 @@
                     <th>Name</th>
                     <th>Category</th>
                     <th>Frequency</th>
+                    <th>Crawl Mode</th>
                     <th>Status</th>
                     <th>Action</th>
                 </tr>
             </thead>
             <tbody id="monitorTableBody">
                 <tr>
-                    <td colspan="5" class="text-muted">Loading monitors...</td>
+                    <td colspan="6" class="text-muted">Loading monitors...</td>
                 </tr>
             </tbody>
         </table>
@@ -77,6 +78,24 @@
                         </div>
                     </div>
 
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="monitorCrawlMode" class="form-label">Crawl Mode</label>
+                            <select class="form-select" id="monitorCrawlMode" required>
+                                <option value="single">Single Page</option>
+                                <option value="smart">Smart Discovery</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="monitorMaxDepth" class="form-label">Max Depth</label>
+                            <input type="number" class="form-control" id="monitorMaxDepth" min="0" value="0" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="monitorMaxPages" class="form-label">Max Pages</label>
+                            <input type="number" class="form-control" id="monitorMaxPages" min="1" value="1" required>
+                        </div>
+                    </div>
+
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" id="monitorEnabled" checked>
                         <label class="form-check-label" for="monitorEnabled">Enabled</label>
@@ -113,6 +132,19 @@ function formatFrequency(value) {
     return value.charAt(0).toUpperCase() + value.slice(1);
 }
 
+function formatCrawlMode(value) {
+    if (value === "smart") {
+        return "Smart Discovery";
+    }
+    return "Single Page";
+}
+
+function setCrawlDefaults() {
+    document.getElementById("monitorCrawlMode").value = "single";
+    document.getElementById("monitorMaxDepth").value = "0";
+    document.getElementById("monitorMaxPages").value = "1";
+}
+
 function parseKeywords(text) {
     return text
         .split("\n")
@@ -126,7 +158,7 @@ function renderMonitors(monitors) {
     if (!monitors.length) {
         monitorTableBody.innerHTML = `
             <tr>
-                <td colspan="5" class="text-muted">No monitors configured.</td>
+                <td colspan="6" class="text-muted">No monitors configured.</td>
             </tr>
         `;
         return;
@@ -137,6 +169,7 @@ function renderMonitors(monitors) {
             <td>${monitor.name}</td>
             <td>${monitor.category}</td>
             <td>${formatFrequency(monitor.frequency)}</td>
+            <td>${formatCrawlMode(monitor.crawl_mode || "single")}</td>
             <td>
                 ${monitor.enabled
                     ? '<span class="badge text-bg-success">ON</span>'
@@ -178,6 +211,7 @@ function openCreateModal() {
     document.getElementById("monitorId").value = "";
     monitorForm.reset();
     document.getElementById("monitorEnabled").checked = true;
+    setCrawlDefaults();
     monitorModal.show();
 }
 
@@ -195,6 +229,9 @@ function openEditModal(monitorId) {
     document.getElementById("monitorKeywords").value = monitor.keywords.join("\n");
     document.getElementById("monitorCategory").value = monitor.category;
     document.getElementById("monitorFrequency").value = monitor.frequency;
+    document.getElementById("monitorCrawlMode").value = monitor.crawl_mode || "single";
+    document.getElementById("monitorMaxDepth").value = monitor.max_depth ?? 0;
+    document.getElementById("monitorMaxPages").value = monitor.max_pages ?? 1;
     document.getElementById("monitorEnabled").checked = monitor.enabled;
     monitorModal.show();
 }
@@ -228,6 +265,9 @@ monitorForm.addEventListener("submit", async (event) => {
         keywords: parseKeywords(document.getElementById("monitorKeywords").value),
         category: document.getElementById("monitorCategory").value,
         frequency: document.getElementById("monitorFrequency").value,
+        crawl_mode: document.getElementById("monitorCrawlMode").value,
+        max_depth: Number(document.getElementById("monitorMaxDepth").value),
+        max_pages: Number(document.getElementById("monitorMaxPages").value),
         enabled: document.getElementById("monitorEnabled").checked,
     };
 

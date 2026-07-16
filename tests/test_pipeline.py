@@ -2,7 +2,7 @@ import gc
 import tempfile
 import unittest
 from pathlib import Path
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
 from app.pipeline import MonitoringPipeline, normalize_source
 from app.analysis.diff_processor import create_diff_result
@@ -62,28 +62,51 @@ class TestMonitoringPipeline(unittest.TestCase):
             "confidence": "HIGH",
         }
 
+    def _get_latest_snapshot_for_url(self, source_id: str, url: str):
+        with self.store._connect() as connection:
+            row = connection.execute(
+                """
+                SELECT * FROM snapshots
+                WHERE source_id = ? AND url = ?
+                ORDER BY timestamp DESC, id DESC
+                LIMIT 1
+                """,
+                (source_id, url),
+            ).fetchone()
+
+        if row is None:
+            return None
+
+        return self.store._row_to_snapshot(row)
+
     def _build_pipeline(
         self,
         crawl_fn,
         analyze_fn=None,
+        resolve_monitor_urls_fn=None,
     ) -> MonitoringPipeline:
         analyze_fn = analyze_fn or MagicMock(
             return_value=self._impact_result()
         )
 
-        return MonitoringPipeline(
-            crawl_fn=crawl_fn,
-            save_snapshot_fn=self.store.save_snapshot,
-            get_latest_snapshot_fn=self.store.get_latest_snapshot,
-            create_diff_result_fn=create_diff_result,
-            save_diff_fn=self.store.save_diff,
-            analyze_change_impact_fn=analyze_fn,
-            save_analysis_fn=self.store.save_analysis,
-            notify_if_needed_fn=MagicMock(
+        pipeline_kwargs = {
+            "crawl_fn": crawl_fn,
+            "save_snapshot_fn": self.store.save_snapshot,
+            "get_latest_snapshot_fn": self.store.get_latest_snapshot,
+            "get_latest_snapshot_for_url_fn": self._get_latest_snapshot_for_url,
+            "create_diff_result_fn": create_diff_result,
+            "save_diff_fn": self.store.save_diff,
+            "analyze_change_impact_fn": analyze_fn,
+            "save_analysis_fn": self.store.save_analysis,
+            "notify_if_needed_fn": MagicMock(
                 return_value={"sent": False, "skipped": True, "reason": "test"}
             ),
-            load_sources_fn=lambda: [self._monitor_config()],
-        )
+            "load_sources_fn": lambda: [self._monitor_config()],
+        }
+        if resolve_monitor_urls_fn is not None:
+            pipeline_kwargs["resolve_monitor_urls_fn"] = resolve_monitor_urls_fn
+
+        return MonitoringPipeline(**pipeline_kwargs)
 
     def test_normalize_source_maps_monitor_fields(self):
         normalized = normalize_source(self._monitor_config())
@@ -217,6 +240,149 @@ class TestMonitoringPipeline(unittest.TestCase):
         crawl_mock.assert_not_called()
         analyze_mock.assert_not_called()
         self.assertEqual(results, [])
+
+    @patch("app.crawler.url_resolver.discover_links")
+    def test_single_mode_does_not_call_discovery(self, discover_mock):
+        discover_mock.return_value = []
+
+        def crawl(source):
+            return {
+                **self._crawl_result(markdown="# First capture"),
+                "url": source["url"],
+            }
+
+        pipeline = self._build_pipeline(crawl_fn=crawl)
+        monitor = {
+            **self._monitor_config(),
+            "crawl_mode": "single",
+            "max_depth": 0,
+            "max_pages": 1,
+        }
+
+        result = pipeline.process_source(monitor)
+
+        discover_mock.assert_not_called()
+        self.assertEqual(result["status"], "first_snapshot")
+
+    def test_smart_mode_crawls_multiple_urls(self):
+        urls = [
+            "https://example.com/ec",
+            "https://example.com/ec/ai-act",
+            "https://example.com/ec/cybersecurity",
+        ]
+
+        def resolve_monitor_urls(_monitor):
+            return [
+                {"url": urls[0], "title": "Root", "depth": 0},
+                {"url": urls[1], "title": "AI Act", "depth": 1},
+                {"url": urls[2], "title": "Cybersecurity", "depth": 1},
+            ]
+
+        def crawl(source):
+            return {
+                "source_id": source["source_id"],
+                "url": source["url"],
+                "title": source.get("name", ""),
+                "markdown": f"# Content for {source['url']}",
+                "timestamp": "2026-07-15T12:00:00",
+                "parent_monitor_id": source.get("parent_monitor_id"),
+                "discovered_depth": source.get("discovered_depth"),
+            }
+
+        crawl_mock = MagicMock(side_effect=crawl)
+        pipeline = self._build_pipeline(
+            crawl_fn=crawl_mock,
+            resolve_monitor_urls_fn=resolve_monitor_urls,
+        )
+        monitor = {
+            **self._monitor_config(),
+            "crawl_mode": "smart",
+            "max_depth": 2,
+            "max_pages": 3,
+        }
+
+        result = pipeline.process_source(monitor)
+
+        self.assertEqual(crawl_mock.call_count, 3)
+        crawled_urls = [call.args[0]["url"] for call in crawl_mock.call_args_list]
+        self.assertEqual(crawled_urls, urls)
+        self.assertEqual(result["status"], "first_snapshot")
+        self.assertEqual(result["pages_crawled"], 3)
+        self.assertEqual(len(result["url_results"]), 3)
+
+    def test_smart_mode_respects_max_pages_via_resolver(self):
+        from app.crawler.url_resolver import resolve_monitor_urls
+
+        monitor = {
+            **self._monitor_config(),
+            "crawl_mode": "smart",
+            "max_depth": 2,
+            "max_pages": 2,
+        }
+        discover_mock = MagicMock(
+            return_value=[
+                {
+                    "url": "https://example.com/ec/one",
+                    "title": "One",
+                    "depth": 1,
+                },
+                {
+                    "url": "https://example.com/ec/two",
+                    "title": "Two",
+                    "depth": 1,
+                },
+            ]
+        )
+
+        results = resolve_monitor_urls(monitor, discover_links_fn=discover_mock)
+
+        self.assertEqual(len(results), 2)
+
+    def test_one_failed_child_page_does_not_stop_others(self):
+        urls = [
+            "https://example.com/ec",
+            "https://example.com/ec/failing",
+            "https://example.com/ec/working",
+        ]
+
+        def resolve_monitor_urls(_monitor):
+            return [
+                {"url": url, "title": url, "depth": index}
+                for index, url in enumerate(urls)
+            ]
+
+        def crawl(source):
+            if source["url"] == "https://example.com/ec/failing":
+                raise RuntimeError("child page failed")
+            return {
+                "source_id": source["source_id"],
+                "url": source["url"],
+                "title": source.get("name", ""),
+                "markdown": f"# Content for {source['url']}",
+                "timestamp": "2026-07-15T12:00:00",
+            }
+
+        crawl_mock = MagicMock(side_effect=crawl)
+        pipeline = self._build_pipeline(
+            crawl_fn=crawl_mock,
+            resolve_monitor_urls_fn=resolve_monitor_urls,
+        )
+        monitor = {
+            **self._monitor_config(),
+            "crawl_mode": "smart",
+            "max_depth": 1,
+            "max_pages": 3,
+        }
+
+        result = pipeline.process_source(monitor)
+
+        self.assertEqual(crawl_mock.call_count, 3)
+        self.assertEqual(result["pages_crawled"], 3)
+        statuses = {item["url"]: item["status"] for item in result["url_results"]}
+        self.assertEqual(statuses["https://example.com/ec"], "first_snapshot")
+        self.assertEqual(statuses["https://example.com/ec/failing"], "error")
+        self.assertEqual(statuses["https://example.com/ec/working"], "first_snapshot")
+        self.assertEqual(result["status"], "partial")
 
 
 if __name__ == "__main__":

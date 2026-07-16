@@ -6,6 +6,10 @@ MONITORS_FILE = Path("config/monitors.json")
 SOURCES_FILE = Path("config/sources.json")
 
 ALLOWED_FREQUENCIES = {"daily", "weekly"}
+ALLOWED_CRAWL_MODES = {"single", "smart"}
+DEFAULT_CRAWL_MODE = "single"
+DEFAULT_MAX_DEPTH = 0
+DEFAULT_MAX_PAGES = 1
 
 REQUIRED_MONITOR_FIELDS = (
     "id",
@@ -57,6 +61,33 @@ def validate_monitor(monitor: dict, index: int | None = None) -> None:
             f"{label} '{monitor.get('id', '')}': frequency must be one of: {allowed}"
         )
 
+    crawl_mode = monitor.get("crawl_mode", DEFAULT_CRAWL_MODE)
+    if crawl_mode not in ALLOWED_CRAWL_MODES:
+        allowed = ", ".join(sorted(ALLOWED_CRAWL_MODES))
+        raise MonitorConfigError(
+            f"{label} '{monitor.get('id', '')}': crawl_mode must be one of: {allowed}"
+        )
+
+    max_depth = monitor.get("max_depth", DEFAULT_MAX_DEPTH)
+    if not isinstance(max_depth, int) or isinstance(max_depth, bool):
+        raise MonitorConfigError(
+            f"{label} '{monitor.get('id', '')}': max_depth must be an integer"
+        )
+    if max_depth < 0:
+        raise MonitorConfigError(
+            f"{label} '{monitor.get('id', '')}': max_depth must be >= 0"
+        )
+
+    max_pages = monitor.get("max_pages", DEFAULT_MAX_PAGES)
+    if not isinstance(max_pages, int) or isinstance(max_pages, bool):
+        raise MonitorConfigError(
+            f"{label} '{monitor.get('id', '')}': max_pages must be an integer"
+        )
+    if max_pages <= 0:
+        raise MonitorConfigError(
+            f"{label} '{monitor.get('id', '')}': max_pages must be > 0"
+        )
+
 
 def normalize_legacy_source(source: dict) -> dict:
     return {
@@ -70,6 +101,9 @@ def normalize_legacy_source(source: dict) -> dict:
             source.get("crawl_interval", ""),
         ),
         "enabled": source.get("enabled", True),
+        "crawl_mode": source.get("crawl_mode", DEFAULT_CRAWL_MODE),
+        "max_depth": source.get("max_depth", DEFAULT_MAX_DEPTH),
+        "max_pages": source.get("max_pages", DEFAULT_MAX_PAGES),
     }
 
 

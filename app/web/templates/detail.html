@@ -74,17 +74,17 @@
     </div>
 </div>
 
-{% if evidence %}
+{% if source_tree %}
 <div class="card shadow-sm border-0 mt-4">
-    <div class="card-header bg-white">Evidence / Source References</div>
+    <div class="card-header bg-white">Source References</div>
     <div class="card-body">
-        {% for item in evidence %}
+        {% for item in source_tree %}
         <div class="{% if not loop.last %}mb-4 pb-4 border-bottom{% endif %}">
+            <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+                <div class="fw-semibold">{{ item.title }}</div>
+                <span class="badge text-bg-light text-dark border">{{ item.depth_label }}</span>
+            </div>
             <div class="row g-3">
-                <div class="col-md-6">
-                    <div class="text-muted small">Source</div>
-                    <div class="fw-semibold">{{ item.name }}</div>
-                </div>
                 <div class="col-md-6">
                     <div class="text-muted small">URL</div>
                     <div>
@@ -95,6 +95,14 @@
                         {% endif %}
                     </div>
                 </div>
+                <div class="col-md-6">
+                    <div class="text-muted small">Parent Monitor</div>
+                    <div>{{ item.parent_monitor_name }}</div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-muted small">Discovered Depth</div>
+                    <div>{{ item.discovered_depth if item.discovered_depth is not none else "—" }}</div>
+                </div>
                 <div class="col-md-4">
                     <div class="text-muted small">Snapshot ID</div>
                     <div>{{ item.snapshot_id if item.snapshot_id is not none else "—" }}</div>
@@ -103,7 +111,7 @@
                     <div class="text-muted small">Diff ID</div>
                     <div>{{ item.diff_id if item.diff_id is not none else "—" }}</div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-12">
                     <div class="text-muted small">Timestamp</div>
                     <div>{{ item.timestamp or "—" }}</div>
                 </div>

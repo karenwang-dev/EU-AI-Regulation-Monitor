@@ -64,6 +64,24 @@
                     <td>
                         <div class="fw-semibold">{{ change.regulation_name }}</div>
                         <div class="text-muted small">{{ change.summary }}</div>
+                        {% if change.source_url %}
+                        <div class="text-muted small mt-1">
+                            <a href="{{ change.source_url }}" target="_blank" rel="noopener noreferrer">{{ change.source_url }}</a>
+                        </div>
+                        {% endif %}
+                        {% if change.depth_label %}
+                        <div class="mt-1">
+                            <span class="badge text-bg-light text-dark border">{{ change.depth_label }}</span>
+                        </div>
+                        {% endif %}
+                        {% if change.changed_pages_count and change.changed_pages_count > 1 %}
+                        <div class="text-muted small mt-1">
+                            {{ change.changed_pages_count }} changed page(s)
+                            {% if change.source_urls %}
+                            · {{ change.source_urls|length }} source URL(s)
+                            {% endif %}
+                        </div>
+                        {% endif %}
                     </td>
                     <td>{{ change.date }}</td>
                     <td>{{ impact_badge(change.impact_level) }}</td>
