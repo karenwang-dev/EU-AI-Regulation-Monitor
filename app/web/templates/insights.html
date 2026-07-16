@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+{% from "_macros.html" import impact_badge %}
+
+{% block content %}
+<div class="page-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+    <div>
+        <h1 class="h3 mb-1">Compliance Insights</h1>
+        <p class="text-muted mb-0">Actionable compliance work summarized from the Knowledge Base.</p>
+    </div>
+    <div class="text-muted small">
+        Showing {{ insights|length }} regulation(s)
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-6 col-lg-3">
+        <div class="card shadow-sm stat-card border-danger border-0">
+            <div class="card-body">
+                <div class="text-muted small">High Priority</div>
+                <div class="display-6 text-danger">{{ summary.high_priority }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card shadow-sm stat-card border-warning border-0">
+            <div class="card-body">
+                <div class="text-muted small">Medium Priority</div>
+                <div class="display-6 text-warning">{{ summary.medium_priority }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card shadow-sm stat-card border-success border-0">
+            <div class="card-body">
+                <div class="text-muted small">Low Priority</div>
+                <div class="display-6 text-success">{{ summary.low_priority }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card shadow-sm stat-card border-0">
+            <div class="card-body">
+                <div class="text-muted small">Total Regulations</div>
+                <div class="display-6">{{ summary.total_regulations }}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3 align-items-end">
+            <div class="col-md-3">
+                <label for="searchQuery" class="form-label">Keyword Search</label>
+                <input
+                    type="text"
+                    class="form-control"
+                    id="searchQuery"
+                    name="q"
+                    value="{{ query }}"
+                    placeholder="Search title, actions, modules..."
+                >
+            </div>
+            <div class="col-md-2">
+                <label for="categoryFilter" class="form-label">Category</label>
+                <select class="form-select" id="categoryFilter" name="category">
+                    <option value="">All categories</option>
+                    {% for category in categories %}
+                    <option value="{{ category }}" {% if category_filter == category %}selected{% endif %}>
+                        {{ category }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label for="moduleFilter" class="form-label">Module</label>
+                <select class="form-select" id="moduleFilter" name="module">
+                    <option value="">All modules</option>
+                    {% for module in modules %}
+                    <option value="{{ module }}" {% if module_filter == module %}selected{% endif %}>
+                        {{ module }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label for="impactFilter" class="form-label">Impact Level</label>
+                <select class="form-select" id="impactFilter" name="impact">
+                    <option value="">All levels</option>
+                    <option value="HIGH" {% if impact_filter == "HIGH" %}selected{% endif %}>HIGH</option>
+                    <option value="MEDIUM" {% if impact_filter == "MEDIUM" %}selected{% endif %}>MEDIUM</option>
+                    <option value="LOW" {% if impact_filter == "LOW" %}selected{% endif %}>LOW</option>
+                    <option value="NONE" {% if impact_filter == "NONE" %}selected{% endif %}>NONE</option>
+                </select>
+            </div>
+            <div class="col-md-1">
+                <button type="submit" class="btn btn-primary w-100">Apply</button>
+            </div>
+            <div class="col-md-2">
+                <a href="/insights" class="btn btn-outline-secondary w-100">Reset</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0 align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Regulation Title</th>
+                    <th>Category</th>
+                    <th>Impact Level</th>
+                    <th>Affected Modules</th>
+                    <th>Recommended Actions</th>
+                    <th>Publish Date</th>
+                    <th>Effective Date</th>
+                    <th class="text-end">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if insights %}
+                    {% for insight in insights %}
+                    <tr>
+                        <td class="fw-semibold">{{ insight.title }}</td>
+                        <td>{{ insight.category }}</td>
+                        <td>{{ impact_badge(insight.impact_level) }}</td>
+                        <td>
+                            {% if insight.affected_modules %}
+                                {% for module in insight.affected_modules %}
+                                <span class="badge text-bg-light text-dark border module-badge">{{ module }}</span>
+                                {% endfor %}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if insight.recommended_actions %}
+                            <ul class="mb-0 ps-3">
+                                {% for action in insight.recommended_actions %}
+                                <li>{{ action }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+                        <td>{{ insight.publish_date }}</td>
+                        <td>{{ insight.effective_date }}</td>
+                        <td class="text-end">
+                            <a href="{{ insight.detail_url }}" class="btn btn-sm btn-outline-primary">
+                                View Detail
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="8" class="text-center text-muted py-4">
+                            No compliance insights found.
+                        </td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

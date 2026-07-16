@@ -21,6 +21,12 @@ from app.knowledge.statistics import (
     fetch_all_knowledge_items,
 )
 from app.knowledge.timeline import build_regulation_timeline
+from app.web.insight_helper import (
+    build_compliance_insights,
+    build_insight_summary,
+    filter_compliance_insights,
+    get_insight_filter_options,
+)
 from app.web.knowledge_helper import resolve_related_regulations
 from app.web.source_helper import (
     build_source_tree,
@@ -441,6 +447,42 @@ def create_dashboard_app(
                 "query": q,
                 "category_filter": category,
                 "module_filter": module,
+                "categories": categories,
+                "modules": modules,
+            },
+        )
+
+    @app.get("/insights")
+    def insights_page(
+        request: Request,
+        q: str = "",
+        category: str = "",
+        module: str = "",
+        impact: str = "",
+    ):
+        all_insights = build_compliance_insights(storage)
+        categories, modules = get_insight_filter_options(all_insights)
+        filtered_insights = filter_compliance_insights(
+            all_insights,
+            query=q,
+            category=category,
+            module=module,
+            impact=impact,
+        )
+        summary = build_insight_summary(filtered_insights)
+
+        return templates.TemplateResponse(
+            request,
+            "insights.html",
+            {
+                "title": "Compliance Insights",
+                "active_page": "insights",
+                "insights": filtered_insights,
+                "summary": summary,
+                "query": q,
+                "category_filter": category,
+                "module_filter": module,
+                "impact_filter": impact,
                 "categories": categories,
                 "modules": modules,
             },
