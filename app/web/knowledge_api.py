@@ -1,5 +1,10 @@
 from fastapi import FastAPI, HTTPException
 
+from app.knowledge.search import (
+    build_search_statistics,
+    search_knowledge_items,
+    suggest_knowledge_terms,
+)
 from app.knowledge.statistics import (
     build_knowledge_statistics,
     fetch_all_knowledge_items,
@@ -12,6 +17,56 @@ def register_knowledge_routes(
     storage_service: StorageService | None = None,
 ) -> None:
     storage = storage_service or _get_service()
+
+    @app.get("/api/search/suggest")
+    def api_search_suggest(q: str = ""):
+        try:
+            return suggest_knowledge_terms(
+                q,
+                get_items_fn=storage.get_knowledge_items,
+                get_item_fn=storage.get_knowledge_item,
+            )
+        except Exception:
+            return []
+
+    @app.get("/api/search/statistics")
+    def api_search_statistics():
+        try:
+            return build_search_statistics(
+                get_items_fn=storage.get_knowledge_items,
+                get_item_fn=storage.get_knowledge_item,
+            )
+        except Exception:
+            return {
+                "total_items": 0,
+                "searchable_fields": [
+                    "title",
+                    "summary",
+                    "requirements",
+                    "actions",
+                    "modules",
+                    "category",
+                ],
+            }
+
+    @app.get("/api/search")
+    def api_search(
+        q: str = "",
+        category: str | None = None,
+        module: str | None = None,
+        limit: int = 20,
+    ):
+        try:
+            return search_knowledge_items(
+                q,
+                category=category or None,
+                module=module or None,
+                limit=limit,
+                get_items_fn=storage.get_knowledge_items,
+                get_item_fn=storage.get_knowledge_item,
+            )
+        except Exception:
+            return []
 
     @app.get("/api/knowledge/statistics")
     def api_knowledge_statistics():

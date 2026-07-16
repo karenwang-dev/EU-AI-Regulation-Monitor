@@ -15,6 +15,15 @@ SCORE_NEWEST_BONUS = 5
 
 CANDIDATE_POOL_LIMIT = 500
 
+SEARCHABLE_FIELDS = [
+    "title",
+    "summary",
+    "requirements",
+    "actions",
+    "modules",
+    "category",
+]
+
 
 def _parse_keywords(query: str) -> list[str]:
     return [
@@ -170,6 +179,63 @@ def search_knowledge_items(
         key=lambda result: (-result["score"], -result["id"])
     )
     return ranked_results[:limit]
+
+
+def suggest_knowledge_terms(
+    query: str,
+    *,
+    limit: int = 10,
+    get_items_fn: Callable | None = None,
+    get_item_fn: Callable | None = None,
+) -> list[str]:
+    items_fn = get_items_fn or get_knowledge_items
+    item_fn = get_item_fn or get_knowledge_item
+
+    candidates = _load_candidate_items(
+        category=None,
+        module=None,
+        get_items_fn=items_fn,
+        get_item_fn=item_fn,
+    )
+
+    needle = query.lower().strip()
+    suggestions: set[str] = set()
+
+    for item in candidates:
+        title = str(item.get("title", "")).strip()
+        if title and (not needle or needle in title.lower()):
+            suggestions.add(title)
+
+        category = str(item.get("category", "")).strip()
+        if category and (not needle or needle in category.lower()):
+            suggestions.add(category)
+
+        for module_name in item.get("modules", []):
+            module_text = str(module_name).strip()
+            if module_text and (not needle or needle in module_text.lower()):
+                suggestions.add(module_text)
+
+    return sorted(suggestions, key=str.lower)[:limit]
+
+
+def build_search_statistics(
+    get_items_fn: Callable | None = None,
+    get_item_fn: Callable | None = None,
+) -> dict:
+    items_fn = get_items_fn or get_knowledge_items
+    item_fn = get_item_fn or get_knowledge_item
+
+    candidates = _load_candidate_items(
+        category=None,
+        module=None,
+        get_items_fn=items_fn,
+        get_item_fn=item_fn,
+    )
+
+    return {
+        "total_items": len(candidates),
+        "searchable_fields": SEARCHABLE_FIELDS.copy(),
+    }
 
 
 def highlight_matches(text: str, keywords: list[str]) -> str:
