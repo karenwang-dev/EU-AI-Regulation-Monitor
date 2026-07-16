@@ -165,6 +165,79 @@ class TestDashboardWeb(unittest.TestCase):
         self.assertIn(b"Added regulation section", content)
         self.assertIn(b"Review OTA security controls", content)
         self.assertIn(b"New cybersecurity requirements affect connected TVs.", content)
+        self.assertIn(b"Regulation Extraction", content)
+        self.assertIn(b"No regulation extraction available for this change.", content)
+
+    def _regulation_extraction_payload(self) -> dict:
+        return {
+            "title": "EU Cybersecurity Regulation Update",
+            "publish_date": "2026-05-07",
+            "summary": "New cybersecurity obligations for connected devices.",
+            "category": "Cybersecurity",
+            "regulation_type": "AMENDMENT",
+            "effective_date": "2028-08-02",
+            "affected_countries": ["EU"],
+            "affected_products": ["Smart TV"],
+            "affected_modules": ["Network", "Cybersecurity controls"],
+            "key_requirements": ["Assess connected device security"],
+            "actions_required": ["Update compliance checklist"],
+            "is_regulation_content": True,
+            "confidence": "HIGH",
+        }
+
+    @mock.patch("app.web.app.load_monitors", autospec=True)
+    def test_detail_page_renders_regulation_extraction(self, mock_load_monitors):
+        mock_load_monitors.return_value = [self.monitor]
+        latest_snapshot = self.store.get_latest_snapshot("ec")
+
+        self.store.save_analysis(
+            latest_snapshot["id"],
+            {
+                "impact_level": "HIGH",
+                "affected_modules": ["Network", "AI Features"],
+                "reason": "New cybersecurity requirements affect connected TVs.",
+                "recommended_actions": ["Review OTA security controls"],
+                "confidence": "HIGH",
+                "regulation_extraction": self._regulation_extraction_payload(),
+            },
+        )
+
+        response = self.client.get(f"/detail/{self.diff_id}")
+
+        self.assertEqual(response.status_code, 200)
+        content = response.content
+        self.assertIn(b"Regulation Extraction", content)
+        self.assertIn(b"EU Cybersecurity Regulation Update", content)
+        self.assertIn(b"AMENDMENT", content)
+        self.assertIn(b"2026-05-07", content)
+        self.assertIn(b"2028-08-02", content)
+        self.assertIn(b"New cybersecurity obligations for connected devices.", content)
+        self.assertIn(b"Smart TV", content)
+        self.assertIn(b"Assess connected device security", content)
+        self.assertIn(b"Update compliance checklist", content)
+        self.assertIn(b"Regulation Content", content)
+        self.assertNotIn(
+            b"No regulation extraction available for this change.",
+            content,
+        )
+
+    @mock.patch("app.web.app.load_monitors", autospec=True)
+    def test_detail_page_legacy_analysis_without_regulation_extraction(
+        self,
+        mock_load_monitors,
+    ):
+        mock_load_monitors.return_value = [self.monitor]
+
+        response = self.client.get(f"/detail/{self.diff_id}")
+
+        self.assertEqual(response.status_code, 200)
+        content = response.content
+        self.assertIn(b"Regulation Extraction", content)
+        self.assertIn(
+            b"No regulation extraction available for this change.",
+            content,
+        )
+        self.assertNotIn(b"EU Cybersecurity Regulation Update", content)
 
     @mock.patch("app.web.app.load_monitors", autospec=True)
     def test_detail_page_renders_evidence_section(self, mock_load_monitors):

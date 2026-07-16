@@ -74,6 +74,136 @@
     </div>
 </div>
 
+<div class="card shadow-sm border-0 mt-4">
+    <div class="card-header bg-white">Regulation Extraction</div>
+    <div class="card-body">
+        {% if regulation_extraction %}
+        <div class="row g-3 mb-3">
+            <div class="col-md-8">
+                <div class="text-muted small">Title</div>
+                <div class="fw-semibold mt-1">
+                    {{ regulation_extraction.title or "—" }}
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-muted small">Regulation Type</div>
+                <div class="mt-1">
+                    <span class="badge text-bg-light text-dark border">
+                        {{ regulation_extraction.regulation_type or "OTHER" }}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-3 mb-3">
+            <div class="col-md-4">
+                <div class="text-muted small">Publish Date</div>
+                <div>{{ regulation_extraction.publish_date or "—" }}</div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-muted small">Effective Date</div>
+                <div>{{ regulation_extraction.effective_date or "—" }}</div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-muted small">Confidence</div>
+                <div class="mt-1">
+                    <span class="badge text-bg-light text-dark border">
+                        {{ regulation_extraction.confidence or "LOW" }}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-3 mb-3">
+            <div class="col-md-6">
+                <div class="text-muted small">Category</div>
+                <div>{{ regulation_extraction.category or "—" }}</div>
+            </div>
+            <div class="col-md-6">
+                <div class="text-muted small">Regulation Content</div>
+                <div class="mt-1">
+                    {% if regulation_extraction.is_regulation_content %}
+                    <span class="badge text-bg-success">Yes</span>
+                    {% else %}
+                    <span class="badge text-bg-secondary">No</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <div class="text-muted small">Summary</div>
+            <p class="mb-0 mt-1">{{ regulation_extraction.summary or "—" }}</p>
+        </div>
+
+        <div class="row g-3">
+            <div class="col-md-6">
+                <div class="text-muted small">Affected Countries</div>
+                <div class="mt-1">
+                    {% if regulation_extraction.affected_countries %}
+                        {% for country in regulation_extraction.affected_countries %}
+                        <span class="badge text-bg-light text-dark border module-badge">{{ country }}</span>
+                        {% endfor %}
+                    {% else %}
+                        <span class="text-muted">None</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="text-muted small">Affected Products</div>
+                <div class="mt-1">
+                    {% if regulation_extraction.affected_products %}
+                        {% for product in regulation_extraction.affected_products %}
+                        <span class="badge text-bg-light text-dark border module-badge">{{ product }}</span>
+                        {% endfor %}
+                    {% else %}
+                        <span class="text-muted">None</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="text-muted small">Affected Modules</div>
+                <div class="mt-1">
+                    {% if regulation_extraction.affected_modules %}
+                        {% for module in regulation_extraction.affected_modules %}
+                        <span class="badge text-bg-light text-dark border module-badge">{{ module }}</span>
+                        {% endfor %}
+                    {% else %}
+                        <span class="text-muted">None</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="text-muted small">Key Requirements</div>
+                {% if regulation_extraction.key_requirements %}
+                <ul class="mb-0 mt-1 ps-3">
+                    {% for requirement in regulation_extraction.key_requirements %}
+                    <li>{{ requirement }}</li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="text-muted mb-0 mt-1">None</p>
+                {% endif %}
+            </div>
+            <div class="col-md-12">
+                <div class="text-muted small">Actions Required</div>
+                {% if regulation_extraction.actions_required %}
+                <ul class="mb-0 mt-1 ps-3">
+                    {% for action in regulation_extraction.actions_required %}
+                    <li>{{ action }}</li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="text-muted mb-0 mt-1">None</p>
+                {% endif %}
+            </div>
+        </div>
+        {% else %}
+        <p class="text-muted mb-0">No regulation extraction available for this change.</p>
+        {% endif %}
+    </div>
+</div>
+
 {% if source_tree %}
 <div class="card shadow-sm border-0 mt-4">
     <div class="card-header bg-white">Source References</div>

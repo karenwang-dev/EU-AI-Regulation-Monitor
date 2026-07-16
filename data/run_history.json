@@ -19,5 +19,12 @@
     "changed_count": 0,
     "analyzed_count": 0,
     "failed_count": 0
+  },
+  {
+    "timestamp": "2026-07-16T12:39:36.365544",
+    "total_monitors": 6,
+    "changed_count": 0,
+    "analyzed_count": 0,
+    "failed_count": 0
   }
 ]

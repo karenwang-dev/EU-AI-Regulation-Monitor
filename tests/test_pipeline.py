@@ -6,6 +6,7 @@ from unittest.mock import MagicMock, patch
 
 from app.pipeline import MonitoringPipeline, normalize_source
 from app.analysis.diff_processor import create_diff_result
+from app.ai.regulation_extractor import EXTRACTION_MODE_DIFF
 from app.crawler.crawl_cache import should_crawl
 from app.storage.service import StorageService
 
@@ -63,6 +64,23 @@ class TestMonitoringPipeline(unittest.TestCase):
             "confidence": "HIGH",
         }
 
+    def _regulation_extraction_result(self) -> dict:
+        return {
+            "title": "EU Cybersecurity Regulation Update",
+            "publish_date": "2026-05-07",
+            "summary": "New cybersecurity obligations for connected devices.",
+            "category": "Cybersecurity",
+            "regulation_type": "AMENDMENT",
+            "effective_date": "2028-08-02",
+            "affected_countries": ["EU"],
+            "affected_products": ["Smart TV"],
+            "affected_modules": ["Network", "Cybersecurity controls"],
+            "key_requirements": ["Assess connected device security"],
+            "actions_required": ["Update compliance checklist"],
+            "is_regulation_content": True,
+            "confidence": "HIGH",
+        }
+
     def _get_latest_snapshot_for_url(self, source_id: str, url: str):
         with self.store._connect() as connection:
             row = connection.execute(
@@ -84,10 +102,14 @@ class TestMonitoringPipeline(unittest.TestCase):
         self,
         crawl_fn,
         analyze_fn=None,
+        extract_regulation_fn=None,
         resolve_monitor_urls_fn=None,
     ) -> MonitoringPipeline:
         analyze_fn = analyze_fn or MagicMock(
             return_value=self._impact_result()
+        )
+        extract_regulation_fn = extract_regulation_fn or MagicMock(
+            return_value=self._regulation_extraction_result()
         )
 
         pipeline_kwargs = {
@@ -98,6 +120,7 @@ class TestMonitoringPipeline(unittest.TestCase):
             "create_diff_result_fn": create_diff_result,
             "save_diff_fn": self.store.save_diff,
             "analyze_change_impact_fn": analyze_fn,
+            "extract_regulation_fn": extract_regulation_fn,
             "save_analysis_fn": self.store.save_analysis,
             "notify_if_needed_fn": MagicMock(
                 return_value={"sent": False, "skipped": True, "reason": "test"}
@@ -130,9 +153,11 @@ class TestMonitoringPipeline(unittest.TestCase):
             return_value=self._crawl_result(markdown="# First capture")
         )
         analyze_mock = MagicMock()
+        extract_mock = MagicMock()
         pipeline = self._build_pipeline(
             crawl_fn=crawl_mock,
             analyze_fn=analyze_mock,
+            extract_regulation_fn=extract_mock,
         )
 
         result = pipeline.process_source(self._monitor_config())
@@ -142,6 +167,7 @@ class TestMonitoringPipeline(unittest.TestCase):
         self.assertIsNone(result["diff_id"])
         self.assertIsNone(result["analysis_id"])
         analyze_mock.assert_not_called()
+        extract_mock.assert_not_called()
         self.assertEqual(len(self.store.get_diff_history("ec")), 0)
 
     def test_unchanged_content_skips_ai(self):
@@ -160,9 +186,11 @@ class TestMonitoringPipeline(unittest.TestCase):
             )
         )
         analyze_mock = MagicMock()
+        extract_mock = MagicMock()
         pipeline = self._build_pipeline(
             crawl_fn=crawl_mock,
             analyze_fn=analyze_mock,
+            extract_regulation_fn=extract_mock,
         )
 
         result = pipeline.process_source(self._monitor_config())
@@ -171,6 +199,7 @@ class TestMonitoringPipeline(unittest.TestCase):
         self.assertIsNone(result["diff_id"])
         self.assertIsNone(result["analysis_id"])
         analyze_mock.assert_not_called()
+        extract_mock.assert_not_called()
         self.assertEqual(len(self.store.get_analysis_history("ec")), 0)
 
     def test_changed_diff_triggers_ai_and_saves_result(self):
@@ -188,9 +217,11 @@ class TestMonitoringPipeline(unittest.TestCase):
             )
         )
         analyze_mock = MagicMock(return_value=self._impact_result())
+        extract_mock = MagicMock(return_value=self._regulation_extraction_result())
         pipeline = self._build_pipeline(
             crawl_fn=crawl_mock,
             analyze_fn=analyze_mock,
+            extract_regulation_fn=extract_mock,
         )
 
         result = pipeline.process_source(self._monitor_config())
@@ -199,6 +230,19 @@ class TestMonitoringPipeline(unittest.TestCase):
         self.assertIsNotNone(result["diff_id"])
         self.assertIsNotNone(result["analysis_id"])
         self.assertEqual(result["impact"]["impact_level"], "HIGH")
+        self.assertEqual(
+            result["regulation_extraction"]["regulation_type"],
+            "AMENDMENT",
+        )
+
+        extract_mock.assert_called_once()
+        extract_kwargs = extract_mock.call_args.kwargs
+        self.assertEqual(extract_kwargs["mode"], EXTRACTION_MODE_DIFF)
+        self.assertEqual(extract_kwargs["monitor"]["id"], "ec")
+        self.assertIn(
+            "Added regulation section",
+            extract_kwargs["diff_result"]["added_content"],
+        )
 
         analyze_mock.assert_called_once()
         diff_arg, monitor_arg = analyze_mock.call_args.args
@@ -209,6 +253,13 @@ class TestMonitoringPipeline(unittest.TestCase):
         self.assertEqual(len(history), 1)
         self.assertEqual(history[0]["analysis"]["impact_level"], "HIGH")
         self.assertIn("Network", history[0]["analysis"]["affected_modules"])
+        self.assertEqual(
+            history[0]["analysis"]["regulation_extraction"]["title"],
+            "EU Cybersecurity Regulation Update",
+        )
+        self.assertTrue(
+            history[0]["analysis"]["regulation_extraction"]["is_regulation_content"]
+        )
 
         analysis = history[0]["analysis"]
         self.assertIn("evidence", analysis)
@@ -222,18 +273,58 @@ class TestMonitoringPipeline(unittest.TestCase):
         self.assertEqual(evidence["diff_id"], result["diff_id"])
         self.assertEqual(evidence["timestamp"], "2026-07-15T12:00:00")
         self.assertEqual(result["impact"]["evidence"], analysis["evidence"])
+        self.assertEqual(
+            result["impact"]["regulation_extraction"],
+            analysis["regulation_extraction"],
+        )
+
+    def test_regulation_extraction_runs_before_impact_analysis(self):
+        self.store.save_snapshot(
+            self._crawl_result(
+                markdown="# Old version",
+                timestamp="2026-07-15T10:00:00",
+            )
+        )
+
+        crawl_mock = MagicMock(
+            return_value=self._crawl_result(
+                markdown="# New version\nAdded regulation section",
+                timestamp="2026-07-15T12:00:00",
+            )
+        )
+        call_order: list[str] = []
+
+        def extract_side_effect(**kwargs):
+            call_order.append("extract")
+            return self._regulation_extraction_result()
+
+        def analyze_side_effect(*args, **kwargs):
+            call_order.append("impact")
+            return self._impact_result()
+
+        pipeline = self._build_pipeline(
+            crawl_fn=crawl_mock,
+            analyze_fn=MagicMock(side_effect=analyze_side_effect),
+            extract_regulation_fn=MagicMock(side_effect=extract_side_effect),
+        )
+
+        pipeline.process_source(self._monitor_config())
+
+        self.assertEqual(call_order, ["extract", "impact"])
 
     def test_disabled_sources_are_not_processed(self):
         crawl_mock = MagicMock(
             return_value=self._crawl_result()
         )
         analyze_mock = MagicMock()
+        extract_mock = MagicMock()
         pipeline = MonitoringPipeline(
             crawl_fn=crawl_mock,
             save_snapshot_fn=self.store.save_snapshot,
             get_latest_snapshot_fn=self.store.get_latest_snapshot,
             save_diff_fn=self.store.save_diff,
             analyze_change_impact_fn=analyze_mock,
+            extract_regulation_fn=extract_mock,
             save_analysis_fn=self.store.save_analysis,
             notify_if_needed_fn=MagicMock(),
             load_sources_fn=lambda: [
@@ -248,6 +339,7 @@ class TestMonitoringPipeline(unittest.TestCase):
 
         crawl_mock.assert_not_called()
         analyze_mock.assert_not_called()
+        extract_mock.assert_not_called()
         self.assertEqual(results, [])
 
     @patch("app.crawler.url_resolver.discover_links")

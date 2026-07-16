@@ -222,5 +222,110 @@
     "timestamp": "2026-07-16T10:23:01.427758",
     "file": "data\\raw\\2026-07-16\\bmukn_102301.md",
     "hash": "958c982f0c08794ba7a4fda872722a42d3203caff8387cc5a7005d2dd265cf85"
+  },
+  {
+    "source_id": "eu_ai_act",
+    "url": "https://digital-strategy.ec.europa.eu/en/library/factsheet-action-plan-cybersecurity-and-artificial-intelligence",
+    "timestamp": "2026-07-16T12:39:13.849951",
+    "file": "data\\raw\\2026-07-16\\eu_ai_act_123913.md",
+    "hash": "b9e324afc1c7893cd4125c64141be5de95bf827900fb7956c3e85ecce54a3973"
+  },
+  {
+    "source_id": "eu_ai_act",
+    "url": "https://digital-strategy.ec.europa.eu/en/news/commission-presents-eu-action-plan-cybersecurity-and-artificial-intelligence",
+    "timestamp": "2026-07-16T12:39:16.219148",
+    "file": "data\\raw\\2026-07-16\\eu_ai_act_123916.md",
+    "hash": "d005e88be606d6b1e6f2b89fdaa8e7e143770ca64f7ae73047e14eddf2624ca1"
+  },
+  {
+    "source_id": "eu_ai_act",
+    "url": "https://digital-strategy.ec.europa.eu/en/library/commission-publishes-guidelines-prohibited-artificial-intelligence-ai-practices-defined-ai-act",
+    "timestamp": "2026-07-16T12:39:18.008238",
+    "file": "data\\raw\\2026-07-16\\eu_ai_act_123918.md",
+    "hash": "b3845fe387c2583b544b575d35cfa8636e62cfed2ddf0a78875c12f77ced87c3"
+  },
+  {
+    "source_id": "eu_ai_act",
+    "url": "https://digital-strategy.ec.europa.eu/en/library/eu-action-plan-cybersecurity-and-artificial-intelligence",
+    "timestamp": "2026-07-16T12:39:19.060540",
+    "file": "data\\raw\\2026-07-16\\eu_ai_act_123919.md",
+    "hash": "6eb48c7d7b57b0f7b1792499dd9f58fa3c0412a9cdb6af935ccb49d0a62ba6f2"
+  },
+  {
+    "source_id": "eu_ai_act",
+    "url": "https://digital-strategy.ec.europa.eu/en/faqs/navigating-ai-act",
+    "timestamp": "2026-07-16T12:39:20.325923",
+    "file": "data\\raw\\2026-07-16\\eu_ai_act_123920.md",
+    "hash": "fc7f991c4c568782dd3df4c9fe32efb93f648d96bc5020aa92aec9b98e080a2c"
+  },
+  {
+    "source_id": "eu_ai_act",
+    "url": "https://digital-strategy.ec.europa.eu/en/library/commission-publishes-guidelines-ai-system-definition-facilitate-first-ai-acts-rules-application",
+    "timestamp": "2026-07-16T12:39:22.614409",
+    "file": "data\\raw\\2026-07-16\\eu_ai_act_123922.md",
+    "hash": "afdb9d8d82759f7cc451f4a00575af7041d023196772148a13282a4f4de79664"
+  },
+  {
+    "source_id": "eu_ai_act",
+    "url": "https://digital-strategy.ec.europa.eu/en/news/supporting-implementation-ai-act-clear-guidelines",
+    "timestamp": "2026-07-16T12:39:24.586057",
+    "file": "data\\raw\\2026-07-16\\eu_ai_act_123924.md",
+    "hash": "61f9f3cbb9532178e6731cb85c20970e738c4af363608f5a31bebb8d78e56188"
+  },
+  {
+    "source_id": "eu_ai_act",
+    "url": "https://digital-strategy.ec.europa.eu/en/policies/ai-act-governance-and-enforcement",
+    "timestamp": "2026-07-16T12:39:26.534985",
+    "file": "data\\raw\\2026-07-16\\eu_ai_act_123926.md",
+    "hash": "52cfefaff2412c0e8cdc3e5d1cec32fb0a54bb7ab517751858440d977effaf1d"
+  },
+  {
+    "source_id": "eu_ai_act",
+    "url": "https://digital-strategy.ec.europa.eu/en/policies/ai-act-standardisation",
+    "timestamp": "2026-07-16T12:39:28.540814",
+    "file": "data\\raw\\2026-07-16\\eu_ai_act_123928.md",
+    "hash": "92e3f66c302818e9463bd107e19354d84e51c6705ac9693d1cd7e77eecd30dfa"
+  },
+  {
+    "source_id": "eu_ai_act",
+    "url": "https://digital-strategy.ec.europa.eu/en/policies/ai-act-whistleblower-tool",
+    "timestamp": "2026-07-16T12:39:31.152340",
+    "file": "data\\raw\\2026-07-16\\eu_ai_act_123931.md",
+    "hash": "65570e3c5538e6037b26c45583fd07a2c1b905205ff020bab950f0cb77bcec7b"
+  },
+  {
+    "source_id": "eu_product_compliance",
+    "url": "https://single-market-economy.ec.europa.eu/sectors/electrical-and-electronic-engineering-industries_en",
+    "timestamp": "2026-07-16T12:39:32.125460",
+    "file": "data\\raw\\2026-07-16\\eu_product_compliance_123932.md",
+    "hash": "966e6a80890bfc2afd2664ef7c4dabc803b33255a193845d1bb9545ff599ba40"
+  },
+  {
+    "source_id": "ec",
+    "url": "https://commission.europa.eu/index_en",
+    "timestamp": "2026-07-16T12:39:33.135684",
+    "file": "data\\raw\\2026-07-16\\ec_123933.md",
+    "hash": "17d5bd6f89c693143ee10f7d7d68c1ebbf815102e53ef9093893ac9772824926"
+  },
+  {
+    "source_id": "eu_portal",
+    "url": "https://european-union.europa.eu/index_en",
+    "timestamp": "2026-07-16T12:39:34.176344",
+    "file": "data\\raw\\2026-07-16\\eu_portal_123934.md",
+    "hash": "da2b3b8dc2d6265f32fb1f75f31c90d9f7a5a72887da8dc1515fe96ec892821c"
+  },
+  {
+    "source_id": "boe",
+    "url": "https://www.boe.es/",
+    "timestamp": "2026-07-16T12:39:35.165715",
+    "file": "data\\raw\\2026-07-16\\boe_123935.md",
+    "hash": "90f4c6a0399cbaa397740c3c65951ef19526e8f7ac45597b24b5ced6207b2869"
+  },
+  {
+    "source_id": "bmukn",
+    "url": "https://www.bundesumweltministerium.de/en",
+    "timestamp": "2026-07-16T12:39:36.336623",
+    "file": "data\\raw\\2026-07-16\\bmukn_123936.md",
+    "hash": "958c982f0c08794ba7a4fda872722a42d3203caff8387cc5a7005d2dd265cf85"
   }
 ]

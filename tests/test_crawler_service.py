@@ -57,6 +57,26 @@ class TestCrawlerService(unittest.TestCase):
 
         self.assertEqual(result["title"], "EU RED/EMC")
 
+    @patch("app.crawler.service._scrape")
+    @patch("app.crawler.service.is_pdf_url", return_value=False)
+    def test_crawl_uses_firecrawl_for_html_urls(self, mock_is_pdf, mock_scrape):
+        mock_scrape.return_value = CrawlResult(
+            markdown="# HTML page",
+            title="HTML Page",
+        )
+
+        source = {
+            "source_id": "eu_ai_act",
+            "name": "EU AI Act",
+            "url": "https://example.com/ai-act",
+        }
+
+        result = crawl(source)
+
+        mock_is_pdf.assert_called_once_with(source["url"])
+        mock_scrape.assert_called_once_with(source["url"])
+        self.assertEqual(result["markdown"], "# HTML page")
+
 
 if __name__ == "__main__":
     unittest.main()

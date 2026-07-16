@@ -4,6 +4,14 @@ from typing import Any
 from firecrawl import FirecrawlApp
 
 from app.core.config import FIRECRAWL_API_KEY
+from app.crawler.pdf_handler import (
+    PdfDownloadError,
+    PdfExtractionError,
+    download_pdf,
+    extract_pdf_text,
+    extract_pdf_title,
+    is_pdf_url,
+)
 
 
 _client = FirecrawlApp(
@@ -44,8 +52,32 @@ def _scrape(url: str) -> Any:
     )
 
 
+def _crawl_pdf(source: dict) -> dict:
+    url = source["url"]
+    fallback_title = source.get("name", "")
+
+    pdf_path = download_pdf(url)
+    markdown = extract_pdf_text(pdf_path)
+    title = extract_pdf_title(pdf_path, fallback=fallback_title) or fallback_title
+
+    return {
+        "source_id": source["source_id"],
+        "url": url,
+        "title": title,
+        "markdown": markdown,
+        "timestamp": datetime.now().isoformat(),
+    }
+
+
 def crawl(source: dict) -> dict:
     url = source["url"]
+
+    if is_pdf_url(url):
+        try:
+            return _crawl_pdf(source)
+        except (PdfDownloadError, PdfExtractionError) as error:
+            raise RuntimeError(str(error)) from error
+
     result = _scrape(url)
 
     return {

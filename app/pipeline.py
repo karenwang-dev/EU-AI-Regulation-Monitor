@@ -4,6 +4,10 @@ from app.crawler.url_resolver import resolve_monitor_urls
 from app.source.source_loader import load_monitors
 from app.analysis.diff_processor import create_diff_result
 from app.ai.impact_analyzer import analyze_change_impact
+from app.ai.regulation_extractor import (
+    EXTRACTION_MODE_DIFF,
+    extract_regulation,
+)
 from app.notification.notifier import notify_if_needed
 from app.storage.service import (
     _get_service,
@@ -58,6 +62,7 @@ class MonitoringPipeline:
         create_diff_result_fn=create_diff_result,
         save_diff_fn=save_diff,
         analyze_change_impact_fn=analyze_change_impact,
+        extract_regulation_fn=extract_regulation,
         save_analysis_fn=save_analysis,
         notify_if_needed_fn=notify_if_needed,
         load_sources_fn=load_monitors,
@@ -74,6 +79,7 @@ class MonitoringPipeline:
         self.create_diff_result_fn = create_diff_result_fn
         self.save_diff_fn = save_diff_fn
         self.analyze_change_impact_fn = analyze_change_impact_fn
+        self.extract_regulation_fn = extract_regulation_fn
         self.save_analysis_fn = save_analysis_fn
         self.notify_if_needed_fn = notify_if_needed_fn
         self.load_sources_fn = load_sources_fn
@@ -200,7 +206,13 @@ class MonitoringPipeline:
 
         saved_diff = self.save_diff_fn(diff_result)
 
+        regulation_extraction = self.extract_regulation_fn(
+            monitor=source,
+            mode=EXTRACTION_MODE_DIFF,
+            diff_result=saved_diff,
+        )
         impact = self.analyze_change_impact_fn(saved_diff, source)
+        impact["regulation_extraction"] = regulation_extraction
         impact["evidence"] = [
             {
                 "source_id": source["id"],
@@ -243,6 +255,7 @@ class MonitoringPipeline:
                 "diff_text": saved_diff["diff_text"],
             },
             "impact": impact,
+            "regulation_extraction": regulation_extraction,
         }
 
     def _aggregate_url_results(

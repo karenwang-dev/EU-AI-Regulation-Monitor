@@ -347,6 +347,9 @@ def create_dashboard_app(
             monitor_map=monitor_map,
             snapshot=snapshot,
         )
+        regulation_extraction = None
+        if analysis_data:
+            regulation_extraction = analysis_data.get("regulation_extraction")
 
         return templates.TemplateResponse(
             request,
@@ -358,6 +361,7 @@ def create_dashboard_app(
                 "analysis": analysis_data,
                 "analysis_id": analysis["id"] if analysis else None,
                 "source_tree": source_tree,
+                "regulation_extraction": regulation_extraction,
                 "regulation_name": monitor.get("name", diff["source_id"]),
                 "monitor_url": monitor.get("url", ""),
                 "change_date": diff.get("created_at", ""),
