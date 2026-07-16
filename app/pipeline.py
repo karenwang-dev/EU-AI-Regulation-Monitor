@@ -1,4 +1,5 @@
 from app.crawler.service import crawl
+from app.crawler.crawl_cache import should_crawl
 from app.crawler.url_resolver import resolve_monitor_urls
 from app.source.source_loader import load_monitors
 from app.analysis.diff_processor import create_diff_result
@@ -6,10 +7,13 @@ from app.ai.impact_analyzer import analyze_change_impact
 from app.notification.notifier import notify_if_needed
 from app.storage.service import (
     _get_service,
+    get_crawl_cache,
     get_latest_snapshot,
+    get_snapshot_by_id,
     save_analysis,
     save_diff,
     save_snapshot,
+    update_crawl_cache,
 )
 
 
@@ -58,6 +62,10 @@ class MonitoringPipeline:
         notify_if_needed_fn=notify_if_needed,
         load_sources_fn=load_monitors,
         resolve_monitor_urls_fn=resolve_monitor_urls,
+        should_crawl_fn=should_crawl,
+        get_crawl_cache_fn=get_crawl_cache,
+        update_crawl_cache_fn=update_crawl_cache,
+        get_snapshot_by_id_fn=get_snapshot_by_id,
     ):
         self.crawl_fn = crawl_fn
         self.save_snapshot_fn = save_snapshot_fn
@@ -70,6 +78,46 @@ class MonitoringPipeline:
         self.notify_if_needed_fn = notify_if_needed_fn
         self.load_sources_fn = load_sources_fn
         self.resolve_monitor_urls_fn = resolve_monitor_urls_fn
+        self.should_crawl_fn = should_crawl_fn
+        self.get_crawl_cache_fn = get_crawl_cache_fn
+        self.update_crawl_cache_fn = update_crawl_cache_fn
+        self.get_snapshot_by_id_fn = get_snapshot_by_id_fn
+
+    def _fetch_snapshot_for_url(
+        self,
+        source: dict,
+        normalized: dict,
+        url_target: dict,
+    ) -> tuple[dict, bool]:
+        target_url = url_target["url"]
+        frequency = source.get("frequency", normalized["frequency"])
+
+        if not self.should_crawl_fn(target_url, frequency):
+            cache_entry = self.get_crawl_cache_fn(target_url)
+            if cache_entry is not None:
+                cached_snapshot = self.get_snapshot_by_id_fn(
+                    cache_entry["last_snapshot_id"]
+                )
+                if cached_snapshot is not None:
+                    return cached_snapshot, True
+
+        crawl_source = {
+            **normalized,
+            "url": target_url,
+            "name": url_target.get("title") or normalized["name"],
+            "parent_monitor_id": source["id"],
+            "discovered_depth": url_target["depth"],
+        }
+        crawl_result = self.crawl_fn(crawl_source)
+        crawl_result["parent_monitor_id"] = source["id"]
+        crawl_result["discovered_depth"] = url_target["depth"]
+        snapshot = self.save_snapshot_fn(crawl_result)
+        self.update_crawl_cache_fn(
+            target_url,
+            snapshot["id"],
+            snapshot["hash"],
+        )
+        return snapshot, False
 
     def _process_url(
         self,
@@ -81,21 +129,15 @@ class MonitoringPipeline:
         target_url = url_target["url"]
         target_depth = url_target["depth"]
 
-        crawl_source = {
-            **normalized,
-            "url": target_url,
-            "name": url_target.get("title") or normalized["name"],
-            "parent_monitor_id": source["id"],
-            "discovered_depth": target_depth,
-        }
         previous_snapshot = self.get_latest_snapshot_for_url_fn(
             source_id,
             target_url,
         )
-        crawl_result = self.crawl_fn(crawl_source)
-        crawl_result["parent_monitor_id"] = source["id"]
-        crawl_result["discovered_depth"] = target_depth
-        snapshot = self.save_snapshot_fn(crawl_result)
+        snapshot, cache_hit = self._fetch_snapshot_for_url(
+            source,
+            normalized,
+            url_target,
+        )
 
         base_result = {
             "url": target_url,
@@ -103,7 +145,13 @@ class MonitoringPipeline:
             "snapshot_id": snapshot["id"],
             "parent_monitor_id": source["id"],
             "discovered_depth": target_depth,
+            "cache_hit": cache_hit,
         }
+
+        if cache_hit:
+            base_result["message_prefix"] = "Crawl cache hit;"
+        else:
+            base_result["message_prefix"] = ""
 
         if previous_snapshot is None:
             return {
@@ -112,7 +160,10 @@ class MonitoringPipeline:
                 "diff_id": None,
                 "analysis_id": None,
                 "first_snapshot": True,
-                "message": "First snapshot captured; no diff available.",
+                "message": (
+                    f"{base_result['message_prefix']} First snapshot captured; "
+                    "no diff available."
+                ).strip(),
             }
 
         if previous_snapshot["hash"] == snapshot["hash"]:
@@ -122,7 +173,10 @@ class MonitoringPipeline:
                 "diff_id": None,
                 "analysis_id": None,
                 "first_snapshot": False,
-                "message": "Content unchanged; diff and AI analysis skipped.",
+                "message": (
+                    f"{base_result['message_prefix']} Content unchanged; "
+                    "diff and AI analysis skipped."
+                ).strip(),
             }
 
         diff_result = self.create_diff_result_fn(
@@ -138,7 +192,10 @@ class MonitoringPipeline:
                 "diff_id": None,
                 "analysis_id": None,
                 "first_snapshot": False,
-                "message": "Content unchanged; diff and AI analysis skipped.",
+                "message": (
+                    f"{base_result['message_prefix']} Content unchanged; "
+                    "diff and AI analysis skipped."
+                ).strip(),
             }
 
         saved_diff = self.save_diff_fn(diff_result)
@@ -171,7 +228,10 @@ class MonitoringPipeline:
             "diff_id": saved_diff["id"],
             "analysis_id": analysis_record["id"],
             "first_snapshot": False,
-            "message": "Content changed; diff stored and impact analyzed.",
+            "message": (
+                f"{base_result['message_prefix']} Content changed; "
+                "diff stored and impact analyzed."
+            ).strip(),
             "notification": notification_result,
             "diff": {
                 "source_id": saved_diff["source_id"],

@@ -61,6 +61,19 @@ CREATE INDEX IF NOT EXISTS idx_diffs_source_id
 
 CREATE INDEX IF NOT EXISTS idx_diffs_new_snapshot_id
     ON diffs(new_snapshot_id);
+
+CREATE TABLE IF NOT EXISTS crawl_cache (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    url TEXT NOT NULL UNIQUE,
+    last_snapshot_id INTEGER NOT NULL,
+    last_hash TEXT NOT NULL,
+    last_crawled_at TEXT NOT NULL,
+    created_at TEXT NOT NULL,
+    FOREIGN KEY (last_snapshot_id) REFERENCES snapshots(id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_crawl_cache_url
+    ON crawl_cache(url);
 """
 
 
@@ -276,6 +289,81 @@ class StorageService:
 
         return self._row_to_snapshot(row)
 
+    def get_snapshot_by_id(self, snapshot_id: int) -> dict | None:
+        with self._connect() as connection:
+            row = connection.execute(
+                "SELECT * FROM snapshots WHERE id = ?",
+                (snapshot_id,),
+            ).fetchone()
+
+        if row is None:
+            return None
+
+        return self._row_to_snapshot(row)
+
+    def get_crawl_cache(self, url: str) -> dict | None:
+        with self._connect() as connection:
+            row = connection.execute(
+                "SELECT * FROM crawl_cache WHERE url = ?",
+                (url,),
+            ).fetchone()
+
+        if row is None:
+            return None
+
+        return {
+            "id": row["id"],
+            "url": row["url"],
+            "last_snapshot_id": row["last_snapshot_id"],
+            "last_hash": row["last_hash"],
+            "last_crawled_at": row["last_crawled_at"],
+            "created_at": row["created_at"],
+        }
+
+    def update_crawl_cache(
+        self,
+        url: str,
+        snapshot_id: int,
+        content_hash: str,
+    ) -> dict:
+        now = datetime.now().isoformat()
+
+        with self._connect() as connection:
+            existing = connection.execute(
+                "SELECT id FROM crawl_cache WHERE url = ?",
+                (url,),
+            ).fetchone()
+
+            if existing is None:
+                connection.execute(
+                    """
+                    INSERT INTO crawl_cache (
+                        url,
+                        last_snapshot_id,
+                        last_hash,
+                        last_crawled_at,
+                        created_at
+                    ) VALUES (?, ?, ?, ?, ?)
+                    """,
+                    (url, snapshot_id, content_hash, now, now),
+                )
+            else:
+                connection.execute(
+                    """
+                    UPDATE crawl_cache
+                    SET last_snapshot_id = ?,
+                        last_hash = ?,
+                        last_crawled_at = ?
+                    WHERE url = ?
+                    """,
+                    (snapshot_id, content_hash, now, url),
+                )
+
+        cache_entry = self.get_crawl_cache(url)
+        if cache_entry is None:
+            raise ValueError(f"Failed to update crawl cache for URL: {url}")
+        return cache_entry
+
     def save_analysis(self, snapshot_id: int, analysis: dict) -> dict:
         with self._connect() as connection:
             snapshot = connection.execute(
@@ -434,6 +522,22 @@ def save_snapshot(crawl_result: dict) -> dict:
 
 def get_latest_snapshot(source_id: str) -> dict | None:
     return _get_service().get_latest_snapshot(source_id)
+
+
+def get_snapshot_by_id(snapshot_id: int) -> dict | None:
+    return _get_service().get_snapshot_by_id(snapshot_id)
+
+
+def get_crawl_cache(url: str) -> dict | None:
+    return _get_service().get_crawl_cache(url)
+
+
+def update_crawl_cache(
+    url: str,
+    snapshot_id: int,
+    content_hash: str,
+) -> dict:
+    return _get_service().update_crawl_cache(url, snapshot_id, content_hash)
 
 
 def save_analysis(snapshot_id: int, analysis: dict) -> dict:

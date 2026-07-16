@@ -6,6 +6,7 @@ from unittest.mock import MagicMock, patch
 
 from app.pipeline import MonitoringPipeline, normalize_source
 from app.analysis.diff_processor import create_diff_result
+from app.crawler.crawl_cache import should_crawl
 from app.storage.service import StorageService
 
 
@@ -102,6 +103,14 @@ class TestMonitoringPipeline(unittest.TestCase):
                 return_value={"sent": False, "skipped": True, "reason": "test"}
             ),
             "load_sources_fn": lambda: [self._monitor_config()],
+            "get_crawl_cache_fn": self.store.get_crawl_cache,
+            "update_crawl_cache_fn": self.store.update_crawl_cache,
+            "get_snapshot_by_id_fn": self.store.get_snapshot_by_id,
+            "should_crawl_fn": lambda url, frequency: should_crawl(
+                url,
+                frequency,
+                get_cache_fn=self.store.get_crawl_cache,
+            ),
         }
         if resolve_monitor_urls_fn is not None:
             pipeline_kwargs["resolve_monitor_urls_fn"] = resolve_monitor_urls_fn
