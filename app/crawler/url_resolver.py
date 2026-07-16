@@ -3,6 +3,7 @@ from __future__ import annotations
 from urllib.parse import urlparse, urlunparse
 
 from app.crawler.link_discovery import discover_links
+from app.crawler.url_ranker import rank_urls
 from app.source.source_loader import (
     DEFAULT_CRAWL_MODE,
     DEFAULT_MAX_DEPTH,
@@ -18,6 +19,7 @@ def _normalize_url(url: str) -> str:
 def resolve_monitor_urls(
     monitor: dict,
     discover_links_fn=discover_links,
+    rank_urls_fn=rank_urls,
 ) -> list[dict]:
     crawl_mode = monitor.get("crawl_mode", DEFAULT_CRAWL_MODE)
     root_url = monitor["url"]
@@ -33,7 +35,7 @@ def resolve_monitor_urls(
     max_pages = monitor.get("max_pages", DEFAULT_MAX_PAGES)
     max_depth = monitor.get("max_depth", DEFAULT_MAX_DEPTH)
 
-    targets = [root_entry]
+    links = [root_entry]
     seen_urls = {_normalize_url(root_url)}
 
     if max_depth >= 1:
@@ -45,15 +47,12 @@ def resolve_monitor_urls(
         )
 
         for item in discovered:
-            if len(targets) >= max_pages:
-                break
-
             normalized_url = _normalize_url(item["url"])
             if normalized_url in seen_urls:
                 continue
 
             seen_urls.add(normalized_url)
-            targets.append(
+            links.append(
                 {
                     "url": item["url"],
                     "title": item.get("title", item["url"]),
@@ -61,4 +60,5 @@ def resolve_monitor_urls(
                 }
             )
 
-    return targets[:max_pages]
+    ranked_links = rank_urls_fn(links, monitor)
+    return ranked_links[:max_pages]
