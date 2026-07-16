@@ -63,6 +63,23 @@ def save_report(
     return stored_report
 
 
+def update_report(
+    report: dict,
+    reports_dir: Path | str | None = None,
+) -> dict:
+    directory = _get_reports_dir(reports_dir)
+    filename = report.get("filename")
+    if not filename:
+        raise ValueError("Report filename is required for update")
+
+    path = directory / filename
+    path.write_text(
+        json.dumps(report, ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
+    return report
+
+
 def get_report_history(
     limit: int = 20,
     reports_dir: Path | str | None = None,

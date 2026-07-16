@@ -3,5 +3,9 @@
   "frequency": "weekly",
   "day": "mon",
   "hour": 8,
-  "minute": 30
+  "minute": 30,
+  "email_enabled": true,
+  "recipients": [
+    "team@example.com"
+  ]
 }

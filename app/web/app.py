@@ -508,6 +508,11 @@ def create_dashboard_app(
                 "report": report_view,
                 "summary": summary,
                 "key_changes": key_changes,
+                "email_status": (
+                    report.get("email_status", "Disabled")
+                    if report
+                    else "Disabled"
+                ),
             },
         )
 

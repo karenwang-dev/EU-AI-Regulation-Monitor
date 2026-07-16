@@ -68,6 +68,22 @@
 </div>
 
 <div class="card shadow-sm border-0 mb-4">
+    <div class="card-header bg-white">Email Status</div>
+    <div class="card-body">
+        {% if email_status == "Sent" %}
+        <span class="badge text-bg-success">Sent</span>
+        {% elif email_status == "Failed" %}
+        <span class="badge text-bg-danger">Failed</span>
+        {% else %}
+        <span class="badge text-bg-secondary">Disabled</span>
+        {% endif %}
+        {% if report and report.email_notification and report.email_notification.reason %}
+        <div class="text-muted small mt-2">{{ report.email_notification.reason }}</div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card shadow-sm border-0 mb-4">
     <div class="card-header bg-white">Executive Summary</div>
     <div class="card-body">
         {% if report and report.executive_summary %}

@@ -4,7 +4,8 @@ from pathlib import Path
 
 from app.report.ai_generator import REPORT_TITLE, generate_weekly_report
 from app.report.builder import build_weekly_report
-from app.report.storage import save_report
+from app.report.notifier import notify_weekly_report
+from app.report.storage import DEFAULT_REPORTS_DIR, save_report, update_report
 from app.storage.service import StorageService, _get_service
 
 
@@ -75,11 +76,47 @@ def create_and_save_weekly_report(
     build_weekly_report_fn=build_weekly_report,
     generate_weekly_report_fn=generate_weekly_report,
     save_report_fn=save_report,
+    notify_weekly_report_fn=notify_weekly_report,
+    update_report_fn=update_report,
 ) -> dict:
     service = storage or _get_service()
     report_data = build_weekly_report_fn(storage=service)
     generated = generate_weekly_report_fn(report_data, client=client)
-    return save_report_fn(
+    stored = save_report_fn(
         assemble_stored_report(report_data, generated),
+        reports_dir=reports_dir,
+    )
+
+    reports_root = (
+        Path(reports_dir) if reports_dir is not None else DEFAULT_REPORTS_DIR
+    )
+    attachment_path = reports_root / stored["filename"]
+    notification_result = {
+        "sent": False,
+        "skipped": True,
+        "status": "Disabled",
+        "reason": "Report email notification was not attempted.",
+    }
+
+    try:
+        notification_result = notify_weekly_report_fn(
+            stored,
+            attachment_path=attachment_path,
+        )
+    except Exception as error:
+        print(f"Weekly report email notification failed: {error}")
+        notification_result = {
+            "sent": False,
+            "skipped": False,
+            "status": "Failed",
+            "reason": str(error),
+        }
+
+    return update_report_fn(
+        {
+            **stored,
+            "email_status": notification_result.get("status", "Disabled"),
+            "email_notification": notification_result,
+        },
         reports_dir=reports_dir,
     )

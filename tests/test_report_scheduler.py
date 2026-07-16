@@ -8,9 +8,9 @@ from unittest.mock import MagicMock, patch
 
 from apscheduler.schedulers.background import BackgroundScheduler
 
+from app.report.config import load_report_config
 from app.report.scheduler import (
     generate_weekly_report_job,
-    load_report_config,
     schedule_weekly_report,
 )
 from app.scheduler import create_scheduler
@@ -29,6 +29,8 @@ class TestReportScheduler(unittest.TestCase):
         self.assertEqual(config["day"], "mon")
         self.assertEqual(config["hour"], 8)
         self.assertEqual(config["minute"], 30)
+        self.assertFalse(config["email_enabled"])
+        self.assertEqual(config["recipients"], [])
 
     def test_load_report_config_merges_file_values(self):
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -80,15 +82,13 @@ class TestReportScheduler(unittest.TestCase):
         self.assertFalse(scheduled)
         self.assertIsNone(scheduler.get_job("weekly_report_generation"))
 
-    @patch("app.report.scheduler.create_and_save_weekly_report")
-    def test_generate_weekly_report_job_calls_generation_pipeline(
-        self,
-        mock_create_and_save,
-    ):
-        mock_create_and_save.return_value = {
-            "id": "2026-07-16_weekly_report",
-            "summary": {"total_changes": 2, "high_risk": 1},
-        }
+    def test_generate_weekly_report_job_calls_generation_pipeline(self):
+        mock_create_and_save = MagicMock(
+            return_value={
+                "id": "2026-07-16_weekly_report",
+                "summary": {"total_changes": 2, "high_risk": 1},
+            }
+        )
 
         result = generate_weekly_report_job(
             create_and_save_weekly_report_fn=mock_create_and_save,
