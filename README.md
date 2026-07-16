@@ -163,3 +163,9 @@ tests/          Unit and integration tests
 ## License
 
 Internal use only.
+
+## Release
+
+- **Current version:** see `VERSION` (1.0.0)
+- [Release notes v1.0](docs/release_notes_v1.0.md)
+- [Test report](docs/test_report.md)

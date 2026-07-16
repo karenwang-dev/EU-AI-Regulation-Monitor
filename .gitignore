@@ -13,6 +13,12 @@ venv/
 # Generated output
 output/
 
+# Logs (keep directory via logs/.gitkeep)
+logs/*.log
+
+# Test cache
+.pytest_cache/
+
 # VS Code
 .vscode/
 
