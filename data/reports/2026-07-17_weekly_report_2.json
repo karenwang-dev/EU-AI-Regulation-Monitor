@@ -1,0 +1,27 @@
+{
+  "title": "Weekly Regulation Monitoring Report",
+  "generated_at": "2026-07-17T15:14:39.388268",
+  "period": {
+    "start": "2026-07-10",
+    "end": "2026-07-17"
+  },
+  "summary": {
+    "total_changes": 0,
+    "high_risk": 0,
+    "medium_risk": 0,
+    "low_risk": 0,
+    "affected_modules": []
+  },
+  "executive_summary": "",
+  "key_changes": [],
+  "risk_summary": "",
+  "id": "2026-07-17_weekly_report_2",
+  "filename": "2026-07-17_weekly_report_2.json",
+  "email_status": "Failed",
+  "email_notification": {
+    "sent": false,
+    "skipped": false,
+    "status": "Failed",
+    "reason": "Email send failed: [Errno 11001] getaddrinfo failed"
+  }
+}

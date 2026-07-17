@@ -1,5 +1,4 @@
 import json
-import subprocess
 import sys
 import tempfile
 import unittest
@@ -115,24 +114,25 @@ class TestReportScheduler(unittest.TestCase):
         self.assertEqual(exit_code, 0)
         mock_create_and_save.assert_called_once_with()
 
-    def test_cli_generate_report_entrypoint(self):
-        with patch("main.create_and_save_weekly_report") as mock_create_and_save:
-            mock_create_and_save.return_value = {
-                "id": "2026-07-16_weekly_report",
-                "generated_at": "2026-07-16T08:30:00",
-                "summary": {"total_changes": 0, "high_risk": 0},
-            }
+    @patch("main.create_and_save_weekly_report")
+    def test_cli_generate_report_entrypoint(self, mock_create_and_save):
+        mock_create_and_save.return_value = {
+            "id": "2026-07-16_weekly_report",
+            "generated_at": "2026-07-16T08:30:00",
+            "summary": {"total_changes": 0, "high_risk": 0},
+        }
 
-            result = subprocess.run(
-                [sys.executable, "main.py", "generate-report"],
-                cwd=Path(__file__).resolve().parents[1],
-                capture_output=True,
-                text=True,
-            )
+        import main
 
-        self.assertEqual(result.returncode, 0)
-        self.assertIn("Weekly Regulation Report Generation", result.stdout)
-        self.assertIn("2026-07-16_weekly_report", result.stdout)
+        with patch.object(sys, "argv", ["main.py", "generate-report"]):
+            with self.assertLogs("regulation_monitor.main", level="INFO") as logs:
+                exit_code = main.main()
+
+        self.assertEqual(exit_code, 0)
+        output = "\n".join(logs.output)
+        self.assertIn("Weekly Regulation Report Generation", output)
+        self.assertIn("2026-07-16_weekly_report", output)
+        mock_create_and_save.assert_called_once_with()
 
 
 if __name__ == "__main__":
