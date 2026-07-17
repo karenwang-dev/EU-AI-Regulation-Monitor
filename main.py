@@ -2,6 +2,7 @@ import sys
 
 from app.core.logging import get_logger
 from app.config.validator import validate_configuration
+from app.demo.demo_loader import build_demo_summary
 from app.pipeline import run_pipeline
 from app.report.generation import create_and_save_weekly_report
 from app.run_history import get_latest_run, save_run_history
@@ -119,12 +120,78 @@ def generate_report() -> int:
     return 0
 
 
+def run_demo(
+    *,
+    demo_dir=None,
+    config_file=None,
+) -> int:
+    logger.info("=" * 60)
+    logger.info("AI Regulation Monitor — Demo Mode")
+    logger.info("=" * 60)
+
+    demo = build_demo_summary(demo_dir=demo_dir, config_file=config_file)
+    config = demo["config"]
+    monitoring = demo["monitoring_result"]
+    analysis = demo["analysis"]
+    knowledge = demo["knowledge_item"]
+    report = demo["report"]
+
+    logger.info("Demo configuration: enabled=%s", config.get("enabled", False))
+
+    logger.info("")
+    logger.info("--- Sample Monitoring Result ---")
+    logger.info("Source: %s (%s)", monitoring["name"], monitoring["source_id"])
+    logger.info("Status: %s", monitoring["status"])
+    logger.info("Message: %s", monitoring["message"])
+    logger.info(
+        "Snapshot=%s Diff=%s Analysis=%s",
+        monitoring["snapshot_id"],
+        monitoring["diff_id"],
+        monitoring["analysis_id"],
+    )
+
+    logger.info("")
+    logger.info("--- AI Impact Analysis ---")
+    logger.info("Impact level: %s", analysis.get("impact_level"))
+    logger.info("Confidence: %s", analysis.get("confidence"))
+    logger.info("Reason: %s", analysis.get("reason"))
+    logger.info("Affected modules: %s", ", ".join(analysis.get("affected_modules", [])))
+    for index, action in enumerate(analysis.get("recommended_actions", []), start=1):
+        logger.info("  %s. %s", index, action)
+
+    logger.info("")
+    logger.info("--- Knowledge Item ---")
+    logger.info("Title: %s", knowledge.get("title"))
+    logger.info("Category: %s", knowledge.get("category"))
+    logger.info("Modules: %s", ", ".join(knowledge.get("modules", [])))
+    logger.info("Summary: %s", knowledge.get("summary"))
+
+    logger.info("")
+    logger.info("--- Report Summary ---")
+    logger.info("Report ID: %s", report.get("id"))
+    logger.info("Generated at: %s", report.get("generated_at"))
+    summary = report.get("summary", {})
+    logger.info(
+        "Changes: total=%s medium=%s low=%s",
+        summary.get("total_changes", 0),
+        summary.get("medium_risk", 0),
+        summary.get("low_risk", 0),
+    )
+    logger.info("Executive summary: %s", report.get("executive_summary", ""))
+
+    logger.info("")
+    logger.info("Demo complete — sample data from data/demo/")
+    logger.info("=" * 60)
+    return 0
+
+
 def print_usage() -> None:
     print("Usage:")
     print("  python main.py run-once")
     print("  python main.py scheduler")
     print("  python main.py status")
     print("  python main.py generate-report")
+    print("  python main.py demo")
     print("  python main.py run")
 
 
@@ -150,6 +217,9 @@ def main() -> int:
 
     if command == "generate-report":
         return generate_report()
+
+    if command == "demo":
+        return run_demo()
 
     print_usage()
     return 1
