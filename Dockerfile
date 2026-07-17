@@ -13,6 +13,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY main.py .
+COPY VERSION .
 COPY app ./app
 
 RUN mkdir -p /app/data /app/config /app/logs
