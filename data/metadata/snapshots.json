@@ -327,5 +327,187 @@
     "timestamp": "2026-07-16T12:39:36.336623",
     "file": "data\\raw\\2026-07-16\\bmukn_123936.md",
     "hash": "958c982f0c08794ba7a4fda872722a42d3203caff8387cc5a7005d2dd265cf85"
+  },
+  {
+    "source_id": "eu_ai_act",
+    "url": "https://digital-strategy.ec.europa.eu/en/library/commission-opinion-assessment-code-practice-transparency-ai-generated-content",
+    "timestamp": "2026-07-17T15:47:46.380679",
+    "file": "data\\raw\\2026-07-17\\eu_ai_act_154746.md",
+    "hash": "72ca4ae7cf02b29c201b5bdc631bb00137b31563a340a52c809f4afe1df95f9e"
+  },
+  {
+    "source_id": "eu_ai_act",
+    "url": "https://digital-strategy.ec.europa.eu/it/policies/ai-act-whistleblower-tool",
+    "timestamp": "2026-07-17T15:47:48.857628",
+    "file": "data\\raw\\2026-07-17\\eu_ai_act_154748.md",
+    "hash": "d28918e350efb5196b7fdede9ea4ed220f639e25397f4370b3dd1fbdf1f0a68a"
+  },
+  {
+    "source_id": "eu_cra",
+    "url": "https://digital-strategy.ec.europa.eu/en/policies/cyber-resilience-act",
+    "timestamp": "2026-07-17T15:48:08.067424",
+    "file": "data\\raw\\2026-07-17\\eu_cra_154808.md",
+    "hash": "5c65f49df8b7c504193ec754b2efec721b118bed3c034c9d85912f63a2f53892"
+  },
+  {
+    "source_id": "eu_cra",
+    "url": "https://digital-strategy.ec.europa.eu/en/library/cyber-resilience-act",
+    "timestamp": "2026-07-17T15:48:09.685946",
+    "file": "data\\raw\\2026-07-17\\eu_cra_154809.md",
+    "hash": "87a4ec06604e9e7dda4c0be77b20cadf443d0c97686ab722ff14d5a2d4d403ba"
+  },
+  {
+    "source_id": "eu_cra",
+    "url": "https://digital-strategy.ec.europa.eu/en/factpages/cyber-resilience-act-implementation",
+    "timestamp": "2026-07-17T15:48:11.673024",
+    "file": "data\\raw\\2026-07-17\\eu_cra_154811.md",
+    "hash": "9bc815b4adb9f9df6f3ac6d30fd58ecb233e26392f4055d225317efcabf67867"
+  },
+  {
+    "source_id": "eu_cra",
+    "url": "https://digital-strategy.ec.europa.eu/en/policies/cra-conformity-assessment",
+    "timestamp": "2026-07-17T15:48:14.352482",
+    "file": "data\\raw\\2026-07-17\\eu_cra_154814.md",
+    "hash": "56eb94a7c756dda0390a5811551b2d36131e548f8fd99c0b122cf9ddc5ecd8bb"
+  },
+  {
+    "source_id": "eu_cra",
+    "url": "https://digital-strategy.ec.europa.eu/en/policies/cra-manufacturers",
+    "timestamp": "2026-07-17T15:48:16.435962",
+    "file": "data\\raw\\2026-07-17\\eu_cra_154816.md",
+    "hash": "d714ed832e545bde0a956ffe6687100b75971cb0c95506c38f44be94445e5981"
+  },
+  {
+    "source_id": "eu_cra",
+    "url": "https://digital-strategy.ec.europa.eu/en/policies/cra-member-states",
+    "timestamp": "2026-07-17T15:48:18.666182",
+    "file": "data\\raw\\2026-07-17\\eu_cra_154818.md",
+    "hash": "eae2a5fd67328eb085743fb1c741ef43f0eacae4e809a6ad7f12fd50b614ca61"
+  },
+  {
+    "source_id": "eu_cra",
+    "url": "https://digital-strategy.ec.europa.eu/en/policies/cra-msmes",
+    "timestamp": "2026-07-17T15:48:20.666285",
+    "file": "data\\raw\\2026-07-17\\eu_cra_154820.md",
+    "hash": "4b809f9412f0d35cbc4a0e3223d6d8f971403954efef034af038d4358f650542"
+  },
+  {
+    "source_id": "eu_cra",
+    "url": "https://digital-strategy.ec.europa.eu/en/policies/cra-open-source",
+    "timestamp": "2026-07-17T15:48:23.014157",
+    "file": "data\\raw\\2026-07-17\\eu_cra_154823.md",
+    "hash": "020c55e441ba1003f9bb5277d4e0e0f51862b54385088869d7cf923e0a659b0a"
+  },
+  {
+    "source_id": "eu_cra",
+    "url": "https://digital-strategy.ec.europa.eu/en/policies/cra-reporting",
+    "timestamp": "2026-07-17T15:48:28.217598",
+    "file": "data\\raw\\2026-07-17\\eu_cra_154828.md",
+    "hash": "57b06b759442cd3c6051aaf51ec20601ea99c76e0323ffa730d9d74fafaeba59"
+  },
+  {
+    "source_id": "eu_cra",
+    "url": "https://digital-strategy.ec.europa.eu/en/policies/cra-standardisation",
+    "timestamp": "2026-07-17T15:48:30.432380",
+    "file": "data\\raw\\2026-07-17\\eu_cra_154830.md",
+    "hash": "8afe5f68ba0fe098188677eb89e86cef369138a36d5a4f7213c326625e9ab905"
+  },
+  {
+    "source_id": "eu_red",
+    "url": "https://single-market-economy.ec.europa.eu/sectors/ict/radio-equipment-directive_en",
+    "timestamp": "2026-07-17T15:48:36.560859",
+    "file": "data\\raw\\2026-07-17\\eu_red_154836.md",
+    "hash": "86e5dc0ea3e4ef934b93971ae168f73481c41d303f4b45b047735bfe6ab5a026"
+  },
+  {
+    "source_id": "eu_energy_efficiency",
+    "url": "https://single-market-economy.ec.europa.eu/single-market/goods/building-blocks/ecodesign_en",
+    "timestamp": "2026-07-17T15:48:40.397602",
+    "file": "data\\raw\\2026-07-17\\eu_energy_efficiency_154840.md",
+    "hash": "616b0bb0cd0848d6df8a3c5431a5d50ac8abbf1ef5da2fdb6f3116acc45cb100"
+  },
+  {
+    "source_id": "hbbtv",
+    "url": "https://www.hbbtv.org/",
+    "timestamp": "2026-07-17T15:48:44.582931",
+    "file": "data\\raw\\2026-07-17\\hbbtv_154844.md",
+    "hash": "4faf4202f0ff8fae1de4089da944d056d74495ec724374362566f0b7c058e06c"
+  },
+  {
+    "source_id": "hbbtv",
+    "url": "https://www.hbbtv.org",
+    "timestamp": "2026-07-17T15:48:45.630301",
+    "file": "data\\raw\\2026-07-17\\hbbtv_154845.md",
+    "hash": "4faf4202f0ff8fae1de4089da944d056d74495ec724374362566f0b7c058e06c"
+  },
+  {
+    "source_id": "hbbtv",
+    "url": "https://www.hbbtv.org/10-year-hbbtv-anniversary-special/",
+    "timestamp": "2026-07-17T15:48:48.394284",
+    "file": "data\\raw\\2026-07-17\\hbbtv_154848.md",
+    "hash": "2cea12cc910d64e0128c562fd84a03bc3c0dfb284e7125ebc40bf29de2a366a7"
+  },
+  {
+    "source_id": "hbbtv",
+    "url": "https://www.hbbtv.org/10th-hbbtv-symposium-and-awards-2022/",
+    "timestamp": "2026-07-17T15:48:51.146095",
+    "file": "data\\raw\\2026-07-17\\hbbtv_154851.md",
+    "hash": "80f9097c86dcc43b2bf2ac36ab8d7ce5e3d74fbe8c97412a7e5824486f3037be"
+  },
+  {
+    "source_id": "hbbtv",
+    "url": "https://www.hbbtv.org/11th-hbbtv-symposium-and-awards-2023/",
+    "timestamp": "2026-07-17T15:48:58.589554",
+    "file": "data\\raw\\2026-07-17\\hbbtv_154858.md",
+    "hash": "cef77b9fd3a34308d5d00d2405822eb02ee768c38b252bf65db69359e7455e5a"
+  },
+  {
+    "source_id": "dvb",
+    "url": "https://dvb.org/news/dvb-i-book-germany-approved-clearing-path-to-market-launch/",
+    "timestamp": "2026-07-17T15:49:03.057700",
+    "file": "data\\raw\\2026-07-17\\dvb_154903.md",
+    "hash": "b9ba2d1cd1aea18d77a4ee2c94e530b3b6f5980ba3cd1c2b51667fc526630ff3"
+  },
+  {
+    "source_id": "dvb",
+    "url": "https://dvb.org/news/dvb-steering-board-approves-major-dvb-i-update-package/",
+    "timestamp": "2026-07-17T15:49:11.479933",
+    "file": "data\\raw\\2026-07-17\\dvb_154911.md",
+    "hash": "d402aa75d2990c1bfafbd88043778ecb172b58f5572941517c37f14f1ed2380d"
+  },
+  {
+    "source_id": "dvb",
+    "url": "https://dvb.org/news/how-we-built-a-reference-live-streaming-infrastructure-for-dvb-i-services/",
+    "timestamp": "2026-07-17T15:49:14.401811",
+    "file": "data\\raw\\2026-07-17\\dvb_154914.md",
+    "hash": "8d85809f276acfc0e18a464f810d233f969623249bc663581eb7b9baa858a312"
+  },
+  {
+    "source_id": "dvb",
+    "url": "https://dvb.org/about",
+    "timestamp": "2026-07-17T15:49:18.272941",
+    "file": "data\\raw\\2026-07-17\\dvb_154918.md",
+    "hash": "7c9767c4fcf2cc40e44741173f7db60289f94ae5f02853e7fa652ebd883da428"
+  },
+  {
+    "source_id": "dvb",
+    "url": "https://dvb.org/solutions",
+    "timestamp": "2026-07-17T15:49:22.822976",
+    "file": "data\\raw\\2026-07-17\\dvb_154922.md",
+    "hash": "e7c5d657f603bf4816db187a0eb8bea9b84da9216facf467d144bd39c69982e5"
+  },
+  {
+    "source_id": "ci_plus",
+    "url": "https://www.ci-plus.com/",
+    "timestamp": "2026-07-17T15:49:27.308865",
+    "file": "data\\raw\\2026-07-17\\ci_plus_154927.md",
+    "hash": "5d7d1f924750d5ca6c58a9401b838fbdea2b5a5824cc16beb678489b89c66c13"
+  },
+  {
+    "source_id": "de_bnetza",
+    "url": "https://www.bundesnetzagentur.de/en",
+    "timestamp": "2026-07-17T15:49:31.732793",
+    "file": "data\\raw\\2026-07-17\\de_bnetza_154931.md",
+    "hash": "a3c22422bca5ac7fc44ca4e0f10f7888f7b0eec5d4312bb04f82620ece6f67d1"
   }
 ]

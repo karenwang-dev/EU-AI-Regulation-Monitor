@@ -2,8 +2,8 @@
   "monitors": [
     {
       "id": "eu_ai_act",
-      "name": "EU AI Act",
-      "url": "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai",
+      "name": "Digital Inclusion",
+      "url": "https://digital-strategy.ec.europa.eu/en/policies/digital-inclusion",
       "keywords": [
         "AI Act",
         "Artificial Intelligence Act",
@@ -15,13 +15,13 @@
       "frequency": "weekly",
       "enabled": true,
       "crawl_mode": "smart",
-      "max_depth": 2,
+      "max_depth": 3,
       "max_pages": 10
     },
     {
       "id": "eu_cra",
-      "name": "Cyber Resilience Act (CRA)",
-      "url": "https://digital-strategy.ec.europa.eu/en/policies/cyber-resilience-act",
+      "name": "Cybersecurity",
+      "url": "https://digital-strategy.ec.europa.eu/en/policies/cybersecurity",
       "keywords": [
         "Cyber Resilience Act",
         "CRA",
@@ -29,44 +29,49 @@
         "security update",
         "incident reporting"
       ],
-      "category": "Cybersecurity Regulation",
+      "category": "Cybersecurity",
       "frequency": "weekly",
       "enabled": true,
       "crawl_mode": "smart",
-      "max_depth": 2,
+      "max_depth": 3,
       "max_pages": 10
     },
     {
       "id": "eu_red",
-      "name": "Radio Equipment Directive (RED)",
-      "url": "https://single-market-economy.ec.europa.eu/sectors/ict/radio-equipment-directive_en",
+      "name": "EEI",
+      "url": "https://single-market-economy.ec.europa.eu/sectors/electrical-and-electronic-engineering-industries-eei_en",
       "keywords": [
-        "Radio Equipment Directive",
-        "RED",
-        "Article 3",
-        "cybersecurity"
+        "radio equipment",
+        "updates",
+        "revision",
+        "modification",
+        "tv sets",
+        "display product",
+        "consumer electronic"
       ],
       "category": "Product Compliance",
       "frequency": "weekly",
       "enabled": true,
       "crawl_mode": "smart",
-      "max_depth": 2,
+      "max_depth": 3,
       "max_pages": 10
     },
     {
       "id": "eu_energy_efficiency",
-      "name": "Energy Efficiency Regulation",
-      "url": "https://single-market-economy.ec.europa.eu/single-market/goods/building-blocks/ecodesign_en",
+      "name": "raw materials",
+      "url": "https://single-market-economy.ec.europa.eu/sectors/raw-materials_en",
       "keywords": [
-        "energy label",
-        "ecodesign",
-        "standby power"
+        "packaging",
+        "package boxes",
+        "carton box",
+        "consumer electronics",
+        "recycled material"
       ],
-      "category": "Energy Regulation",
+      "category": "Other",
       "frequency": "weekly",
       "enabled": true,
       "crawl_mode": "smart",
-      "max_depth": 2,
+      "max_depth": 3,
       "max_pages": 10
     },
     {
@@ -132,6 +137,44 @@
       "enabled": true,
       "crawl_mode": "smart",
       "max_depth": 2,
+      "max_pages": 10
+    },
+    {
+      "id": "green_digital",
+      "name": "Green Digital",
+      "url": "https://digital-strategy.ec.europa.eu/en/policies/green-digital",
+      "keywords": [
+        "display product",
+        "consumer product",
+        "electronic",
+        "television",
+        "packaging"
+      ],
+      "category": "AI Regulation",
+      "frequency": "weekly",
+      "enabled": true,
+      "crawl_mode": "smart",
+      "max_depth": 3,
+      "max_pages": 10
+    },
+    {
+      "id": "chemicals",
+      "name": "Chemicals",
+      "url": "https://single-market-economy.ec.europa.eu/sectors/chemicals_en",
+      "keywords": [
+        "new",
+        "display products",
+        "all products",
+        "restricted substance",
+        "new substances",
+        "newly",
+        "recently"
+      ],
+      "category": "Other",
+      "frequency": "weekly",
+      "enabled": true,
+      "crawl_mode": "smart",
+      "max_depth": 3,
       "max_pages": 10
     }
   ]
