@@ -207,14 +207,28 @@ class TestMonitorApi(unittest.TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertIn("max_pages must be > 0", response.json()["detail"])
 
-    def test_manage_monitors_page_renders_crawl_fields(self):
-        response = self.client.get("/manage-monitors")
+    def test_monitors_page_renders_management_ui(self):
+        response = self.client.get("/monitors")
 
         self.assertEqual(response.status_code, 200)
+        self.assertIn(b"Monitors", response.content)
+        self.assertIn(b"+ Add Monitor", response.content)
         self.assertIn(b"Crawl Mode", response.content)
         self.assertIn(b"Max Depth", response.content)
         self.assertIn(b"Max Pages", response.content)
         self.assertIn(b"Smart Discovery", response.content)
+        self.assertIn(b"Total Monitors", response.content)
+        self.assertIn(b"Enabled", response.content)
+        self.assertIn(b"Disabled", response.content)
+        self.assertIn(b"Recent Updates", response.content)
+        self.assertIn(b'href="/monitors"', response.content)
+        self.assertNotIn(b"Manage Monitors", response.content)
+
+    def test_manage_monitors_redirects_to_monitors(self):
+        response = self.client.get("/manage-monitors", follow_redirects=False)
+
+        self.assertEqual(response.status_code, 301)
+        self.assertEqual(response.headers["location"], "/monitors")
 
     def test_generate_monitor_id_avoids_duplicates(self):
         store = MonitorStore(monitors_file=self.monitors_file)

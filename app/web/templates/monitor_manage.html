@@ -3,10 +3,45 @@
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h1 class="h3 mb-1">Manage Monitors</h1>
+        <h1 class="h3 mb-1">Monitors</h1>
         <p class="text-muted mb-0">Add, edit, or remove monitoring sources without editing JSON manually.</p>
     </div>
     <button class="btn btn-primary" id="addMonitorBtn" type="button">+ Add Monitor</button>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-6 col-lg-3">
+        <div class="card shadow-sm stat-card border-0">
+            <div class="card-body">
+                <div class="text-muted small">Total Monitors</div>
+                <div class="display-6" id="totalMonitorsCount">{{ total_monitors }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card shadow-sm stat-card border-success">
+            <div class="card-body">
+                <div class="text-muted small">Enabled</div>
+                <div class="display-6 text-success" id="enabledMonitorsCount">{{ enabled_count }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card shadow-sm stat-card border-secondary">
+            <div class="card-body">
+                <div class="text-muted small">Disabled</div>
+                <div class="display-6 text-secondary" id="disabledMonitorsCount">{{ disabled_count }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card shadow-sm stat-card border-primary">
+            <div class="card-body">
+                <div class="text-muted small">Recent Updates</div>
+                <div class="display-6 text-primary" id="recentUpdatesCount">{{ recent_updates_count }}</div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div id="alertContainer"></div>
@@ -152,8 +187,16 @@ function parseKeywords(text) {
         .filter(Boolean);
 }
 
+function updateSummaryCards(monitors) {
+    const enabledCount = monitors.filter((monitor) => monitor.enabled).length;
+    document.getElementById("totalMonitorsCount").textContent = monitors.length;
+    document.getElementById("enabledMonitorsCount").textContent = enabledCount;
+    document.getElementById("disabledMonitorsCount").textContent = monitors.length - enabledCount;
+}
+
 function renderMonitors(monitors) {
     monitorsCache = monitors;
+    updateSummaryCards(monitors);
 
     if (!monitors.length) {
         monitorTableBody.innerHTML = `

@@ -4,7 +4,7 @@ from math import ceil
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 
 from app.run_history import get_latest_run
@@ -510,15 +510,26 @@ def create_dashboard_app(
     @app.get("/monitors")
     def monitors_page(request: Request):
         monitors = load_monitors()
+        enabled_count = sum(1 for monitor in monitors if monitor.get("enabled"))
+        last_run = _latest_run()
         return templates.TemplateResponse(
             request,
-            "monitors.html",
+            "monitor_manage.html",
             {
                 "title": "Monitors",
                 "active_page": "monitors",
-                "monitors": monitors,
+                "total_monitors": len(monitors),
+                "enabled_count": enabled_count,
+                "disabled_count": len(monitors) - enabled_count,
+                "recent_updates_count": (
+                    last_run.get("changed_count", 0) if last_run else 0
+                ),
             },
         )
+
+    @app.get("/manage-monitors")
+    def manage_monitors_redirect():
+        return RedirectResponse(url="/monitors", status_code=301)
 
     @app.get("/changes")
     def changes_page(
@@ -544,17 +555,6 @@ def create_dashboard_app(
                 "total_pages": pagination["total_pages"],
                 "total_items": pagination["total_items"],
                 "page_size": pagination["page_size"],
-            },
-        )
-
-    @app.get("/manage-monitors")
-    def manage_monitors_page(request: Request):
-        return templates.TemplateResponse(
-            request,
-            "monitor_manage.html",
-            {
-                "title": "Manage Monitors",
-                "active_page": "manage",
             },
         )
 

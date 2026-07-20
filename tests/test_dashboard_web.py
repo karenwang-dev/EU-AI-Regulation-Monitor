@@ -439,14 +439,34 @@ class TestDashboardWeb(unittest.TestCase):
         self.assertIn(b"Discovered Page", content)
 
     @mock.patch("app.web.app.load_monitors", autospec=True)
-    def test_monitors_page_highlights_navigation(self, mock_load_monitors):
+    def test_monitors_page_shows_management_and_summary(
+        self,
+        mock_load_monitors,
+    ):
         mock_load_monitors.return_value = [self.monitor]
 
         response = self.client.get("/monitors")
 
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b"Monitoring Targets", response.content)
-        self.assertIn(b'href="/monitors"', response.content)
+        content = response.content
+        self.assertIn(b"Monitors", content)
+        self.assertIn(b"+ Add Monitor", content)
+        self.assertIn(b"Total Monitors", content)
+        self.assertIn(b"Enabled", content)
+        self.assertIn(b"Disabled", content)
+        self.assertIn(b"Recent Updates", content)
+        self.assertIn(b'href="/monitors"', content)
+        self.assertNotIn(b"Monitoring Targets", content)
+        self.assertNotIn(b"Manage Monitors", content)
+
+    @mock.patch("app.web.app.load_monitors", autospec=True)
+    def test_manage_monitors_redirects_to_monitors(self, mock_load_monitors):
+        mock_load_monitors.return_value = [self.monitor]
+
+        response = self.client.get("/manage-monitors", follow_redirects=False)
+
+        self.assertEqual(response.status_code, 301)
+        self.assertEqual(response.headers["location"], "/monitors")
 
 
 if __name__ == "__main__":
