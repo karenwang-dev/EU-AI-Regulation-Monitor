@@ -13146,3 +13146,85 @@ app.notification.email_sender.EmailSendError: (535, b'Error: authentication fail
 2026-07-20 15:14:06 INFO [regulation_monitor.__main__] 
 2026-07-20 15:14:06 INFO [regulation_monitor.__main__] Demo complete — sample data from data/demo/
 2026-07-20 15:14:06 INFO [regulation_monitor.__main__] ============================================================
+2026-07-20 15:18:38 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 15:18:38 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 15:25:03 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 15:25:03 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 15:25:12 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 15:25:12 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 15:25:17 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 15:25:17 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 15:25:43 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 15:25:43 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 15:26:09 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 15:26:09 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 15:26:42 INFO [regulation_monitor.main] ============================================================
+2026-07-20 15:26:42 INFO [regulation_monitor.main] AI Regulation Monitor — Demo Mode
+2026-07-20 15:26:42 INFO [regulation_monitor.main] ============================================================
+2026-07-20 15:26:42 INFO [regulation_monitor.main] Demo configuration: enabled=False
+2026-07-20 15:26:42 INFO [regulation_monitor.main] 
+2026-07-20 15:26:42 INFO [regulation_monitor.main] --- Sample Monitoring Result ---
+2026-07-20 15:26:42 INFO [regulation_monitor.main] Source: EU AI Act — Regulatory Framework (eu_ai_act)
+2026-07-20 15:26:42 INFO [regulation_monitor.main] Status: analyzed
+2026-07-20 15:26:42 INFO [regulation_monitor.main] Message: Demo change detected and analyzed
+2026-07-20 15:26:42 INFO [regulation_monitor.main] Snapshot=1 Diff=1 Analysis=1
+2026-07-20 15:26:42 INFO [regulation_monitor.main] 
+2026-07-20 15:26:42 INFO [regulation_monitor.main] --- AI Impact Analysis ---
+2026-07-20 15:26:42 INFO [regulation_monitor.main] Impact level: MEDIUM
+2026-07-20 15:26:42 INFO [regulation_monitor.main] Confidence: HIGH
+2026-07-20 15:26:42 INFO [regulation_monitor.main] Reason: Updated guidance on high-risk AI system obligations for consumer devices with embedded AI capabilities.
+2026-07-20 15:26:42 INFO [regulation_monitor.main] Affected modules: AI features, Voice assistant, Cybersecurity controls
+2026-07-20 15:26:42 INFO [regulation_monitor.main]   1. Review AI feature classification against EU AI Act risk tiers
+2026-07-20 15:26:42 INFO [regulation_monitor.main]   2. Update technical documentation for voice assistant components
+2026-07-20 15:26:42 INFO [regulation_monitor.main]   3. Schedule internal compliance review for Q3
+2026-07-20 15:26:42 INFO [regulation_monitor.main] 
+2026-07-20 15:26:42 INFO [regulation_monitor.main] --- Knowledge Item ---
+2026-07-20 15:26:42 INFO [regulation_monitor.main] Title: EU AI Act — Regulatory Framework
+2026-07-20 15:26:42 INFO [regulation_monitor.main] Category: AI Regulation
+2026-07-20 15:26:42 INFO [regulation_monitor.main] Modules: AI features, Voice assistant, Cybersecurity controls
+2026-07-20 15:26:42 INFO [regulation_monitor.main] Summary: Updated guidance on high-risk AI system obligations for consumer devices with embedded AI capabilities.
+2026-07-20 15:26:42 INFO [regulation_monitor.main] 
+2026-07-20 15:26:42 INFO [regulation_monitor.main] --- Report Summary ---
+2026-07-20 15:26:42 INFO [regulation_monitor.main] Report ID: 2026-07-16_weekly_report_demo
+2026-07-20 15:26:42 INFO [regulation_monitor.main] Generated at: 2026-07-16T08:30:00
+2026-07-20 15:26:42 INFO [regulation_monitor.main] Changes: total=2 medium=1 low=1
+2026-07-20 15:26:42 INFO [regulation_monitor.main] Executive summary: One MEDIUM-risk EU AI Act update and one LOW-risk product compliance notice during the reporting period. No immediate blocking compliance actions required.
+2026-07-20 15:26:42 INFO [regulation_monitor.main] 
+2026-07-20 15:26:42 INFO [regulation_monitor.main] Demo complete — sample data from data/demo/
+2026-07-20 15:26:42 INFO [regulation_monitor.main] ============================================================
+2026-07-20 15:26:45 INFO [regulation_monitor.__main__] ============================================================
+2026-07-20 15:26:45 INFO [regulation_monitor.__main__] AI Regulation Monitor — Demo Mode
+2026-07-20 15:26:45 INFO [regulation_monitor.__main__] ============================================================
+2026-07-20 15:26:45 INFO [regulation_monitor.__main__] Demo configuration: enabled=False
+2026-07-20 15:26:45 INFO [regulation_monitor.__main__] 
+2026-07-20 15:26:45 INFO [regulation_monitor.__main__] --- Sample Monitoring Result ---
+2026-07-20 15:26:45 INFO [regulation_monitor.__main__] Source: EU AI Act — Regulatory Framework (eu_ai_act)
+2026-07-20 15:26:45 INFO [regulation_monitor.__main__] Status: analyzed
+2026-07-20 15:26:45 INFO [regulation_monitor.__main__] Message: Demo change detected and analyzed
+2026-07-20 15:26:45 INFO [regulation_monitor.__main__] Snapshot=1 Diff=1 Analysis=1
+2026-07-20 15:26:45 INFO [regulation_monitor.__main__] 
+2026-07-20 15:26:45 INFO [regulation_monitor.__main__] --- AI Impact Analysis ---
+2026-07-20 15:26:45 INFO [regulation_monitor.__main__] Impact level: MEDIUM
+2026-07-20 15:26:45 INFO [regulation_monitor.__main__] Confidence: HIGH
+2026-07-20 15:26:45 INFO [regulation_monitor.__main__] Reason: Updated guidance on high-risk AI system obligations for consumer devices with embedded AI capabilities.
+2026-07-20 15:26:45 INFO [regulation_monitor.__main__] Affected modules: AI features, Voice assistant, Cybersecurity controls
+2026-07-20 15:26:45 INFO [regulation_monitor.__main__]   1. Review AI feature classification against EU AI Act risk tiers
+2026-07-20 15:26:45 INFO [regulation_monitor.__main__]   2. Update technical documentation for voice assistant components
+2026-07-20 15:26:45 INFO [regulation_monitor.__main__]   3. Schedule internal compliance review for Q3
+2026-07-20 15:26:45 INFO [regulation_monitor.__main__] 
+2026-07-20 15:26:45 INFO [regulation_monitor.__main__] --- Knowledge Item ---
+2026-07-20 15:26:45 INFO [regulation_monitor.__main__] Title: EU AI Act — Regulatory Framework
+2026-07-20 15:26:45 INFO [regulation_monitor.__main__] Category: AI Regulation
+2026-07-20 15:26:45 INFO [regulation_monitor.__main__] Modules: AI features, Voice assistant, Cybersecurity controls
+2026-07-20 15:26:45 INFO [regulation_monitor.__main__] Summary: Updated guidance on high-risk AI system obligations for consumer devices with embedded AI capabilities.
+2026-07-20 15:26:45 INFO [regulation_monitor.__main__] 
+2026-07-20 15:26:45 INFO [regulation_monitor.__main__] --- Report Summary ---
+2026-07-20 15:26:45 INFO [regulation_monitor.__main__] Report ID: 2026-07-16_weekly_report_demo
+2026-07-20 15:26:45 INFO [regulation_monitor.__main__] Generated at: 2026-07-16T08:30:00
+2026-07-20 15:26:45 INFO [regulation_monitor.__main__] Changes: total=2 medium=1 low=1
+2026-07-20 15:26:45 INFO [regulation_monitor.__main__] Executive summary: One MEDIUM-risk EU AI Act update and one LOW-risk product compliance notice during the reporting period. No immediate blocking compliance actions required.
+2026-07-20 15:26:45 INFO [regulation_monitor.__main__] 
+2026-07-20 15:26:45 INFO [regulation_monitor.__main__] Demo complete — sample data from data/demo/
+2026-07-20 15:26:45 INFO [regulation_monitor.__main__] ============================================================
+2026-07-20 15:28:20 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 15:28:20 INFO [regulation_monitor.app.web.app] Configuration validation passed

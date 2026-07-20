@@ -31,16 +31,14 @@
         .stat-card-link {
             display: block;
             text-decoration: none;
-            color: var(--bs-body-color);
             transition: transform 0.15s ease, box-shadow 0.15s ease;
         }
 
         .stat-card-link:hover,
         .stat-card-link:focus,
-        .stat-card-link:visited,
-        .stat-card-link:active {
+        .stat-card-link:active,
+        .stat-card-link:visited {
             text-decoration: none;
-            color: var(--bs-body-color);
         }
 
         .stat-card-link:hover {
@@ -52,51 +50,54 @@
             box-shadow: 0 0.35rem 0.75rem rgba(0, 0, 0, 0.12);
         }
 
-        .stat-card-link:hover .dashboard-risk-card.border-danger,
-        .stat-card-link:focus-visible .dashboard-risk-card.border-danger {
-            border-color: var(--bs-danger) !important;
+        .dashboard-risk-card.risk-high {
+            --risk-color: var(--bs-danger);
+            --risk-bg: rgba(var(--bs-danger-rgb), 0.08);
         }
 
-        .stat-card-link:hover .dashboard-risk-card.border-warning,
-        .stat-card-link:focus-visible .dashboard-risk-card.border-warning {
-            border-color: var(--bs-warning) !important;
+        .dashboard-risk-card.risk-medium {
+            --risk-color: #997404;
+            --risk-bg: rgba(var(--bs-warning-rgb), 0.12);
         }
 
-        .stat-card-link:hover .dashboard-risk-card.border-success,
-        .stat-card-link:focus-visible .dashboard-risk-card.border-success {
-            border-color: var(--bs-success) !important;
+        .dashboard-risk-card.risk-low {
+            --risk-color: var(--bs-success);
+            --risk-bg: rgba(var(--bs-success-rgb), 0.08);
         }
 
-        .stat-card-link .card-body .text-danger,
-        .stat-card-link:hover .card-body .text-danger,
-        .stat-card-link:focus-visible .card-body .text-danger,
-        .stat-card-link:visited .card-body .text-danger,
-        .stat-card-link:active .card-body .text-danger {
-            color: var(--bs-danger) !important;
+        .dashboard-risk-card.risk-neutral {
+            --risk-color: var(--bs-secondary);
+            --risk-bg: transparent;
         }
 
-        .stat-card-link .card-body .text-warning-emphasis,
-        .stat-card-link:hover .card-body .text-warning-emphasis,
-        .stat-card-link:focus-visible .card-body .text-warning-emphasis,
-        .stat-card-link:visited .card-body .text-warning-emphasis,
-        .stat-card-link:active .card-body .text-warning-emphasis {
-            color: var(--bs-warning-text-emphasis) !important;
+        .dashboard-risk-card {
+            border-color: var(--risk-color) !important;
+            background-color: var(--risk-bg);
+            transition: box-shadow 0.15s ease, transform 0.15s ease, border-color 0.15s ease;
         }
 
-        .stat-card-link .card-body .text-success,
-        .stat-card-link:hover .card-body .text-success,
-        .stat-card-link:focus-visible .card-body .text-success,
-        .stat-card-link:visited .card-body .text-success,
-        .stat-card-link:active .card-body .text-success {
-            color: var(--bs-success) !important;
+        .dashboard-risk-card .risk-label,
+        .dashboard-risk-card .risk-count,
+        .dashboard-risk-card .risk-icon {
+            color: var(--risk-color) !important;
         }
 
-        .stat-card-link .card-body .text-secondary,
-        .stat-card-link:hover .card-body .text-secondary,
-        .stat-card-link:focus-visible .card-body .text-secondary,
-        .stat-card-link:visited .card-body .text-secondary,
-        .stat-card-link:active .card-body .text-secondary {
-            color: var(--bs-secondary) !important;
+        .stat-card-link .dashboard-risk-card .risk-label,
+        .stat-card-link .dashboard-risk-card .risk-count,
+        .stat-card-link .dashboard-risk-card .risk-icon,
+        .stat-card-link:hover .dashboard-risk-card .risk-label,
+        .stat-card-link:hover .dashboard-risk-card .risk-count,
+        .stat-card-link:hover .dashboard-risk-card .risk-icon,
+        .stat-card-link:focus .dashboard-risk-card .risk-label,
+        .stat-card-link:focus .dashboard-risk-card .risk-count,
+        .stat-card-link:focus .dashboard-risk-card .risk-icon,
+        .stat-card-link:active .dashboard-risk-card .risk-label,
+        .stat-card-link:active .dashboard-risk-card .risk-count,
+        .stat-card-link:active .dashboard-risk-card .risk-icon,
+        .stat-card-link:visited .dashboard-risk-card .risk-label,
+        .stat-card-link:visited .dashboard-risk-card .risk-count,
+        .stat-card-link:visited .dashboard-risk-card .risk-icon {
+            color: var(--risk-color) !important;
         }
 
         @media (prefers-reduced-motion: reduce) {

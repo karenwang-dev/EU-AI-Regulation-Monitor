@@ -7,11 +7,11 @@
 {% set ui = dashboard_risk_card_classes(level, count) %}
 <div class="col-6 col-lg-4 col-xl-2">
     <a href="{{ href }}" class="stat-card-link" aria-label="{{ aria_label }}">
-        <div class="card shadow-sm stat-card dashboard-stat-card dashboard-risk-card h-100 {{ ui.border_class }}{% if ui.background_class %} {{ ui.background_class }}{% endif %}">
+        <div class="card shadow-sm stat-card dashboard-stat-card dashboard-risk-card {{ ui.risk_class }} h-100">
             <div class="card-body">
-                <div class="fw-semibold {{ ui.label_class }}">{{ level }}</div>
+                <div class="risk-label fw-semibold">{{ level }}</div>
                 <div class="text-muted small">{{ subtitle }}</div>
-                <div class="display-6 mt-2 {{ ui.count_class }}">{{ count }}</div>
+                <div class="risk-count display-6 mt-2">{{ count }}</div>
             </div>
         </div>
     </a>

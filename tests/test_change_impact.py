@@ -150,7 +150,7 @@ class TestDashboardChangeImpactAlignment(unittest.TestCase):
         self.assertEqual(dashboard.status_code, 200)
         self.assertRegex(
             dashboard.text,
-            r">LOW</div>\s*<div class=\"text-muted small\">For reference</div>\s*<div class=\"display-6 mt-2 text-success\">1</div>",
+            r'risk-label fw-semibold">LOW</div>\s*<div class="text-muted small">For reference</div>\s*<div class="risk-count display-6 mt-2">1</div>',
         )
 
         filtered = self.client.get("/changes?impact=LOW")
@@ -199,7 +199,7 @@ class TestDashboardChangeImpactAlignment(unittest.TestCase):
         self.assertEqual(dashboard.status_code, 200)
         self.assertRegex(
             dashboard.text,
-            r'fw-semibold text-secondary">LOW</div>\s*<div class="text-muted small">For reference</div>\s*<div class="display-6 mt-2 text-secondary">0</div>',
+            r'risk-label fw-semibold">LOW</div>\s*<div class="text-muted small">For reference</div>\s*<div class="risk-count display-6 mt-2">0</div>',
         )
 
         filtered_low = self.client.get("/changes?impact=LOW")
@@ -231,8 +231,8 @@ class TestDashboardChangeImpactAlignment(unittest.TestCase):
 
         dashboard = self.client.get("/")
         self.assertEqual(dashboard.status_code, 200)
-        self.assertIn(b"text-danger", dashboard.content)
-        self.assertIn(b"text-warning-emphasis", dashboard.content)
+        self.assertIn(b"dashboard-risk-card risk-high", dashboard.content)
+        self.assertIn(b"dashboard-risk-card risk-medium", dashboard.content)
 
         high_page = self.client.get("/changes?impact=HIGH")
         medium_page = self.client.get("/changes?impact=MEDIUM")

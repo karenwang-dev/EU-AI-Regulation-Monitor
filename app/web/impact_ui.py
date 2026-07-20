@@ -4,31 +4,20 @@ from app.web.change_helper import normalize_impact
 
 IMPACT_UI = {
     "HIGH": {
-        "text_class": "text-danger",
-        "border_class": "border-danger",
         "badge_class": "text-bg-danger",
-        "background_class": "bg-danger-subtle",
+        "risk_class": "risk-high",
     },
     "MEDIUM": {
-        "text_class": "text-warning-emphasis",
-        "border_class": "border-warning",
         "badge_class": "text-bg-warning",
-        "background_class": "bg-warning-subtle",
+        "risk_class": "risk-medium",
     },
     "LOW": {
-        "text_class": "text-success",
-        "border_class": "border-success",
         "badge_class": "text-bg-success",
-        "background_class": "bg-success-subtle",
+        "risk_class": "risk-low",
     },
 }
 
-NEUTRAL_UI = {
-    "border_class": "border-secondary",
-    "label_class": "text-secondary",
-    "count_class": "text-secondary",
-    "background_class": "",
-}
+NEUTRAL_RISK_CLASS = "risk-neutral"
 
 
 def get_impact_ui(level: str) -> dict:
@@ -37,18 +26,13 @@ def get_impact_ui(level: str) -> dict:
 
 def get_dashboard_risk_card_classes(level: str, count: int) -> dict:
     if count <= 0:
-        return dict(NEUTRAL_UI)
+        return {"risk_class": NEUTRAL_RISK_CLASS}
 
     ui = get_impact_ui(level)
     if not ui:
-        return dict(NEUTRAL_UI)
+        return {"risk_class": NEUTRAL_RISK_CLASS}
 
-    return {
-        "border_class": ui["border_class"],
-        "label_class": ui["text_class"],
-        "count_class": ui["text_class"],
-        "background_class": ui["background_class"],
-    }
+    return {"risk_class": ui["risk_class"]}
 
 
 def get_impact_badge_classes(level: str) -> str:
