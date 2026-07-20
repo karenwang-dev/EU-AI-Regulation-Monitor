@@ -114,6 +114,40 @@ class TestDashboardWeb(unittest.TestCase):
         self.assertIn(b'nav-link active', content)
 
     @mock.patch("app.web.app.load_monitors", autospec=True)
+    def test_dashboard_risk_cards_link_to_filtered_changes(
+        self,
+        mock_load_monitors,
+    ):
+        mock_load_monitors.return_value = [self.monitor]
+
+        response = self.client.get("/")
+
+        self.assertEqual(response.status_code, 200)
+        content = response.text
+        self.assertIn('href="/changes?impact=HIGH"', content)
+        self.assertIn('href="/changes?impact=MEDIUM"', content)
+        self.assertIn('href="/changes?impact=LOW"', content)
+        self.assertIn('aria-label="View high risk changes"', content)
+
+    @mock.patch("app.web.app.load_monitors", autospec=True)
+    def test_dashboard_high_risk_drilldown_to_detail(
+        self,
+        mock_load_monitors,
+    ):
+        mock_load_monitors.return_value = [self.monitor]
+
+        filtered = self.client.get("/changes?impact=HIGH")
+        self.assertEqual(filtered.status_code, 200)
+        self.assertIn(b"European Commission", filtered.content)
+        self.assertIn(b"text-bg-danger", filtered.content)
+        self.assertIn(b'value="HIGH"', filtered.content)
+
+        detail = self.client.get(f"/detail/{self.diff_id}")
+        self.assertEqual(detail.status_code, 200)
+        self.assertIn(b"Change Detail", detail.content)
+        self.assertIn(b"New cybersecurity requirements", detail.content)
+
+    @mock.patch("app.web.app.load_monitors", autospec=True)
     def test_changes_page_renders_with_filters_and_badges(self, mock_load_monitors):
         mock_load_monitors.return_value = [self.monitor]
 

@@ -509,5 +509,173 @@
     "timestamp": "2026-07-17T15:49:31.732793",
     "file": "data\\raw\\2026-07-17\\de_bnetza_154931.md",
     "hash": "a3c22422bca5ac7fc44ca4e0f10f7888f7b0eec5d4312bb04f82620ece6f67d1"
+  },
+  {
+    "source_id": "eu_ai_act",
+    "url": "https://digital-strategy.ec.europa.eu/en/news/team-europe-wins-1st-ever-international-cybersecurity-challenge-women",
+    "timestamp": "2026-07-20T08:59:53.891429",
+    "file": "data\\raw\\2026-07-20\\eu_ai_act_085953.md",
+    "hash": "830a439e85b4578bd5dde9c55da0556f095e27ad789eb544fb37e363d6de6df5"
+  },
+  {
+    "source_id": "eu_ai_act",
+    "url": "https://digital-strategy.ec.europa.eu/en/policies/cybersecurity",
+    "timestamp": "2026-07-20T08:59:56.176720",
+    "file": "data\\raw\\2026-07-20\\eu_ai_act_085956.md",
+    "hash": "601e8d993514771e0b34d8abef3a40a8d4371075423c766ea5f544260837e4cd"
+  },
+  {
+    "source_id": "eu_ai_act",
+    "url": "https://digital-strategy.ec.europa.eu/en/news/commission-refers-ireland-spain-france-and-netherlands-court-justice-failing-transpose-rules",
+    "timestamp": "2026-07-20T08:59:57.273273",
+    "file": "data\\raw\\2026-07-20\\eu_ai_act_085957.md",
+    "hash": "5236bc4afa8867a7c0824c94f3a2718cb016b321428577f8501c2ed3439554bf"
+  },
+  {
+    "source_id": "eu_ai_act",
+    "url": "https://digital-strategy.ec.europa.eu/en/policies/ai-advisory-forum",
+    "timestamp": "2026-07-20T08:59:59.727026",
+    "file": "data\\raw\\2026-07-20\\eu_ai_act_085959.md",
+    "hash": "364e5a0a0ea066952a6955fa686adbddf9ad85e944e43dfb64f900cc5bb9515b"
+  },
+  {
+    "source_id": "eu_ai_act",
+    "url": "https://digital-strategy.ec.europa.eu/en/policies/ai-scientific-panel",
+    "timestamp": "2026-07-20T09:00:00.803397",
+    "file": "data\\raw\\2026-07-20\\eu_ai_act_090000.md",
+    "hash": "a5adcfaaecaf46ca2e7f7c25d650fef0aef63c3704478afb0cb51e88f629daa6"
+  },
+  {
+    "source_id": "eu_cra",
+    "url": "https://digital-strategy.ec.europa.eu/en/news/2026-rule-law-report-strengthens-europes-prosperity-security-and-democratic-resilience",
+    "timestamp": "2026-07-20T09:00:28.526289",
+    "file": "data\\raw\\2026-07-20\\eu_cra_090028.md",
+    "hash": "274646fae93d55f2d42f5991a1defac660ca7b98e56a92429bd6d021e596a1e4"
+  },
+  {
+    "source_id": "eu_cra",
+    "url": "https://digital-strategy.ec.europa.eu/en/news/flash-eurobarometer-europeans-call-stronger-action-childrens-online-safety-democratic-resilience",
+    "timestamp": "2026-07-20T09:00:38.369649",
+    "file": "data\\raw\\2026-07-20\\eu_cra_090038.md",
+    "hash": "ae536e20aacfb1999538eec6ec4e199de3a5bc1dc249a5a3bef9998db124e645"
+  },
+  {
+    "source_id": "eu_red",
+    "url": "https://single-market-economy.ec.europa.eu/sectors/electrical-and-electronic-engineering-industries-eei/radio-equipment-directive-red_en",
+    "timestamp": "2026-07-20T09:01:26.700149",
+    "file": "data\\raw\\2026-07-20\\eu_red_090126.md",
+    "hash": "abd90925719aa98d954ae3923ebaa32d4c1b9808cabccf42328f7435b8cceda0"
+  },
+  {
+    "source_id": "eu_red",
+    "url": "https://single-market-economy.ec.europa.eu/sectors/electrical-and-electronic-engineering-industries-eei/radio-equipment-directive-red_en?prefLang=cs",
+    "timestamp": "2026-07-20T09:01:35.526479",
+    "file": "data\\raw\\2026-07-20\\eu_red_090135.md",
+    "hash": "ad5f052abc61661efee3eadb65b5be0d1a98890c236e5fd954f5646300fbcd57"
+  },
+  {
+    "source_id": "eu_red",
+    "url": "https://single-market-economy.ec.europa.eu/sectors/electrical-and-electronic-engineering-industries-eei/radio-equipment-directive-red_en?prefLang=sv",
+    "timestamp": "2026-07-20T09:01:43.620828",
+    "file": "data\\raw\\2026-07-20\\eu_red_090143.md",
+    "hash": "48fb215d1f3eee3cb0d82900eaa84e830659c81283b6b719be18bea21486da7e"
+  },
+  {
+    "source_id": "eu_red",
+    "url": "https://single-market-economy.ec.europa.eu/sectors/electrical-and-electronic-engineering-industries-eei_en",
+    "timestamp": "2026-07-20T09:01:57.296124",
+    "file": "data\\raw\\2026-07-20\\eu_red_090157.md",
+    "hash": "334cb2b95c3192329ea7aa76a0fa342e4243586a1815b5a053beae8da7b3525e"
+  },
+  {
+    "source_id": "eu_energy_efficiency",
+    "url": "https://single-market-economy.ec.europa.eu/sectors/raw-materials_en",
+    "timestamp": "2026-07-20T09:02:34.643690",
+    "file": "data\\raw\\2026-07-20\\eu_energy_efficiency_090234.md",
+    "hash": "3780710238d1f48475913904c058b5b0ebfafe52d4472977c776ac8e9c5dc715"
+  },
+  {
+    "source_id": "green_digital",
+    "url": "https://digital-strategy.ec.europa.eu/en/policies/electronics",
+    "timestamp": "2026-07-20T09:03:45.353701",
+    "file": "data\\raw\\2026-07-20\\green_digital_090345.md",
+    "hash": "908e6406d6b0449738aa3169aec3969f3330fc75f7af649a24ea942431ac2900"
+  },
+  {
+    "source_id": "green_digital",
+    "url": "https://digital-strategy.ec.europa.eu/en/related-content?topic=53",
+    "timestamp": "2026-07-20T09:03:47.826472",
+    "file": "data\\raw\\2026-07-20\\green_digital_090347.md",
+    "hash": "75db265f337912b1e580d6829a35af1f0957141f2c02b01bef2e2fa471ee537e"
+  },
+  {
+    "source_id": "green_digital",
+    "url": "https://digital-strategy.ec.europa.eu/en/policies/green-digital",
+    "timestamp": "2026-07-20T09:03:49.853146",
+    "file": "data\\raw\\2026-07-20\\green_digital_090349.md",
+    "hash": "3e50378fe3113e8b182f56786d03ecd1dac184aa941e5351852ad4605ca2efb7"
+  },
+  {
+    "source_id": "chemicals",
+    "url": "https://single-market-economy.ec.europa.eu/news/new-digital-product-passport-dpp-web-page-launched-2026-07-17_en",
+    "timestamp": "2026-07-20T09:04:16.815570",
+    "file": "data\\raw\\2026-07-20\\chemicals_090416.md",
+    "hash": "c276783a0be0c1807c637974da8d4aa392231cab1732135fb4cb25e950862c7e"
+  },
+  {
+    "source_id": "chemicals",
+    "url": "https://single-market-economy.ec.europa.eu/news_en",
+    "timestamp": "2026-07-20T09:04:20.209377",
+    "file": "data\\raw\\2026-07-20\\chemicals_090420.md",
+    "hash": "9edfa24aac6f98370a18922c421ff85be11a5791a47867c7ada9c57d3f9cfb8c"
+  },
+  {
+    "source_id": "chemicals",
+    "url": "https://single-market-economy.ec.europa.eu/news_en?f%5B0%5D=oe_news_title%3Adpp",
+    "timestamp": "2026-07-20T09:04:23.885167",
+    "file": "data\\raw\\2026-07-20\\chemicals_090423.md",
+    "hash": "e9cdfd227b72982f7c4e1a74bf2e69653ab66b6da439527dfb0101c1f42cb03e"
+  },
+  {
+    "source_id": "chemicals",
+    "url": "https://single-market-economy.ec.europa.eu/single-market/goods/new-legislative-framework_en",
+    "timestamp": "2026-07-20T09:04:26.986845",
+    "file": "data\\raw\\2026-07-20\\chemicals_090426.md",
+    "hash": "78a44c6b19656385767cb8e968dfc3ee3ed25e461533949806be30c93f17f7ca"
+  },
+  {
+    "source_id": "chemicals",
+    "url": "https://single-market-economy.ec.europa.eu/news/commission-launches-consultation-digital-product-passport-2025-04-09_en",
+    "timestamp": "2026-07-20T09:04:29.674717",
+    "file": "data\\raw\\2026-07-20\\chemicals_090429.md",
+    "hash": "5272a865e27baf89151fafc9230b6a7371ad9acf9a124de870212f7e717a37b1"
+  },
+  {
+    "source_id": "chemicals",
+    "url": "https://single-market-economy.ec.europa.eu/news/commission-reports-show-continued-growth-european-smes-and-highlight-challenges-women-entrepreneurs-2026-06-22_en",
+    "timestamp": "2026-07-20T09:04:32.816502",
+    "file": "data\\raw\\2026-07-20\\chemicals_090432.md",
+    "hash": "463286990065205ec48e31b5720b2bff460da58bcb0bb7172c874833fa18c809"
+  },
+  {
+    "source_id": "chemicals",
+    "url": "https://single-market-economy.ec.europa.eu/news/commission-seeks-views-future-digital-product-passport-2024-11-13_en",
+    "timestamp": "2026-07-20T09:04:35.911741",
+    "file": "data\\raw\\2026-07-20\\chemicals_090435.md",
+    "hash": "29d3ef8ffec2c600dd1551c7533e2b4a24d066bcbba88782164d6c0ec2058ce0"
+  },
+  {
+    "source_id": "chemicals",
+    "url": "https://single-market-economy.ec.europa.eu/news/take-part-our-impact-assessment-digital-product-passport-2025-07-25_en",
+    "timestamp": "2026-07-20T09:04:38.727321",
+    "file": "data\\raw\\2026-07-20\\chemicals_090438.md",
+    "hash": "a50e3912f18f237992b66aa0fde3a8f1e25c680768bdc3c2f3b7f66ed35d11a4"
+  },
+  {
+    "source_id": "chemicals",
+    "url": "https://single-market-economy.ec.europa.eu/sectors/chemicals_en",
+    "timestamp": "2026-07-20T09:04:41.674154",
+    "file": "data\\raw\\2026-07-20\\chemicals_090441.md",
+    "hash": "541127258f23b14b8a7acebe5a8f3addd8fc04cd268461147b42ee9915ea8d7f"
   }
 ]

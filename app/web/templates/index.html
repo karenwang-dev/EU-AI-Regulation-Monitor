@@ -32,28 +32,34 @@
         </div>
     </div>
     <div class="col-6 col-lg-4 col-xl-2">
-        <div class="card shadow-sm stat-card border-danger">
-            <div class="card-body">
-                <div class="text-muted small">High Risk</div>
-                <div class="display-6 text-danger">{{ high_risk_count }}</div>
+        <a href="/changes?impact=HIGH" class="stat-card-link" aria-label="View high risk changes">
+            <div class="card shadow-sm stat-card border-danger h-100">
+                <div class="card-body">
+                    <div class="text-muted small">High Risk</div>
+                    <div class="display-6 text-danger">{{ high_risk_count }}</div>
+                </div>
             </div>
-        </div>
+        </a>
     </div>
     <div class="col-6 col-lg-4 col-xl-2">
-        <div class="card shadow-sm stat-card border-warning">
-            <div class="card-body">
-                <div class="text-muted small">Medium</div>
-                <div class="display-6 text-warning">{{ medium_risk_count }}</div>
+        <a href="/changes?impact=MEDIUM" class="stat-card-link" aria-label="View medium risk changes">
+            <div class="card shadow-sm stat-card border-warning h-100">
+                <div class="card-body">
+                    <div class="text-muted small">Medium</div>
+                    <div class="display-6 text-warning">{{ medium_risk_count }}</div>
+                </div>
             </div>
-        </div>
+        </a>
     </div>
     <div class="col-6 col-lg-4 col-xl-2">
-        <div class="card shadow-sm stat-card border-success">
-            <div class="card-body">
-                <div class="text-muted small">Low</div>
-                <div class="display-6 text-success">{{ low_risk_count }}</div>
+        <a href="/changes?impact=LOW" class="stat-card-link" aria-label="View low risk changes">
+            <div class="card shadow-sm stat-card border-success h-100">
+                <div class="card-body">
+                    <div class="text-muted small">Low</div>
+                    <div class="display-6 text-success">{{ low_risk_count }}</div>
+                </div>
             </div>
-        </div>
+        </a>
     </div>
 </div>
 
