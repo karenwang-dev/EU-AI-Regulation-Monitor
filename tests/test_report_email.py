@@ -215,6 +215,38 @@ class TestReportEmailWeb(unittest.TestCase):
         )
         base_path = Path(self.temp_dir.name)
         self.reports_dir = base_path / "reports"
+        self.report_config_file = base_path / "report.json"
+        self.notification_file = base_path / "notification.json"
+
+        self.report_config_file.write_text(
+            json.dumps(
+                {
+                    "enabled": True,
+                    "frequency": "weekly",
+                    "day": "mon",
+                    "hour": 8,
+                    "minute": 30,
+                    "email_enabled": True,
+                    "recipients": ["team@example.com"],
+                }
+            ),
+            encoding="utf-8",
+        )
+        self.notification_file.write_text(
+            json.dumps(
+                {
+                    "enabled": True,
+                    "from_address": "monitor@example.com",
+                    "to_addresses": ["fallback@example.com"],
+                    "smtp_host": "smtp.example.com",
+                    "smtp_port": 587,
+                    "smtp_username": "monitor@example.com",
+                    "smtp_password_env": "SMTP_PASSWORD",
+                    "use_tls": True,
+                }
+            ),
+            encoding="utf-8",
+        )
 
         from fastapi.testclient import TestClient
         from app.storage.service import StorageService
@@ -244,6 +276,7 @@ class TestReportEmailWeb(unittest.TestCase):
                 "email_status": "Sent",
                 "email_notification": {
                     "status": "Sent",
+                    "sent": True,
                     "reason": "Weekly report email sent.",
                 },
             },
@@ -253,6 +286,8 @@ class TestReportEmailWeb(unittest.TestCase):
             create_dashboard_app(
                 storage_service=self.store,
                 reports_dir=self.reports_dir,
+                report_config_file=self.report_config_file,
+                notification_file=self.notification_file,
             )
         )
 
@@ -260,6 +295,7 @@ class TestReportEmailWeb(unittest.TestCase):
         self.client = None
         self.temp_dir.cleanup()
 
+    @patch.dict("os.environ", {"SMTP_PASSWORD": "smtp-secret"}, clear=False)
     def test_report_page_displays_email_status(self):
         response = self.client.get("/reports")
 
@@ -267,6 +303,7 @@ class TestReportEmailWeb(unittest.TestCase):
         content = response.content
         self.assertIn(b"Email Status", content)
         self.assertIn(b">Sent<", content)
+        self.assertIn(b"The latest report email was sent successfully.", content)
 
 
 if __name__ == "__main__":

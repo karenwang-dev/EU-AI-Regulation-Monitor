@@ -1,10 +1,11 @@
 {% extends "base.html" %}
+{% from "_macros.html" import impact_badge %}
 
 {% block content %}
 <div class="page-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
     <div>
         <h1 class="h3 mb-1">Knowledge Base</h1>
-        <p class="text-muted mb-0">Browse extracted regulation knowledge from monitored sources.</p>
+        <p class="text-muted mb-0">Browse regulation knowledge and compliance insights from monitored sources.</p>
     </div>
     <div class="d-flex flex-column align-items-md-end gap-2">
         <a href="/knowledge/statistics" class="btn btn-outline-primary btn-sm">View Statistics</a>
@@ -14,10 +15,45 @@
     </div>
 </div>
 
+<div class="row g-3 mb-4">
+    <div class="col-6 col-lg-3">
+        <div class="card shadow-sm stat-card border-danger border-0">
+            <div class="card-body">
+                <div class="text-muted small">High Priority</div>
+                <div class="display-6 text-danger">{{ summary.high_priority }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card shadow-sm stat-card border-warning border-0">
+            <div class="card-body">
+                <div class="text-muted small">Medium Priority</div>
+                <div class="display-6 text-warning">{{ summary.medium_priority }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card shadow-sm stat-card border-success border-0">
+            <div class="card-body">
+                <div class="text-muted small">Low Priority</div>
+                <div class="display-6 text-success">{{ summary.low_priority }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card shadow-sm stat-card border-0">
+            <div class="card-body">
+                <div class="text-muted small">Total Regulations</div>
+                <div class="display-6">{{ summary.total_regulations }}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="card shadow-sm border-0 mb-4">
     <div class="card-body">
         <form method="get" class="row g-3 align-items-end">
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <label for="searchQuery" class="form-label">Search Knowledge</label>
                 <input
                     type="text"
@@ -25,10 +61,10 @@
                     id="searchQuery"
                     name="q"
                     value="{{ query }}"
-                    placeholder="Search title, summary, requirements..."
+                    placeholder="Search title, summary, actions, modules..."
                 >
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <label for="categoryFilter" class="form-label">Category</label>
                 <select class="form-select" id="categoryFilter" name="category">
                     <option value="">All categories</option>
@@ -39,7 +75,7 @@
                     {% endfor %}
                 </select>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <label for="moduleFilter" class="form-label">Module</label>
                 <select class="form-select" id="moduleFilter" name="module">
                     <option value="">All modules</option>
@@ -51,7 +87,20 @@
                 </select>
             </div>
             <div class="col-md-2">
-                <button type="submit" class="btn btn-primary w-100">Search Knowledge</button>
+                <label for="impactFilter" class="form-label">Impact Level</label>
+                <select class="form-select" id="impactFilter" name="impact">
+                    <option value="">All levels</option>
+                    <option value="HIGH" {% if impact_filter == "HIGH" %}selected{% endif %}>HIGH</option>
+                    <option value="MEDIUM" {% if impact_filter == "MEDIUM" %}selected{% endif %}>MEDIUM</option>
+                    <option value="LOW" {% if impact_filter == "LOW" %}selected{% endif %}>LOW</option>
+                    <option value="NONE" {% if impact_filter == "NONE" %}selected{% endif %}>NONE</option>
+                </select>
+            </div>
+            <div class="col-md-1">
+                <button type="submit" class="btn btn-primary w-100">Apply</button>
+            </div>
+            <div class="col-md-2">
+                <a href="/knowledge" class="btn btn-outline-secondary w-100">Reset</a>
             </div>
         </form>
     </div>
@@ -64,35 +113,49 @@
                 <tr>
                     <th>Title</th>
                     <th>Category</th>
+                    <th>Impact</th>
                     <th>Modules</th>
-                    <th>Created</th>
+                    <th>Recommended Actions</th>
+                    <th>Effective Date</th>
                 </tr>
             </thead>
             <tbody>
                 {% if items %}
                     {% for item in items %}
-                    <tr style="cursor: pointer;" onclick="window.location='/knowledge/{{ item.id }}'">
+                    <tr style="cursor: pointer;" onclick="window.location='{{ item.detail_url }}'">
                         <td>
-                            <a href="/knowledge/{{ item.id }}" class="text-decoration-none fw-semibold">
-                                {{ item.title or "N/A" }}
+                            <a href="{{ item.detail_url }}" class="text-decoration-none fw-semibold">
+                                {{ item.title }}
                             </a>
                         </td>
-                        <td>{{ item.category or "N/A" }}</td>
+                        <td>{{ item.category }}</td>
+                        <td>{{ impact_badge(item.impact_level) }}</td>
                         <td>
-                            {% if item.modules %}
-                                {% for module in item.modules %}
+                            {% if item.affected_modules %}
+                                {% for module in item.affected_modules %}
                                 <span class="badge text-bg-light text-dark border module-badge">{{ module }}</span>
                                 {% endfor %}
                             {% else %}
                                 <span class="text-muted">N/A</span>
                             {% endif %}
                         </td>
-                        <td>{{ item.created_at_display or "N/A" }}</td>
+                        <td>
+                            {% if item.recommended_actions %}
+                            <ul class="mb-0 ps-3">
+                                {% for action in item.recommended_actions %}
+                                <li>{{ action }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% else %}
+                                <span class="text-muted">N/A</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ item.effective_date }}</td>
                     </tr>
                     {% endfor %}
                 {% else %}
                     <tr>
-                        <td colspan="4" class="text-center text-muted py-4">
+                        <td colspan="6" class="text-center text-muted py-4">
                             No knowledge items match your filters.
                         </td>
                     </tr>

@@ -65,9 +65,20 @@ class TestKnowledgeWeb(unittest.TestCase):
         )
         self.knowledge_id = saved["id"]
 
+        red_snapshot = self.store.save_snapshot(
+            {
+                "source_id": "eu_red",
+                "url": "https://example.com/red",
+                "title": "RED Directive",
+                "markdown": "# RED content",
+                "timestamp": "2026-07-16T12:00:00",
+            }
+        )
+        self.red_snapshot_id = red_snapshot["id"]
+
         self.store.save_knowledge_item(
             {
-                "snapshot_id": self.snapshot_id,
+                "snapshot_id": red_snapshot["id"],
                 "source_id": "eu_red",
                 "title": "RED Directive Update",
                 "category": "Product Compliance",
@@ -115,6 +126,11 @@ class TestKnowledgeWeb(unittest.TestCase):
         self.assertIn(b"EU AI Act Cybersecurity Update", content)
         self.assertIn(b"Search Knowledge", content)
         self.assertIn(b"AI Regulation", content)
+        self.assertIn(b"Impact", content)
+        self.assertIn(b"Recommended Actions", content)
+        self.assertIn(b"Effective Date", content)
+        self.assertIn(b"High Priority", content)
+        self.assertIn(b"Total Regulations", content)
 
     @mock.patch("app.web.app.load_monitors", autospec=True)
     def test_knowledge_detail_page_returns_200(self, mock_load_monitors):
@@ -176,6 +192,27 @@ class TestKnowledgeWeb(unittest.TestCase):
         self.assertIn(b"Knowledge Base", content)
         self.assertIn(b'href="/knowledge"', content)
         self.assertIn(b"nav-link active", content)
+
+    @mock.patch("app.web.app.load_monitors", autospec=True)
+    def test_knowledge_impact_filter(self, mock_load_monitors):
+        mock_load_monitors.return_value = [self.monitor]
+
+        self.store.save_analysis(
+            self.snapshot_id,
+            {
+                "impact_level": "HIGH",
+                "affected_modules": ["Network"],
+                "recommended_actions": ["Review controls"],
+            },
+        )
+        self.store.save_analysis(self.red_snapshot_id, {"impact_level": "LOW"})
+
+        response = self.client.get("/knowledge?impact=HIGH")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b"EU AI Act Cybersecurity Update", response.content)
+        self.assertIn(b"text-bg-danger", response.content)
+        self.assertNotIn(b"RED Directive Update", response.content)
 
     @mock.patch("app.web.app.load_monitors", autospec=True)
     def test_detail_related_regulations_render(self, mock_load_monitors):

@@ -19,6 +19,15 @@
             min-height: 120px;
         }
 
+        .dashboard-stat-card {
+            min-height: 108px;
+        }
+
+        .dashboard-stat-card .display-6 {
+            font-size: 1.75rem;
+            line-height: 1.1;
+        }
+
         .stat-card-link {
             display: block;
             text-decoration: none;
@@ -96,9 +105,6 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link{% if active_page == 'knowledge' %} active{% endif %}" href="/knowledge">Knowledge Base</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link{% if active_page == 'insights' %} active{% endif %}" href="/insights">Insights</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link{% if active_page == 'reports' %} active{% endif %}" href="/reports">Reports</a>

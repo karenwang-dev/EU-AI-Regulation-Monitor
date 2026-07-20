@@ -20,6 +20,7 @@ class TestDashboardWeb(unittest.TestCase):
         )
         base_path = Path(self.temp_dir.name)
         self.history_file = base_path / "run_history.json"
+        self.reports_dir = base_path / "reports"
         self.store = StorageService(
             db_path=base_path / "storage.db",
             raw_dir=base_path / "raw",
@@ -78,6 +79,7 @@ class TestDashboardWeb(unittest.TestCase):
             create_dashboard_app(
                 storage_service=self.store,
                 history_file=self.history_file,
+                reports_dir=self.reports_dir,
             )
         )
 
@@ -106,12 +108,81 @@ class TestDashboardWeb(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         content = response.content
         self.assertIn(b"Total Monitors", content)
-        self.assertIn(b"Last Run", content)
+        self.assertIn(b"Configured monitoring sources", content)
         self.assertIn(b"Today's Changes", content)
-        self.assertIn(b"High Risk", content)
-        self.assertIn(b"Medium", content)
-        self.assertIn(b"Low", content)
+        self.assertIn(b"Detected today", content)
+        self.assertIn(b">HIGH<", content)
+        self.assertIn(b"Immediate attention required", content)
+        self.assertIn(b">MEDIUM<", content)
+        self.assertIn(b"Review recommended", content)
+        self.assertIn(b">LOW<", content)
+        self.assertIn(b"For reference", content)
+        self.assertIn(b"Recent Activity", content)
+        self.assertIn(b"Last monitoring run", content)
+        self.assertIn(b"Latest report", content)
+        self.assertIn(b"Changed regulations", content)
+        self.assertNotIn(b"Last Run Details", content)
         self.assertIn(b'nav-link active', content)
+
+    @mock.patch("app.web.app.load_monitors", autospec=True)
+    def test_dashboard_summary_cards_link_to_pages(self, mock_load_monitors):
+        mock_load_monitors.return_value = [self.monitor]
+
+        response = self.client.get("/")
+
+        self.assertEqual(response.status_code, 200)
+        content = response.text
+        self.assertIn('href="/monitors"', content)
+        self.assertIn('href="/changes"', content)
+        self.assertIn('href="/changes?impact=HIGH"', content)
+        self.assertIn('href="/changes?impact=MEDIUM"', content)
+        self.assertIn('href="/changes?impact=LOW"', content)
+
+    @mock.patch("app.web.app.load_monitors", autospec=True)
+    def test_dashboard_zero_risk_cards_use_neutral_styling(
+        self,
+        mock_load_monitors,
+    ):
+        mock_load_monitors.return_value = [self.monitor]
+
+        with mock.patch(
+            "app.web.app._count_analyses_by_impact",
+            return_value={"HIGH": 1, "MEDIUM": 0, "LOW": 0},
+        ):
+            response = self.client.get("/")
+
+        self.assertEqual(response.status_code, 200)
+        content = response.text
+        self.assertIn("text-danger", content)
+        self.assertIn("border-danger", content)
+        self.assertIn("border-secondary", content)
+        self.assertIn("text-secondary", content)
+        self.assertNotIn("border-warning", content)
+        self.assertNotIn("text-warning", content)
+        self.assertNotIn("border-success", content)
+        self.assertNotIn("text-success", content)
+
+    @mock.patch("app.web.app.load_monitors", autospec=True)
+    def test_dashboard_recent_activity_shows_run_and_status(
+        self,
+        mock_load_monitors,
+    ):
+        mock_load_monitors.return_value = [self.monitor]
+
+        response = self.client.get("/")
+
+        self.assertEqual(response.status_code, 200)
+        content = response.text
+        self.assertIn("Completed successfully", content)
+        self.assertRegex(
+            content,
+            r"Changed regulations</div>\s*<div class=\"fw-semibold\">1</div>",
+        )
+        self.assertIn("Latest report", content)
+        self.assertRegex(
+            content,
+            r"Latest report</div>\s*<div class=\"fw-semibold\">N/A</div>",
+        )
 
     @mock.patch("app.web.app.load_monitors", autospec=True)
     def test_dashboard_risk_cards_link_to_filtered_changes(

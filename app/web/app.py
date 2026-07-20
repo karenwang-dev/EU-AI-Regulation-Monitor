@@ -29,6 +29,7 @@ from app.web.insight_helper import (
     get_insight_filter_options,
 )
 from app.web.knowledge_helper import resolve_related_regulations
+from app.web.report_email_helper import resolve_report_email_display
 from app.web.report_api import register_report_routes
 from app.report.ai_generator import generate_weekly_report
 from app.report.builder import build_weekly_report
@@ -218,6 +219,59 @@ def _format_last_run_timestamp(last_run: dict | None) -> str:
         return parsed.strftime("%Y-%m-%d %H:%M")
     except ValueError:
         return timestamp
+
+
+def _format_dashboard_timestamp(timestamp: str) -> str:
+    if not timestamp:
+        return "N/A"
+
+    try:
+        parsed = datetime.fromisoformat(timestamp)
+        return parsed.strftime("%Y-%m-%d %H:%M")
+    except ValueError:
+        return timestamp or "N/A"
+
+
+def _build_monitoring_status_display(last_run: dict | None) -> str:
+    scheduler_status = get_scheduler_health_status()
+    if scheduler_status == "running":
+        return "Running"
+
+    if not last_run:
+        return "N/A"
+
+    failed_count = last_run.get("failed_count", 0)
+    if failed_count:
+        return "Completed with failures"
+
+    return "Completed successfully"
+
+
+def _build_dashboard_recent_activity(
+    last_run: dict | None,
+    *,
+    reports_dir: Path | None = None,
+) -> dict:
+    latest_report = get_latest_report(reports_dir=reports_dir)
+
+    return {
+        "last_monitoring_display": (
+            _format_dashboard_timestamp(last_run.get("timestamp", ""))
+            if last_run
+            else "N/A"
+        ),
+        "changed_regulations_display": (
+            str(last_run.get("changed_count", 0))
+            if last_run
+            else "N/A"
+        ),
+        "latest_report_display": (
+            _format_report_timestamp(latest_report.get("generated_at", ""))
+            if latest_report
+            else "N/A"
+        ),
+        "monitoring_status_display": _build_monitoring_status_display(last_run),
+    }
 
 
 def _get_monitor_map() -> dict[str, dict]:
@@ -424,6 +478,8 @@ def create_dashboard_app(
     history_file: Path | None = None,
     monitors_file: Path | None = None,
     reports_dir: Path | None = None,
+    report_config_file: Path | None = None,
+    notification_file: Path | None = None,
     build_weekly_report_fn=None,
     generate_weekly_report_fn=None,
 ) -> FastAPI:
@@ -498,12 +554,14 @@ def create_dashboard_app(
                 "title": "Dashboard",
                 "active_page": "dashboard",
                 "monitor_count": len(monitors),
-                "last_run_display": _format_last_run_timestamp(latest_run),
-                "last_run": latest_run,
                 "todays_changes_count": _count_todays_changes(storage),
                 "high_risk_count": impact_counts.get("HIGH", 0),
                 "medium_risk_count": impact_counts.get("MEDIUM", 0),
                 "low_risk_count": impact_counts.get("LOW", 0),
+                "recent_activity": _build_dashboard_recent_activity(
+                    latest_run,
+                    reports_dir=reports_dir,
+                ),
             },
         )
 
@@ -564,18 +622,18 @@ def create_dashboard_app(
         q: str = "",
         category: str = "",
         module: str = "",
-        limit: int = 50,
+        impact: str = "",
     ):
-        if q.strip():
-            items = storage.search_knowledge(q.strip(), limit=limit)
-        else:
-            items = storage.get_knowledge_items(
-                category=category or None,
-                module=module or None,
-                limit=limit,
-            )
-
-        categories, modules = _get_knowledge_filter_options(storage)
+        all_insights = build_compliance_insights(storage)
+        categories, modules = get_insight_filter_options(all_insights)
+        filtered_insights = filter_compliance_insights(
+            all_insights,
+            query=q,
+            category=category,
+            module=module,
+            impact=impact,
+        )
+        summary = build_insight_summary(filtered_insights)
 
         return templates.TemplateResponse(
             request,
@@ -583,10 +641,12 @@ def create_dashboard_app(
             {
                 "title": "Knowledge Base",
                 "active_page": "knowledge",
-                "items": _enrich_knowledge_list_items(storage, items),
+                "items": filtered_insights,
+                "summary": summary,
                 "query": q,
                 "category_filter": category,
                 "module_filter": module,
+                "impact_filter": impact,
                 "categories": categories,
                 "modules": modules,
             },
@@ -614,6 +674,12 @@ def create_dashboard_app(
             }
             key_changes = report.get("key_changes", [])
 
+        email_display = resolve_report_email_display(
+            report,
+            report_config_file=report_config_file,
+            notification_file=notification_file,
+        )
+
         return templates.TemplateResponse(
             request,
             "report.html",
@@ -623,49 +689,15 @@ def create_dashboard_app(
                 "report": report_view,
                 "summary": summary,
                 "key_changes": key_changes,
-                "email_status": (
-                    report.get("email_status", "Disabled")
-                    if report
-                    else "Disabled"
-                ),
+                "email_display": email_display,
             },
         )
 
     @app.get("/insights")
-    def insights_page(
-        request: Request,
-        q: str = "",
-        category: str = "",
-        module: str = "",
-        impact: str = "",
-    ):
-        all_insights = build_compliance_insights(storage)
-        categories, modules = get_insight_filter_options(all_insights)
-        filtered_insights = filter_compliance_insights(
-            all_insights,
-            query=q,
-            category=category,
-            module=module,
-            impact=impact,
-        )
-        summary = build_insight_summary(filtered_insights)
-
-        return templates.TemplateResponse(
-            request,
-            "insights.html",
-            {
-                "title": "Compliance Insights",
-                "active_page": "insights",
-                "insights": filtered_insights,
-                "summary": summary,
-                "query": q,
-                "category_filter": category,
-                "module_filter": module,
-                "impact_filter": impact,
-                "categories": categories,
-                "modules": modules,
-            },
-        )
+    def insights_redirect(request: Request):
+        query = request.url.query
+        target = f"/knowledge?{query}" if query else "/knowledge"
+        return RedirectResponse(url=target, status_code=301)
 
     @app.get("/knowledge/statistics")
     def knowledge_statistics_page(request: Request):

@@ -70,15 +70,24 @@
 <div class="card shadow-sm border-0 mb-4">
     <div class="card-header bg-white">Email Status</div>
     <div class="card-body">
-        {% if email_status == "Sent" %}
-        <span class="badge text-bg-success">Sent</span>
-        {% elif email_status == "Failed" %}
-        <span class="badge text-bg-danger">Failed</span>
+        {% set status = email_display.display_status %}
+        {% if status == "Sent" %}
+        <span class="badge text-bg-success">{{ status }}</span>
+        {% elif status == "Failed" %}
+        <span class="badge text-bg-danger">{{ status }}</span>
+        {% elif status == "Not Configured" %}
+        <span class="badge text-bg-warning text-dark">{{ status }}</span>
+        {% elif status == "Ready" %}
+        <span class="badge text-bg-primary">{{ status }}</span>
         {% else %}
-        <span class="badge text-bg-secondary">Disabled</span>
+        <span class="badge text-bg-secondary">{{ status }}</span>
         {% endif %}
-        {% if report and report.email_notification and report.email_notification.reason %}
-        <div class="text-muted small mt-2">{{ report.email_notification.reason }}</div>
+        <p class="text-muted small mt-2 mb-0">{{ email_display.status_message }}</p>
+        {% if email_display.status_details %}
+        <details class="mt-2">
+            <summary class="text-muted small">Details</summary>
+            <div class="small text-muted mt-2 mb-0">{{ email_display.status_details }}</div>
+        </details>
         {% endif %}
     </div>
 </div>

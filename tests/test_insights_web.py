@@ -181,26 +181,26 @@ class TestInsightsWeb(unittest.TestCase):
         )
         return saved
 
-    def test_insights_page_renders(self):
+    def test_insights_page_renders_on_knowledge(self):
         saved = self._seed_high_insight()
 
-        response = self.client.get("/insights")
+        response = self.client.get("/knowledge")
 
         self.assertEqual(response.status_code, 200)
         content = response.content
-        self.assertIn(b"Compliance Insights", content)
+        self.assertIn(b"Knowledge Base", content)
         self.assertIn(b"EU AI Act Cybersecurity Update", content)
         self.assertIn(b"AI Regulation", content)
         self.assertIn(b"Update compliance checklist", content)
-        self.assertIn(b"2026-05-07", content)
         self.assertIn(b"2028-08-02", content)
         self.assertIn(f'href="/knowledge/{saved["id"]}"'.encode(), content)
-        self.assertIn(b"View Detail", content)
+        self.assertIn(b"Recommended Actions", content)
+        self.assertIn(b"Effective Date", content)
 
     def test_insights_summary_cards(self):
         self._seed_high_insight()
 
-        response = self.client.get("/insights")
+        response = self.client.get("/knowledge")
 
         self.assertEqual(response.status_code, 200)
         content = response.content
@@ -242,7 +242,7 @@ class TestInsightsWeb(unittest.TestCase):
             }
         )
 
-        response = self.client.get("/insights?impact=HIGH")
+        response = self.client.get("/knowledge?impact=HIGH")
 
         self.assertEqual(response.status_code, 200)
         content = response.content
@@ -280,7 +280,7 @@ class TestInsightsWeb(unittest.TestCase):
         )
 
         category_response = self.client.get(
-            "/insights?category=Product%20Compliance"
+            "/knowledge?category=Product%20Compliance"
         )
         self.assertEqual(category_response.status_code, 200)
         self.assertIn(b"RED Directive Update", category_response.content)
@@ -289,7 +289,7 @@ class TestInsightsWeb(unittest.TestCase):
             category_response.content,
         )
 
-        module_response = self.client.get("/insights?module=Network")
+        module_response = self.client.get("/knowledge?module=Network")
         self.assertEqual(module_response.status_code, 200)
         self.assertIn(b"EU AI Act Cybersecurity Update", module_response.content)
         self.assertNotIn(b"RED Directive Update", module_response.content)
@@ -297,26 +297,41 @@ class TestInsightsWeb(unittest.TestCase):
     def test_insights_keyword_search(self):
         self._seed_high_insight()
 
-        response = self.client.get("/insights?q=cybersecurity")
+        response = self.client.get("/knowledge?q=cybersecurity")
 
         self.assertEqual(response.status_code, 200)
         self.assertIn(b"EU AI Act Cybersecurity Update", response.content)
 
     def test_insights_empty_state(self):
-        response = self.client.get("/insights")
+        response = self.client.get("/knowledge")
 
         self.assertEqual(response.status_code, 200)
         content = response.content
-        self.assertIn(b"No compliance insights found.", content)
+        self.assertIn(b"No knowledge items match your filters.", content)
         self.assertIn(b"Total Regulations", content)
 
-    def test_navigation_contains_insights(self):
-        response = self.client.get("/insights")
+    def test_insights_redirects_to_knowledge(self):
+        saved = self._seed_high_insight()
+
+        response = self.client.get("/insights?impact=HIGH", follow_redirects=False)
+
+        self.assertEqual(response.status_code, 301)
+        self.assertEqual(response.headers["location"], "/knowledge?impact=HIGH")
+
+        followed = self.client.get("/insights?impact=HIGH")
+        self.assertEqual(followed.status_code, 200)
+        self.assertIn(b"EU AI Act Cybersecurity Update", followed.content)
+        self.assertIn(f'href="/knowledge/{saved["id"]}"'.encode(), followed.content)
+
+    def test_navigation_no_longer_contains_insights(self):
+        response = self.client.get("/knowledge")
 
         self.assertEqual(response.status_code, 200)
         content = response.content
-        self.assertIn(b'href="/insights"', content)
-        self.assertIn(b"Insights", content)
+        self.assertIn(b'href="/knowledge"', content)
+        self.assertIn(b"Knowledge Base", content)
+        self.assertNotIn(b'href="/insights"', content)
+        self.assertNotIn(b">Insights<", content)
         self.assertIn(b"nav-link active", content)
 
 

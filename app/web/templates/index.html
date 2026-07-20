@@ -6,57 +6,58 @@
     <p class="text-muted mb-0">Internal overview for TV product compliance monitoring</p>
 </div>
 
-<div class="row g-3 mb-4">
+<div class="row g-3 mb-3">
     <div class="col-6 col-lg-4 col-xl-2">
-        <div class="card shadow-sm stat-card border-0">
-            <div class="card-body">
-                <div class="text-muted small">Total Monitors</div>
-                <div class="display-6">{{ monitor_count }}</div>
+        <a href="/monitors" class="stat-card-link" aria-label="View monitors">
+            <div class="card shadow-sm stat-card dashboard-stat-card border-0 h-100">
+                <div class="card-body">
+                    <div class="fw-semibold">Total Monitors</div>
+                    <div class="text-muted small">Configured monitoring sources</div>
+                    <div class="display-6 mt-2">{{ monitor_count }}</div>
+                </div>
             </div>
-        </div>
+        </a>
     </div>
     <div class="col-6 col-lg-4 col-xl-2">
-        <div class="card shadow-sm stat-card border-0">
-            <div class="card-body">
-                <div class="text-muted small">Last Run</div>
-                <div class="fs-5 fw-semibold">{{ last_run_display }}</div>
+        <a href="/changes" class="stat-card-link" aria-label="View today's changes">
+            <div class="card shadow-sm stat-card dashboard-stat-card border-0 h-100">
+                <div class="card-body">
+                    <div class="fw-semibold">Today's Changes</div>
+                    <div class="text-muted small">Detected today</div>
+                    <div class="display-6 mt-2">{{ todays_changes_count }}</div>
+                </div>
             </div>
-        </div>
-    </div>
-    <div class="col-6 col-lg-4 col-xl-2">
-        <div class="card shadow-sm stat-card border-0">
-            <div class="card-body">
-                <div class="text-muted small">Today's Changes</div>
-                <div class="display-6">{{ todays_changes_count }}</div>
-            </div>
-        </div>
+        </a>
     </div>
     <div class="col-6 col-lg-4 col-xl-2">
         <a href="/changes?impact=HIGH" class="stat-card-link" aria-label="View high risk changes">
-            <div class="card shadow-sm stat-card border-danger h-100">
+            <div class="card shadow-sm stat-card dashboard-stat-card h-100{% if high_risk_count > 0 %} border-danger{% else %} border-secondary{% endif %}">
                 <div class="card-body">
-                    <div class="text-muted small">High Risk</div>
-                    <div class="display-6 text-danger">{{ high_risk_count }}</div>
+                    <div class="fw-semibold">HIGH</div>
+                    <div class="text-muted small">Immediate attention required</div>
+                    <div class="display-6 mt-2{% if high_risk_count > 0 %} text-danger{% else %} text-secondary{% endif %}">{{ high_risk_count }}</div>
                 </div>
             </div>
         </a>
     </div>
     <div class="col-6 col-lg-4 col-xl-2">
         <a href="/changes?impact=MEDIUM" class="stat-card-link" aria-label="View medium risk changes">
-            <div class="card shadow-sm stat-card border-warning h-100">
+            <div class="card shadow-sm stat-card dashboard-stat-card h-100{% if medium_risk_count > 0 %} border-warning{% else %} border-secondary{% endif %}">
                 <div class="card-body">
-                    <div class="text-muted small">Medium</div>
-                    <div class="display-6 text-warning">{{ medium_risk_count }}</div>
+                    <div class="fw-semibold">MEDIUM</div>
+                    <div class="text-muted small">Review recommended</div>
+                    <div class="display-6 mt-2{% if medium_risk_count > 0 %} text-warning{% else %} text-secondary{% endif %}">{{ medium_risk_count }}</div>
                 </div>
             </div>
         </a>
     </div>
     <div class="col-6 col-lg-4 col-xl-2">
         <a href="/changes?impact=LOW" class="stat-card-link" aria-label="View low risk changes">
-            <div class="card shadow-sm stat-card border-success h-100">
+            <div class="card shadow-sm stat-card dashboard-stat-card h-100{% if low_risk_count > 0 %} border-success{% else %} border-secondary{% endif %}">
                 <div class="card-body">
-                    <div class="text-muted small">Low</div>
-                    <div class="display-6 text-success">{{ low_risk_count }}</div>
+                    <div class="fw-semibold">LOW</div>
+                    <div class="text-muted small">For reference</div>
+                    <div class="display-6 mt-2{% if low_risk_count > 0 %} text-success{% else %} text-secondary{% endif %}">{{ low_risk_count }}</div>
                 </div>
             </div>
         </a>
@@ -64,34 +65,26 @@
 </div>
 
 <div class="card shadow-sm border-0">
-    <div class="card-header bg-white">Last Run Details</div>
-    <div class="card-body">
-        {% if last_run %}
+    <div class="card-header bg-white py-2">Recent Activity</div>
+    <div class="card-body py-3">
         <div class="row g-3">
             <div class="col-md-3">
-                <div class="text-muted small">Timestamp</div>
-                <div>{{ last_run.timestamp }}</div>
+                <div class="text-muted small">Last monitoring run</div>
+                <div class="fw-semibold">{{ recent_activity.last_monitoring_display }}</div>
             </div>
             <div class="col-md-3">
-                <div class="text-muted small">Total Monitors</div>
-                <div>{{ last_run.total_monitors }}</div>
+                <div class="text-muted small">Changed regulations</div>
+                <div class="fw-semibold">{{ recent_activity.changed_regulations_display }}</div>
             </div>
-            <div class="col-md-2">
-                <div class="text-muted small">Changed</div>
-                <div>{{ last_run.changed_count }}</div>
+            <div class="col-md-3">
+                <div class="text-muted small">Latest report</div>
+                <div class="fw-semibold">{{ recent_activity.latest_report_display }}</div>
             </div>
-            <div class="col-md-2">
-                <div class="text-muted small">Analyzed</div>
-                <div>{{ last_run.analyzed_count }}</div>
-            </div>
-            <div class="col-md-2">
-                <div class="text-muted small">Failed</div>
-                <div>{{ last_run.failed_count }}</div>
+            <div class="col-md-3">
+                <div class="text-muted small">Status</div>
+                <div class="fw-semibold">{{ recent_activity.monitoring_status_display }}</div>
             </div>
         </div>
-        {% else %}
-        <p class="text-muted mb-0">No pipeline runs recorded yet.</p>
-        {% endif %}
     </div>
 </div>
 {% endblock %}
