@@ -3,7 +3,12 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from app.notification.email_sender import EmailSendError
+from app.config.email_settings import (
+    EmailSettingsError,
+    build_smtp_config,
+    should_prefer_email_settings,
+)
+from app.notification.email_sender import EmailSendError, humanize_smtp_error
 from app.notification.notifier import (
     NOTIFICATION_FILE,
     NotificationConfigError,
@@ -29,8 +34,46 @@ def notify_weekly_report(
     attachment_path: Path | str | None = None,
     report_config_file: Path | str | None = None,
     notification_file: Path = NOTIFICATION_FILE,
+    email_settings_file: Path | str | None = None,
     send_report_email_fn=send_report_email,
 ) -> dict:
+    if should_prefer_email_settings(email_settings_file):
+        try:
+            smtp_config = build_smtp_config(email_settings_file)
+        except EmailSettingsError as error:
+            print(f"Weekly report email notification failed: {error}")
+            return {
+                "sent": False,
+                "skipped": False,
+                "status": "Failed",
+                "reason": f"Invalid email settings: {error}",
+            }
+
+        recipients = smtp_config.get("to_addresses", [])
+        try:
+            send_report_email_fn(
+                report,
+                smtp_config,
+                attachment_path=attachment_path,
+            )
+        except EmailSendError as error:
+            print(f"Weekly report email notification failed: {error}")
+            return {
+                "sent": False,
+                "skipped": False,
+                "status": "Failed",
+                "reason": humanize_smtp_error(error),
+                "technical_details": str(error),
+            }
+
+        return {
+            "sent": True,
+            "skipped": False,
+            "status": "Sent",
+            "reason": "Weekly report email sent.",
+            "recipients": recipients,
+        }
+
     report_config = load_report_config(report_config_file)
 
     if not report_config.get("email_enabled", False):
@@ -78,7 +121,8 @@ def notify_weekly_report(
             "sent": False,
             "skipped": False,
             "status": "Failed",
-            "reason": f"Email send failed: {error}",
+            "reason": humanize_smtp_error(error),
+            "technical_details": str(error),
         }
 
     return {

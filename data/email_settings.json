@@ -1,0 +1,14 @@
+{
+  "provider": "hisense",
+  "smtp_host": "mail.hisense.com",
+  "smtp_port": 465,
+  "use_ssl": true,
+  "use_tls": false,
+  "username": "wangyuxiu@hisense.com",
+  "password": "enc:7XP3pvPILE2cK5A7",
+  "recipients": [
+    "wangyuxiu@hisense.com",
+    "chenxiuting@hisense.com",
+    "zhangli16@hisense.com"
+  ]
+}

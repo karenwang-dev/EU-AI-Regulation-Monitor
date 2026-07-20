@@ -68,13 +68,136 @@
 </div>
 
 <div class="card shadow-sm border-0 mb-4">
-    <div class="card-header bg-white">Email Status</div>
+    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+        <span>Email Settings</span>
+        <div class="d-flex flex-wrap gap-2 align-items-center">
+            <span class="badge text-bg-light text-dark border" id="recipientCountBadge">
+                {{ email_settings.recipient_count }} recipient{% if email_settings.recipient_count != 1 %}s{% endif %}
+            </span>
+            <button type="button" class="btn btn-sm btn-outline-secondary" id="settingsTestEmailBtn" onclick="sendSettingsTestEmail()">
+                Send Test Email
+            </button>
+        </div>
+    </div>
+    <div class="card-body">
+        <form id="emailSettingsForm" onsubmit="saveEmailSettings(event)">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label" for="emailProvider">SMTP Provider</label>
+                    <select class="form-select" id="emailProvider" onchange="handleProviderChange()">
+                        <option value="gmail" {% if email_settings.provider == 'gmail' %}selected{% endif %}>Gmail</option>
+                        <option value="outlook" {% if email_settings.provider == 'outlook' %}selected{% endif %}>Outlook</option>
+                        <option value="hisense" {% if email_settings.provider == 'hisense' %}selected{% endif %}>Hisense</option>
+                        <option value="custom" {% if email_settings.provider == 'custom' %}selected{% endif %}>Custom SMTP</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label" for="emailUsername">Email Address</label>
+                    <input
+                        type="email"
+                        class="form-control"
+                        id="emailUsername"
+                        value="{{ email_settings.username }}"
+                        placeholder="your@gmail.com"
+                        required
+                    >
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label" for="emailPassword">App Password</label>
+                    <div class="input-group">
+                        <input
+                            type="password"
+                            class="form-control"
+                            id="emailPassword"
+                            autocomplete="new-password"
+                            placeholder="{% if email_settings.password_configured %}Password already configured{% else %}Enter app password{% endif %}"
+                            {% if not email_settings.password_configured %}required{% endif %}
+                        >
+                        <button
+                            type="button"
+                            class="btn btn-outline-secondary"
+                            id="togglePasswordBtn"
+                            onclick="togglePasswordVisibility()"
+                            aria-label="Show or hide password"
+                        >
+                            Show
+                        </button>
+                    </div>
+                    {% if email_settings.password_configured %}
+                    <div class="form-text">Password already configured. Enter a new value only to replace it.</div>
+                    {% endif %}
+                </div>
+
+                <div class="col-md-4 custom-smtp-field d-none">
+                    <label class="form-label" for="smtpHost">SMTP Host</label>
+                    <input type="text" class="form-control" id="smtpHost" value="{{ email_settings.smtp_host }}">
+                </div>
+                <div class="col-md-2 custom-smtp-field d-none">
+                    <label class="form-label" for="smtpPort">SMTP Port</label>
+                    <input type="number" class="form-control" id="smtpPort" value="{{ email_settings.smtp_port }}">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label" for="securityMode">Security</label>
+                    <select class="form-select" id="securityMode" onchange="handleSecurityModeChange()">
+                        <option value="ssl" {% if email_settings.use_ssl %}selected{% endif %}>SSL / SMTPS</option>
+                        <option value="starttls" {% if not email_settings.use_ssl and email_settings.use_tls %}selected{% endif %}>STARTTLS</option>
+                        <option value="none" {% if not email_settings.use_ssl and not email_settings.use_tls %}selected{% endif %}>None</option>
+                    </select>
+                </div>
+                <div class="col-12">
+                    <div class="text-muted small" id="providerHelpText"></div>
+                </div>
+
+                <div class="col-12">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <label class="form-label mb-0">Recipients</label>
+                        <button type="button" class="btn btn-sm btn-outline-primary" onclick="addRecipientRow()">
+                            Add Recipient
+                        </button>
+                    </div>
+                    <div id="recipientRows" class="d-flex flex-column gap-2"></div>
+                </div>
+            </div>
+
+            <div class="d-flex flex-wrap gap-2 mt-4">
+                <button type="submit" class="btn btn-primary btn-sm" id="saveEmailSettingsBtn">
+                    Save Configuration
+                </button>
+            </div>
+        </form>
+        <div id="emailSettingsAlert" class="alert alert-info d-none mt-3 mb-0" role="alert"></div>
+    </div>
+</div>
+
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+        <span>Email Delivery</span>
+        <div class="d-flex flex-wrap gap-2">
+            {% if email_actions.can_send %}
+            <button type="button" class="btn btn-sm btn-primary" id="sendEmailBtn" onclick="sendReportEmail(false)">
+                Send Email
+            </button>
+            {% endif %}
+            {% if email_actions.can_retry %}
+            <button type="button" class="btn btn-sm btn-warning" id="retryEmailBtn" onclick="sendReportEmail(true)">
+                Retry Email
+            </button>
+            {% endif %}
+            {% if email_actions.can_test %}
+            <button type="button" class="btn btn-sm btn-outline-secondary" id="testEmailBtn" onclick="sendTestEmail()">
+                Send Test Email
+            </button>
+            {% endif %}
+        </div>
+    </div>
     <div class="card-body">
         {% set status = email_display.display_status %}
         {% if status == "Sent" %}
         <span class="badge text-bg-success">{{ status }}</span>
         {% elif status == "Failed" %}
         <span class="badge text-bg-danger">{{ status }}</span>
+        {% elif status == "Sending" %}
+        <span class="badge text-bg-info">{{ status }}</span>
         {% elif status == "Not Configured" %}
         <span class="badge text-bg-warning text-dark">{{ status }}</span>
         {% elif status == "Ready" %}
@@ -82,13 +205,46 @@
         {% else %}
         <span class="badge text-bg-secondary">{{ status }}</span>
         {% endif %}
-        <p class="text-muted small mt-2 mb-0">{{ email_display.status_message }}</p>
+        <p class="text-muted small mt-2 mb-3" id="emailStatusMessage">{{ email_display.status_message }}</p>
+
+        <div class="row g-3">
+            <div class="col-md-4">
+                <div class="text-muted small">SMTP Host</div>
+                <div>{{ email_config.smtp_host }}</div>
+            </div>
+            <div class="col-md-2">
+                <div class="text-muted small">SMTP Port</div>
+                <div>{{ email_config.smtp_port }}</div>
+            </div>
+            <div class="col-md-3">
+                <div class="text-muted small">Sender Address</div>
+                <div>{{ email_config.sender_address }}</div>
+            </div>
+            <div class="col-md-3">
+                <div class="text-muted small">TLS Mode</div>
+                <div>{{ email_config.tls_mode }}</div>
+            </div>
+            <div class="col-12">
+                <div class="text-muted small">Recipients</div>
+                <div>
+                    {% if email_config.recipients %}
+                        {% for recipient in email_config.recipients %}
+                        <span class="badge text-bg-light text-dark border me-1">{{ recipient }}</span>
+                        {% endfor %}
+                    {% else %}
+                        <span class="text-muted">N/A</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
         {% if email_display.status_details %}
-        <details class="mt-2">
+        <details class="mt-3">
             <summary class="text-muted small">Details</summary>
             <div class="small text-muted mt-2 mb-0">{{ email_display.status_details }}</div>
         </details>
         {% endif %}
+        <div id="emailActionAlert" class="alert alert-info d-none mt-3 mb-0" role="alert"></div>
     </div>
 </div>
 
@@ -177,6 +333,234 @@
 </div>
 
 <script>
+const reportEmailConfig = {
+    reportId: {{ email_actions.report_id|tojson if email_actions.report_id else 'null' }},
+};
+
+const emailSettingsState = {
+    provider: {{ email_settings.provider|tojson }},
+    passwordConfigured: {{ email_settings.password_configured|tojson }},
+    recipients: {{ email_settings.recipients|tojson }},
+    providerPresets: {
+        gmail: {
+            smtp_host: "smtp.gmail.com",
+            smtp_port: 587,
+            security: "starttls",
+            help: "Gmail normally uses STARTTLS on port 587 and requires an App Password.",
+        },
+        outlook: {
+            smtp_host: "smtp.office365.com",
+            smtp_port: 587,
+            security: "starttls",
+            help: "Outlook normally uses STARTTLS on port 587.",
+        },
+        hisense: {
+            smtp_host: "mail.hisense.com",
+            smtp_port: 465,
+            security: "ssl",
+            help: "Hisense Coremail normally uses SSL on port 465.",
+        },
+    },
+};
+
+function setEmailSettingsAlert(message, type = "info") {
+    const alert = document.getElementById("emailSettingsAlert");
+    alert.className = `alert alert-${type} mt-3 mb-0`;
+    alert.textContent = message;
+    alert.classList.remove("d-none");
+}
+
+function togglePasswordVisibility() {
+    const input = document.getElementById("emailPassword");
+    const button = document.getElementById("togglePasswordBtn");
+    const isHidden = input.type === "password";
+    input.type = isHidden ? "text" : "password";
+    button.textContent = isHidden ? "Hide" : "Show";
+}
+
+function securityModeToFlags(mode) {
+    if (mode === "ssl") {
+        return { use_ssl: true, use_tls: false };
+    }
+    if (mode === "starttls") {
+        return { use_ssl: false, use_tls: true };
+    }
+    return { use_ssl: false, use_tls: false };
+}
+
+function flagsToSecurityMode(useSsl, useTls) {
+    if (useSsl) {
+        return "ssl";
+    }
+    if (useTls) {
+        return "starttls";
+    }
+    return "none";
+}
+
+function updateProviderHelpText() {
+    const provider = document.getElementById("emailProvider").value;
+    const help = document.getElementById("providerHelpText");
+    if (provider === "custom") {
+        help.textContent = "";
+        return;
+    }
+    const preset = emailSettingsState.providerPresets[provider];
+    help.textContent = preset ? preset.help : "";
+}
+
+function handleSecurityModeChange() {
+    if (document.getElementById("emailProvider").value === "custom") {
+        return;
+    }
+}
+
+function handleProviderChange() {
+    const provider = document.getElementById("emailProvider").value;
+    const customFields = document.querySelectorAll(".custom-smtp-field");
+    customFields.forEach((field) => {
+        field.classList.toggle("d-none", provider !== "custom");
+    });
+
+    if (provider !== "custom") {
+        const preset = emailSettingsState.providerPresets[provider];
+        document.getElementById("smtpHost").value = preset.smtp_host;
+        document.getElementById("smtpPort").value = preset.smtp_port;
+        document.getElementById("securityMode").value = preset.security;
+    }
+    updateProviderHelpText();
+}
+
+function renderRecipientRows() {
+    const container = document.getElementById("recipientRows");
+    container.innerHTML = "";
+    const recipients = emailSettingsState.recipients.length
+        ? emailSettingsState.recipients
+        : [""];
+
+    recipients.forEach((recipient, index) => {
+        const row = document.createElement("div");
+        row.className = "input-group";
+        row.innerHTML = `
+            <input
+                type="email"
+                class="form-control recipient-input"
+                value="${recipient.replace(/"/g, "&quot;")}"
+                placeholder="recipient@example.com"
+                oninput="updateRecipient(${index}, this.value)"
+            >
+            <button type="button" class="btn btn-outline-danger" onclick="removeRecipientRow(${index})">
+                Remove
+            </button>
+        `;
+        container.appendChild(row);
+    });
+    updateRecipientCountBadge();
+}
+
+function updateRecipientCountBadge() {
+    const count = emailSettingsState.recipients.filter((item) => item.trim()).length;
+    const badge = document.getElementById("recipientCountBadge");
+    badge.textContent = `${count} recipient${count === 1 ? "" : "s"}`;
+}
+
+function addRecipientRow() {
+    emailSettingsState.recipients.push("");
+    renderRecipientRows();
+}
+
+function removeRecipientRow(index) {
+    emailSettingsState.recipients.splice(index, 1);
+    renderRecipientRows();
+}
+
+function updateRecipient(index, value) {
+    emailSettingsState.recipients[index] = value;
+    updateRecipientCountBadge();
+}
+
+function collectEmailSettingsPayload() {
+    const provider = document.getElementById("emailProvider").value;
+    const passwordValue = document.getElementById("emailPassword").value.trim();
+    const security = securityModeToFlags(document.getElementById("securityMode").value);
+    const payload = {
+        provider,
+        username: document.getElementById("emailUsername").value.trim(),
+        recipients: emailSettingsState.recipients,
+        use_ssl: security.use_ssl,
+        use_tls: security.use_tls,
+    };
+
+    if (provider === "custom") {
+        payload.smtp_host = document.getElementById("smtpHost").value.trim();
+        payload.smtp_port = Number(document.getElementById("smtpPort").value);
+    }
+
+    if (passwordValue) {
+        payload.password = passwordValue;
+    }
+
+    return payload;
+}
+
+async function saveEmailSettings(event) {
+    event.preventDefault();
+    const button = document.getElementById("saveEmailSettingsBtn");
+    button.disabled = true;
+    button.textContent = "Saving...";
+
+    try {
+        const response = await fetch("/api/email/settings", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(collectEmailSettingsPayload()),
+        });
+        const payload = await response.json();
+        if (!response.ok) {
+            throw new Error(payload.detail || "Unable to save email settings.");
+        }
+
+        emailSettingsState.passwordConfigured = payload.password_configured;
+        emailSettingsState.recipients = payload.recipients;
+        document.getElementById("emailPassword").value = "";
+        document.getElementById("emailPassword").required = !payload.password_configured;
+        renderRecipientRows();
+        setEmailSettingsAlert("Email settings saved successfully.", "success");
+        window.location.reload();
+    } catch (error) {
+        setEmailSettingsAlert(error.message, "danger");
+    } finally {
+        button.disabled = false;
+        button.textContent = "Save Configuration";
+    }
+}
+
+async function sendSettingsTestEmail() {
+    const button = document.getElementById("settingsTestEmailBtn");
+    button.disabled = true;
+    setEmailSettingsAlert("Sending test email...", "info");
+
+    try {
+        const response = await fetch("/api/email/settings/test", { method: "POST" });
+        const payload = await response.json();
+        if (!response.ok) {
+            const detail = payload.detail || {};
+            throw new Error(detail.message || detail || "Test email failed.");
+        }
+        setEmailSettingsAlert(payload.message || "Test email sent successfully.", "success");
+    } catch (error) {
+        setEmailSettingsAlert(error.message, "danger");
+    } finally {
+        button.disabled = false;
+    }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    renderRecipientRows();
+    handleProviderChange();
+    updateProviderHelpText();
+});
+
 async function generateLatestReport() {
     const button = document.getElementById("generateReportBtn");
     button.disabled = true;
@@ -194,6 +578,71 @@ async function generateLatestReport() {
         button.disabled = false;
         button.textContent = "Generate Latest Report";
         alert("Unable to generate report. Please try again.");
+    }
+}
+
+function setEmailActionAlert(message, type = "info") {
+    const alert = document.getElementById("emailActionAlert");
+    alert.className = `alert alert-${type} mt-3 mb-0`;
+    alert.textContent = message;
+    alert.classList.remove("d-none");
+}
+
+function setSendingState(isSending) {
+    const message = document.getElementById("emailStatusMessage");
+    if (isSending) {
+        message.textContent = "Sending report email...";
+    }
+    ["sendEmailBtn", "retryEmailBtn", "testEmailBtn"].forEach((id) => {
+        const button = document.getElementById(id);
+        if (button) {
+            button.disabled = isSending;
+        }
+    });
+}
+
+async function sendReportEmail(isRetry) {
+    if (!reportEmailConfig.reportId) {
+        alert("Generate a report before sending email.");
+        return;
+    }
+
+    const endpoint = isRetry
+        ? `/api/reports/${reportEmailConfig.reportId}/email/retry`
+        : `/api/reports/${reportEmailConfig.reportId}/email/send`;
+
+    setSendingState(true);
+    setEmailActionAlert("Sending report email...", "info");
+
+    try {
+        const response = await fetch(endpoint, { method: "POST" });
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.detail || "Email delivery failed.");
+        }
+        window.location.reload();
+    } catch (error) {
+        setSendingState(false);
+        setEmailActionAlert(error.message, "danger");
+    }
+}
+
+async function sendTestEmail() {
+    setSendingState(true);
+    setEmailActionAlert("Sending test email...", "info");
+
+    try {
+        const response = await fetch("/api/reports/email/test", { method: "POST" });
+        const payload = await response.json();
+        if (!response.ok) {
+            const detail = payload.detail || {};
+            throw new Error(detail.message || "Test email failed.");
+        }
+        setSendingState(false);
+        setEmailActionAlert(payload.message || "Test email sent successfully.", "success");
+    } catch (error) {
+        setSendingState(false);
+        setEmailActionAlert(error.message, "danger");
     }
 }
 </script>

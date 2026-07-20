@@ -33,6 +33,8 @@ class TestReportEmailDisplayHelper(unittest.TestCase):
             encoding="utf-8",
         )
 
+        self.missing_email_settings = base_path / "missing_email_settings.json"
+
         self.env = {
             "OPENAI_API_KEY": "test-openai",
             "FIRECRAWL_API_KEY": "test-firecrawl",
@@ -63,6 +65,7 @@ class TestReportEmailDisplayHelper(unittest.TestCase):
             report,
             report_config_file=self.report_config_file,
             notification_file=self.notification_file,
+            email_settings_file=self.missing_email_settings,
             environ=self.env,
         )
 
@@ -92,6 +95,7 @@ class TestReportEmailDisplayHelper(unittest.TestCase):
             None,
             report_config_file=self.report_config_file,
             notification_file=self.notification_file,
+            email_settings_file=self.missing_email_settings,
             environ=env,
         )
 
@@ -146,7 +150,10 @@ class TestReportEmailDisplayHelper(unittest.TestCase):
         )
 
         self.assertEqual(result["display_status"], "Failed")
-        self.assertNotIn("Errno", result["status_message"])
+        self.assertIn(
+            "Unable to resolve the SMTP server hostname",
+            result["status_message"],
+        )
         self.assertIn("Name or service not known", result["status_details"])
 
     def test_configuration_failure_shown_as_not_configured(self):
@@ -192,6 +199,7 @@ class TestReportEmailDisplayWeb(unittest.TestCase):
         self.reports_dir = base_path / "reports"
         self.report_config_file = base_path / "report.json"
         self.notification_file = base_path / "notification.json"
+        self.missing_email_settings = base_path / "missing_email_settings.json"
 
         self.report_config_file.write_text(
             json.dumps(
@@ -263,6 +271,7 @@ class TestReportEmailDisplayWeb(unittest.TestCase):
                 reports_dir=self.reports_dir,
                 report_config_file=self.report_config_file,
                 notification_file=self.notification_file,
+                email_settings_file=self.missing_email_settings,
             )
         )
 
@@ -276,7 +285,7 @@ class TestReportEmailDisplayWeb(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         content = response.text
-        self.assertIn("Email Status", content)
+        self.assertIn("Email Delivery", content)
         self.assertIn(">Sent<", content)
         self.assertIn("The latest report email was sent successfully.", content)
         self.assertNotIn("Weekly report email sent.", content.split("Details")[0])
@@ -288,8 +297,8 @@ class TestReportEmailDisplayWeb(unittest.TestCase):
         save_report(
             {
                 "title": "Weekly Regulation Monitoring Report",
-                "generated_at": "2026-07-16T09:30:00",
-                "period": {"start": "2026-07-09", "end": "2026-07-16"},
+                "generated_at": "2026-07-17T09:30:00",
+                "period": {"start": "2026-07-10", "end": "2026-07-17"},
                 "summary": {
                     "total_changes": 0,
                     "high_risk": 0,
@@ -303,7 +312,7 @@ class TestReportEmailDisplayWeb(unittest.TestCase):
                 "email_status": "Failed",
                 "email_notification": {
                     "status": "Failed",
-                    "reason": "Email send failed: SMTP unavailable",
+                    "reason": "Email send failed: Connection refused",
                 },
             },
             reports_dir=self.reports_dir,
@@ -314,9 +323,9 @@ class TestReportEmailDisplayWeb(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         content = response.text
         self.assertIn(">Failed<", content)
-        self.assertIn("The report email could not be delivered.", content)
+        self.assertIn("The SMTP server refused the connection", content)
         self.assertIn("<details", content)
-        self.assertIn("SMTP unavailable", content)
+        self.assertIn("Connection refused", content)
 
     def test_report_page_never_shows_failed_when_email_disabled(self):
         self.report_config_file.write_text(

@@ -106,9 +106,9 @@ Reports aggregate regulation changes over a configurable period, generate an AI 
 
 - **Manual:** `python main.py generate-report` or use the Reports page in the dashboard
 - **Scheduled:** enabled via `config/report.json` when the scheduler is running
-- **Email:** optional delivery when SMTP is configured
+- **Email:** optional delivery when SMTP is configured from the Reports page or legacy `config/` files
 
-See [docs/user-guide.md](docs/user-guide.md) for step-by-step usage.
+See [docs/user-guide.md](docs/user-guide.md) for step-by-step usage and [docs/configuration.md](docs/configuration.md#email-settings-dashboard) for Gmail, Hisense Coremail, Outlook, and custom SMTP examples.
 
 ## Testing
 

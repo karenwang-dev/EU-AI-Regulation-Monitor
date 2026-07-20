@@ -12217,3 +12217,932 @@
 2026-07-20 09:20:32 INFO [regulation_monitor.app.scheduler] AI Regulation Monitoring Scheduler
 2026-07-20 09:20:32 INFO [regulation_monitor.app.scheduler] ============================================================
 2026-07-20 09:20:32 INFO [regulation_monitor.app.scheduler] Configured frequencies: weekly
+2026-07-20 09:21:34 WARNING [regulation_monitor.__main__] SMTP_PASSWORD is not set (optional)
+2026-07-20 09:21:34 INFO [regulation_monitor.__main__] Configuration validation passed
+2026-07-20 09:21:34 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-20 09:21:34 INFO [regulation_monitor.app.scheduler] AI Regulation Monitoring Scheduler
+2026-07-20 09:21:34 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-20 09:21:34 INFO [regulation_monitor.app.scheduler] Configured frequencies: weekly
+2026-07-20 11:22:04 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 11:22:04 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 09:22:37 WARNING [regulation_monitor.__main__] SMTP_PASSWORD is not set (optional)
+2026-07-20 09:22:37 INFO [regulation_monitor.__main__] Configuration validation passed
+2026-07-20 09:22:37 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-20 09:22:37 INFO [regulation_monitor.app.scheduler] AI Regulation Monitoring Scheduler
+2026-07-20 09:22:37 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-20 09:22:37 INFO [regulation_monitor.app.scheduler] Configured frequencies: weekly
+2026-07-20 11:22:52 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 11:22:52 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 11:30:57 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 11:30:57 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 11:31:28 INFO [regulation_monitor.main] ============================================================
+2026-07-20 11:31:28 INFO [regulation_monitor.main] AI Regulation Monitor — Demo Mode
+2026-07-20 11:31:28 INFO [regulation_monitor.main] ============================================================
+2026-07-20 11:31:28 INFO [regulation_monitor.main] Demo configuration: enabled=False
+2026-07-20 11:31:28 INFO [regulation_monitor.main] 
+2026-07-20 11:31:28 INFO [regulation_monitor.main] --- Sample Monitoring Result ---
+2026-07-20 11:31:28 INFO [regulation_monitor.main] Source: EU AI Act — Regulatory Framework (eu_ai_act)
+2026-07-20 11:31:28 INFO [regulation_monitor.main] Status: analyzed
+2026-07-20 11:31:28 INFO [regulation_monitor.main] Message: Demo change detected and analyzed
+2026-07-20 11:31:28 INFO [regulation_monitor.main] Snapshot=1 Diff=1 Analysis=1
+2026-07-20 11:31:28 INFO [regulation_monitor.main] 
+2026-07-20 11:31:28 INFO [regulation_monitor.main] --- AI Impact Analysis ---
+2026-07-20 11:31:28 INFO [regulation_monitor.main] Impact level: MEDIUM
+2026-07-20 11:31:28 INFO [regulation_monitor.main] Confidence: HIGH
+2026-07-20 11:31:28 INFO [regulation_monitor.main] Reason: Updated guidance on high-risk AI system obligations for consumer devices with embedded AI capabilities.
+2026-07-20 11:31:28 INFO [regulation_monitor.main] Affected modules: AI features, Voice assistant, Cybersecurity controls
+2026-07-20 11:31:28 INFO [regulation_monitor.main]   1. Review AI feature classification against EU AI Act risk tiers
+2026-07-20 11:31:28 INFO [regulation_monitor.main]   2. Update technical documentation for voice assistant components
+2026-07-20 11:31:28 INFO [regulation_monitor.main]   3. Schedule internal compliance review for Q3
+2026-07-20 11:31:28 INFO [regulation_monitor.main] 
+2026-07-20 11:31:28 INFO [regulation_monitor.main] --- Knowledge Item ---
+2026-07-20 11:31:28 INFO [regulation_monitor.main] Title: EU AI Act — Regulatory Framework
+2026-07-20 11:31:28 INFO [regulation_monitor.main] Category: AI Regulation
+2026-07-20 11:31:28 INFO [regulation_monitor.main] Modules: AI features, Voice assistant, Cybersecurity controls
+2026-07-20 11:31:28 INFO [regulation_monitor.main] Summary: Updated guidance on high-risk AI system obligations for consumer devices with embedded AI capabilities.
+2026-07-20 11:31:28 INFO [regulation_monitor.main] 
+2026-07-20 11:31:28 INFO [regulation_monitor.main] --- Report Summary ---
+2026-07-20 11:31:28 INFO [regulation_monitor.main] Report ID: 2026-07-16_weekly_report_demo
+2026-07-20 11:31:28 INFO [regulation_monitor.main] Generated at: 2026-07-16T08:30:00
+2026-07-20 11:31:28 INFO [regulation_monitor.main] Changes: total=2 medium=1 low=1
+2026-07-20 11:31:28 INFO [regulation_monitor.main] Executive summary: One MEDIUM-risk EU AI Act update and one LOW-risk product compliance notice during the reporting period. No immediate blocking compliance actions required.
+2026-07-20 11:31:28 INFO [regulation_monitor.main] 
+2026-07-20 11:31:28 INFO [regulation_monitor.main] Demo complete — sample data from data/demo/
+2026-07-20 11:31:28 INFO [regulation_monitor.main] ============================================================
+2026-07-20 11:31:30 INFO [regulation_monitor.__main__] ============================================================
+2026-07-20 11:31:30 INFO [regulation_monitor.__main__] AI Regulation Monitor — Demo Mode
+2026-07-20 11:31:30 INFO [regulation_monitor.__main__] ============================================================
+2026-07-20 11:31:30 INFO [regulation_monitor.__main__] Demo configuration: enabled=False
+2026-07-20 11:31:30 INFO [regulation_monitor.__main__] 
+2026-07-20 11:31:30 INFO [regulation_monitor.__main__] --- Sample Monitoring Result ---
+2026-07-20 11:31:30 INFO [regulation_monitor.__main__] Source: EU AI Act — Regulatory Framework (eu_ai_act)
+2026-07-20 11:31:30 INFO [regulation_monitor.__main__] Status: analyzed
+2026-07-20 11:31:30 INFO [regulation_monitor.__main__] Message: Demo change detected and analyzed
+2026-07-20 11:31:30 INFO [regulation_monitor.__main__] Snapshot=1 Diff=1 Analysis=1
+2026-07-20 11:31:30 INFO [regulation_monitor.__main__] 
+2026-07-20 11:31:30 INFO [regulation_monitor.__main__] --- AI Impact Analysis ---
+2026-07-20 11:31:30 INFO [regulation_monitor.__main__] Impact level: MEDIUM
+2026-07-20 11:31:30 INFO [regulation_monitor.__main__] Confidence: HIGH
+2026-07-20 11:31:30 INFO [regulation_monitor.__main__] Reason: Updated guidance on high-risk AI system obligations for consumer devices with embedded AI capabilities.
+2026-07-20 11:31:30 INFO [regulation_monitor.__main__] Affected modules: AI features, Voice assistant, Cybersecurity controls
+2026-07-20 11:31:30 INFO [regulation_monitor.__main__]   1. Review AI feature classification against EU AI Act risk tiers
+2026-07-20 11:31:30 INFO [regulation_monitor.__main__]   2. Update technical documentation for voice assistant components
+2026-07-20 11:31:30 INFO [regulation_monitor.__main__]   3. Schedule internal compliance review for Q3
+2026-07-20 11:31:30 INFO [regulation_monitor.__main__] 
+2026-07-20 11:31:30 INFO [regulation_monitor.__main__] --- Knowledge Item ---
+2026-07-20 11:31:30 INFO [regulation_monitor.__main__] Title: EU AI Act — Regulatory Framework
+2026-07-20 11:31:30 INFO [regulation_monitor.__main__] Category: AI Regulation
+2026-07-20 11:31:30 INFO [regulation_monitor.__main__] Modules: AI features, Voice assistant, Cybersecurity controls
+2026-07-20 11:31:30 INFO [regulation_monitor.__main__] Summary: Updated guidance on high-risk AI system obligations for consumer devices with embedded AI capabilities.
+2026-07-20 11:31:30 INFO [regulation_monitor.__main__] 
+2026-07-20 11:31:30 INFO [regulation_monitor.__main__] --- Report Summary ---
+2026-07-20 11:31:30 INFO [regulation_monitor.__main__] Report ID: 2026-07-16_weekly_report_demo
+2026-07-20 11:31:30 INFO [regulation_monitor.__main__] Generated at: 2026-07-16T08:30:00
+2026-07-20 11:31:30 INFO [regulation_monitor.__main__] Changes: total=2 medium=1 low=1
+2026-07-20 11:31:30 INFO [regulation_monitor.__main__] Executive summary: One MEDIUM-risk EU AI Act update and one LOW-risk product compliance notice during the reporting period. No immediate blocking compliance actions required.
+2026-07-20 11:31:30 INFO [regulation_monitor.__main__] 
+2026-07-20 11:31:30 INFO [regulation_monitor.__main__] Demo complete — sample data from data/demo/
+2026-07-20 11:31:30 INFO [regulation_monitor.__main__] ============================================================
+2026-07-20 11:33:03 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 11:33:03 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 11:33:05 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 11:33:05 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 11:33:10 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 11:33:10 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 11:33:27 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 11:33:27 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 11:33:34 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 11:33:34 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 11:33:36 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 11:33:36 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 11:33:39 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 11:33:39 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 11:33:44 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 11:33:44 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 11:33:51 ERROR [regulation_monitor.app.web.report_email_helper] Report email delivery failed: Email send failed: [Errno -2] Name or service not known
+2026-07-20 11:33:51 ERROR [regulation_monitor.app.web.report_email_helper] Report email delivery failed: Email send failed: [Errno 11001] getaddrinfo failed
+2026-07-20 11:33:51 ERROR [regulation_monitor.app.web.report_email_helper] Report email delivery failed: Email send failed: [Errno 11001] getaddrinfo failed
+2026-07-20 11:33:51 ERROR [regulation_monitor.app.web.report_email_helper] Report test email failed: [Errno 11001] getaddrinfo failed
+2026-07-20 11:33:51 ERROR [regulation_monitor.app.web.report_email_helper] Report test email failed: 535 Authentication failed
+2026-07-20 11:34:44 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 11:34:44 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 11:34:52 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 11:34:52 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 11:34:54 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 11:34:54 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 11:35:03 ERROR [regulation_monitor.app.web.report_email_helper] Report email delivery failed: Email send failed: [Errno -2] Name or service not known
+2026-07-20 11:35:03 ERROR [regulation_monitor.app.web.report_email_helper] Report test email failed: 535 Authentication failed
+2026-07-20 11:35:26 INFO [regulation_monitor.main] ============================================================
+2026-07-20 11:35:26 INFO [regulation_monitor.main] AI Regulation Monitor — Demo Mode
+2026-07-20 11:35:26 INFO [regulation_monitor.main] ============================================================
+2026-07-20 11:35:26 INFO [regulation_monitor.main] Demo configuration: enabled=False
+2026-07-20 11:35:26 INFO [regulation_monitor.main] 
+2026-07-20 11:35:26 INFO [regulation_monitor.main] --- Sample Monitoring Result ---
+2026-07-20 11:35:26 INFO [regulation_monitor.main] Source: EU AI Act — Regulatory Framework (eu_ai_act)
+2026-07-20 11:35:26 INFO [regulation_monitor.main] Status: analyzed
+2026-07-20 11:35:26 INFO [regulation_monitor.main] Message: Demo change detected and analyzed
+2026-07-20 11:35:26 INFO [regulation_monitor.main] Snapshot=1 Diff=1 Analysis=1
+2026-07-20 11:35:26 INFO [regulation_monitor.main] 
+2026-07-20 11:35:26 INFO [regulation_monitor.main] --- AI Impact Analysis ---
+2026-07-20 11:35:26 INFO [regulation_monitor.main] Impact level: MEDIUM
+2026-07-20 11:35:26 INFO [regulation_monitor.main] Confidence: HIGH
+2026-07-20 11:35:26 INFO [regulation_monitor.main] Reason: Updated guidance on high-risk AI system obligations for consumer devices with embedded AI capabilities.
+2026-07-20 11:35:26 INFO [regulation_monitor.main] Affected modules: AI features, Voice assistant, Cybersecurity controls
+2026-07-20 11:35:26 INFO [regulation_monitor.main]   1. Review AI feature classification against EU AI Act risk tiers
+2026-07-20 11:35:26 INFO [regulation_monitor.main]   2. Update technical documentation for voice assistant components
+2026-07-20 11:35:26 INFO [regulation_monitor.main]   3. Schedule internal compliance review for Q3
+2026-07-20 11:35:26 INFO [regulation_monitor.main] 
+2026-07-20 11:35:26 INFO [regulation_monitor.main] --- Knowledge Item ---
+2026-07-20 11:35:26 INFO [regulation_monitor.main] Title: EU AI Act — Regulatory Framework
+2026-07-20 11:35:26 INFO [regulation_monitor.main] Category: AI Regulation
+2026-07-20 11:35:26 INFO [regulation_monitor.main] Modules: AI features, Voice assistant, Cybersecurity controls
+2026-07-20 11:35:26 INFO [regulation_monitor.main] Summary: Updated guidance on high-risk AI system obligations for consumer devices with embedded AI capabilities.
+2026-07-20 11:35:26 INFO [regulation_monitor.main] 
+2026-07-20 11:35:26 INFO [regulation_monitor.main] --- Report Summary ---
+2026-07-20 11:35:26 INFO [regulation_monitor.main] Report ID: 2026-07-16_weekly_report_demo
+2026-07-20 11:35:26 INFO [regulation_monitor.main] Generated at: 2026-07-16T08:30:00
+2026-07-20 11:35:26 INFO [regulation_monitor.main] Changes: total=2 medium=1 low=1
+2026-07-20 11:35:26 INFO [regulation_monitor.main] Executive summary: One MEDIUM-risk EU AI Act update and one LOW-risk product compliance notice during the reporting period. No immediate blocking compliance actions required.
+2026-07-20 11:35:26 INFO [regulation_monitor.main] 
+2026-07-20 11:35:26 INFO [regulation_monitor.main] Demo complete — sample data from data/demo/
+2026-07-20 11:35:26 INFO [regulation_monitor.main] ============================================================
+2026-07-20 11:35:28 INFO [regulation_monitor.__main__] ============================================================
+2026-07-20 11:35:28 INFO [regulation_monitor.__main__] AI Regulation Monitor — Demo Mode
+2026-07-20 11:35:28 INFO [regulation_monitor.__main__] ============================================================
+2026-07-20 11:35:28 INFO [regulation_monitor.__main__] Demo configuration: enabled=False
+2026-07-20 11:35:28 INFO [regulation_monitor.__main__] 
+2026-07-20 11:35:28 INFO [regulation_monitor.__main__] --- Sample Monitoring Result ---
+2026-07-20 11:35:28 INFO [regulation_monitor.__main__] Source: EU AI Act — Regulatory Framework (eu_ai_act)
+2026-07-20 11:35:28 INFO [regulation_monitor.__main__] Status: analyzed
+2026-07-20 11:35:28 INFO [regulation_monitor.__main__] Message: Demo change detected and analyzed
+2026-07-20 11:35:28 INFO [regulation_monitor.__main__] Snapshot=1 Diff=1 Analysis=1
+2026-07-20 11:35:28 INFO [regulation_monitor.__main__] 
+2026-07-20 11:35:28 INFO [regulation_monitor.__main__] --- AI Impact Analysis ---
+2026-07-20 11:35:28 INFO [regulation_monitor.__main__] Impact level: MEDIUM
+2026-07-20 11:35:28 INFO [regulation_monitor.__main__] Confidence: HIGH
+2026-07-20 11:35:28 INFO [regulation_monitor.__main__] Reason: Updated guidance on high-risk AI system obligations for consumer devices with embedded AI capabilities.
+2026-07-20 11:35:28 INFO [regulation_monitor.__main__] Affected modules: AI features, Voice assistant, Cybersecurity controls
+2026-07-20 11:35:28 INFO [regulation_monitor.__main__]   1. Review AI feature classification against EU AI Act risk tiers
+2026-07-20 11:35:28 INFO [regulation_monitor.__main__]   2. Update technical documentation for voice assistant components
+2026-07-20 11:35:28 INFO [regulation_monitor.__main__]   3. Schedule internal compliance review for Q3
+2026-07-20 11:35:28 INFO [regulation_monitor.__main__] 
+2026-07-20 11:35:28 INFO [regulation_monitor.__main__] --- Knowledge Item ---
+2026-07-20 11:35:28 INFO [regulation_monitor.__main__] Title: EU AI Act — Regulatory Framework
+2026-07-20 11:35:28 INFO [regulation_monitor.__main__] Category: AI Regulation
+2026-07-20 11:35:28 INFO [regulation_monitor.__main__] Modules: AI features, Voice assistant, Cybersecurity controls
+2026-07-20 11:35:28 INFO [regulation_monitor.__main__] Summary: Updated guidance on high-risk AI system obligations for consumer devices with embedded AI capabilities.
+2026-07-20 11:35:28 INFO [regulation_monitor.__main__] 
+2026-07-20 11:35:28 INFO [regulation_monitor.__main__] --- Report Summary ---
+2026-07-20 11:35:28 INFO [regulation_monitor.__main__] Report ID: 2026-07-16_weekly_report_demo
+2026-07-20 11:35:28 INFO [regulation_monitor.__main__] Generated at: 2026-07-16T08:30:00
+2026-07-20 11:35:28 INFO [regulation_monitor.__main__] Changes: total=2 medium=1 low=1
+2026-07-20 11:35:28 INFO [regulation_monitor.__main__] Executive summary: One MEDIUM-risk EU AI Act update and one LOW-risk product compliance notice during the reporting period. No immediate blocking compliance actions required.
+2026-07-20 11:35:28 INFO [regulation_monitor.__main__] 
+2026-07-20 11:35:28 INFO [regulation_monitor.__main__] Demo complete — sample data from data/demo/
+2026-07-20 11:35:28 INFO [regulation_monitor.__main__] ============================================================
+2026-07-20 11:45:40 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 11:45:40 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 11:45:42 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 11:45:42 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 11:45:44 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 11:45:44 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 11:47:22 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 11:47:22 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 11:47:28 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 11:47:28 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 11:47:37 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 11:47:37 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 11:47:40 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 11:47:40 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 11:47:58 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 11:47:58 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 11:48:15 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 11:48:15 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 11:48:18 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 11:48:18 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 11:48:24 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 11:48:24 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 11:48:28 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 11:48:28 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 11:48:32 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 11:48:32 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 11:48:42 ERROR [regulation_monitor.app.web.report_email_helper] Report email delivery failed: Email send failed: [Errno -2] Name or service not known
+2026-07-20 11:48:43 ERROR [regulation_monitor.app.web.report_email_helper] Report test email failed: 535 Authentication failed
+2026-07-20 11:49:22 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 11:49:22 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 11:49:45 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 11:49:45 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 11:50:18 ERROR [regulation_monitor.app.web.email_settings_api] Email settings test failed: [WinError 10060] 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。
+2026-07-20 11:50:18 ERROR [regulation_monitor.app.web.report_email_helper] Report email delivery failed: Email send failed: [Errno -2] Name or service not known
+2026-07-20 11:50:19 ERROR [regulation_monitor.app.web.report_email_helper] Report test email failed: 535 Authentication failed
+2026-07-20 11:50:44 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 11:50:44 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 11:50:47 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 11:50:47 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 11:50:50 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 11:50:50 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 11:50:58 ERROR [regulation_monitor.app.web.report_email_helper] Report email delivery failed: Email send failed: [Errno -2] Name or service not known
+2026-07-20 11:50:59 ERROR [regulation_monitor.app.web.report_email_helper] Report test email failed: 535 Authentication failed
+2026-07-20 11:51:15 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 11:51:15 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 11:51:28 ERROR [regulation_monitor.app.web.report_email_helper] Report email delivery failed: Email send failed: [Errno -2] Name or service not known
+2026-07-20 11:51:28 ERROR [regulation_monitor.app.web.report_email_helper] Report test email failed: 535 Authentication failed
+2026-07-20 11:51:42 INFO [regulation_monitor.main] ============================================================
+2026-07-20 11:51:42 INFO [regulation_monitor.main] AI Regulation Monitor — Demo Mode
+2026-07-20 11:51:42 INFO [regulation_monitor.main] ============================================================
+2026-07-20 11:51:42 INFO [regulation_monitor.main] Demo configuration: enabled=False
+2026-07-20 11:51:42 INFO [regulation_monitor.main] 
+2026-07-20 11:51:42 INFO [regulation_monitor.main] --- Sample Monitoring Result ---
+2026-07-20 11:51:42 INFO [regulation_monitor.main] Source: EU AI Act — Regulatory Framework (eu_ai_act)
+2026-07-20 11:51:42 INFO [regulation_monitor.main] Status: analyzed
+2026-07-20 11:51:42 INFO [regulation_monitor.main] Message: Demo change detected and analyzed
+2026-07-20 11:51:42 INFO [regulation_monitor.main] Snapshot=1 Diff=1 Analysis=1
+2026-07-20 11:51:42 INFO [regulation_monitor.main] 
+2026-07-20 11:51:42 INFO [regulation_monitor.main] --- AI Impact Analysis ---
+2026-07-20 11:51:42 INFO [regulation_monitor.main] Impact level: MEDIUM
+2026-07-20 11:51:42 INFO [regulation_monitor.main] Confidence: HIGH
+2026-07-20 11:51:42 INFO [regulation_monitor.main] Reason: Updated guidance on high-risk AI system obligations for consumer devices with embedded AI capabilities.
+2026-07-20 11:51:42 INFO [regulation_monitor.main] Affected modules: AI features, Voice assistant, Cybersecurity controls
+2026-07-20 11:51:42 INFO [regulation_monitor.main]   1. Review AI feature classification against EU AI Act risk tiers
+2026-07-20 11:51:42 INFO [regulation_monitor.main]   2. Update technical documentation for voice assistant components
+2026-07-20 11:51:42 INFO [regulation_monitor.main]   3. Schedule internal compliance review for Q3
+2026-07-20 11:51:42 INFO [regulation_monitor.main] 
+2026-07-20 11:51:42 INFO [regulation_monitor.main] --- Knowledge Item ---
+2026-07-20 11:51:42 INFO [regulation_monitor.main] Title: EU AI Act — Regulatory Framework
+2026-07-20 11:51:42 INFO [regulation_monitor.main] Category: AI Regulation
+2026-07-20 11:51:42 INFO [regulation_monitor.main] Modules: AI features, Voice assistant, Cybersecurity controls
+2026-07-20 11:51:42 INFO [regulation_monitor.main] Summary: Updated guidance on high-risk AI system obligations for consumer devices with embedded AI capabilities.
+2026-07-20 11:51:42 INFO [regulation_monitor.main] 
+2026-07-20 11:51:42 INFO [regulation_monitor.main] --- Report Summary ---
+2026-07-20 11:51:42 INFO [regulation_monitor.main] Report ID: 2026-07-16_weekly_report_demo
+2026-07-20 11:51:42 INFO [regulation_monitor.main] Generated at: 2026-07-16T08:30:00
+2026-07-20 11:51:42 INFO [regulation_monitor.main] Changes: total=2 medium=1 low=1
+2026-07-20 11:51:42 INFO [regulation_monitor.main] Executive summary: One MEDIUM-risk EU AI Act update and one LOW-risk product compliance notice during the reporting period. No immediate blocking compliance actions required.
+2026-07-20 11:51:42 INFO [regulation_monitor.main] 
+2026-07-20 11:51:42 INFO [regulation_monitor.main] Demo complete — sample data from data/demo/
+2026-07-20 11:51:42 INFO [regulation_monitor.main] ============================================================
+2026-07-20 11:51:44 INFO [regulation_monitor.__main__] ============================================================
+2026-07-20 11:51:44 INFO [regulation_monitor.__main__] AI Regulation Monitor — Demo Mode
+2026-07-20 11:51:44 INFO [regulation_monitor.__main__] ============================================================
+2026-07-20 11:51:44 INFO [regulation_monitor.__main__] Demo configuration: enabled=False
+2026-07-20 11:51:44 INFO [regulation_monitor.__main__] 
+2026-07-20 11:51:44 INFO [regulation_monitor.__main__] --- Sample Monitoring Result ---
+2026-07-20 11:51:44 INFO [regulation_monitor.__main__] Source: EU AI Act — Regulatory Framework (eu_ai_act)
+2026-07-20 11:51:44 INFO [regulation_monitor.__main__] Status: analyzed
+2026-07-20 11:51:44 INFO [regulation_monitor.__main__] Message: Demo change detected and analyzed
+2026-07-20 11:51:44 INFO [regulation_monitor.__main__] Snapshot=1 Diff=1 Analysis=1
+2026-07-20 11:51:44 INFO [regulation_monitor.__main__] 
+2026-07-20 11:51:44 INFO [regulation_monitor.__main__] --- AI Impact Analysis ---
+2026-07-20 11:51:44 INFO [regulation_monitor.__main__] Impact level: MEDIUM
+2026-07-20 11:51:45 INFO [regulation_monitor.__main__] Confidence: HIGH
+2026-07-20 11:51:45 INFO [regulation_monitor.__main__] Reason: Updated guidance on high-risk AI system obligations for consumer devices with embedded AI capabilities.
+2026-07-20 11:51:45 INFO [regulation_monitor.__main__] Affected modules: AI features, Voice assistant, Cybersecurity controls
+2026-07-20 11:51:45 INFO [regulation_monitor.__main__]   1. Review AI feature classification against EU AI Act risk tiers
+2026-07-20 11:51:45 INFO [regulation_monitor.__main__]   2. Update technical documentation for voice assistant components
+2026-07-20 11:51:45 INFO [regulation_monitor.__main__]   3. Schedule internal compliance review for Q3
+2026-07-20 11:51:45 INFO [regulation_monitor.__main__] 
+2026-07-20 11:51:45 INFO [regulation_monitor.__main__] --- Knowledge Item ---
+2026-07-20 11:51:45 INFO [regulation_monitor.__main__] Title: EU AI Act — Regulatory Framework
+2026-07-20 11:51:45 INFO [regulation_monitor.__main__] Category: AI Regulation
+2026-07-20 11:51:45 INFO [regulation_monitor.__main__] Modules: AI features, Voice assistant, Cybersecurity controls
+2026-07-20 11:51:45 INFO [regulation_monitor.__main__] Summary: Updated guidance on high-risk AI system obligations for consumer devices with embedded AI capabilities.
+2026-07-20 11:51:45 INFO [regulation_monitor.__main__] 
+2026-07-20 11:51:45 INFO [regulation_monitor.__main__] --- Report Summary ---
+2026-07-20 11:51:45 INFO [regulation_monitor.__main__] Report ID: 2026-07-16_weekly_report_demo
+2026-07-20 11:51:45 INFO [regulation_monitor.__main__] Generated at: 2026-07-16T08:30:00
+2026-07-20 11:51:45 INFO [regulation_monitor.__main__] Changes: total=2 medium=1 low=1
+2026-07-20 11:51:45 INFO [regulation_monitor.__main__] Executive summary: One MEDIUM-risk EU AI Act update and one LOW-risk product compliance notice during the reporting period. No immediate blocking compliance actions required.
+2026-07-20 11:51:45 INFO [regulation_monitor.__main__] 
+2026-07-20 11:51:45 INFO [regulation_monitor.__main__] Demo complete — sample data from data/demo/
+2026-07-20 11:51:45 INFO [regulation_monitor.__main__] ============================================================
+2026-07-20 11:52:37 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 11:52:37 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 12:08:25 ERROR [regulation_monitor.app.web.report_email_helper] Report email delivery failed: Email send failed: [WinError 10060] 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。
+2026-07-20 12:09:02 ERROR [regulation_monitor.app.web.report_email_helper] Report test email failed: [WinError 10060] 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。
+2026-07-20 12:36:12 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 12:36:12 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 12:36:14 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 12:36:14 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 12:36:17 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 12:36:17 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 12:36:23 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 12:36:23 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 12:36:26 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 12:36:26 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 12:36:28 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 12:36:28 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 12:37:00 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 12:37:00 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 12:37:05 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 12:37:05 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 12:37:18 ERROR [regulation_monitor.app.web.report_email_helper] Report email delivery failed: Email send failed: [Errno -2] Name or service not known
+2026-07-20 12:37:19 ERROR [regulation_monitor.app.web.report_email_helper] Report test email failed: 535 Authentication failed
+2026-07-20 12:37:45 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 12:37:45 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 12:37:56 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 12:37:56 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 12:38:00 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 12:38:00 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 12:38:02 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 12:38:02 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 12:38:08 ERROR [regulation_monitor.app.web.report_email_helper] Report email delivery failed: Email send failed: [Errno -2] Name or service not known
+2026-07-20 12:38:08 ERROR [regulation_monitor.app.web.report_email_helper] Report test email failed: 535 Authentication failed
+2026-07-20 12:38:47 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 12:38:47 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 12:38:50 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 12:38:50 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 12:38:52 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 12:38:52 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 12:39:00 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 12:39:00 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 12:39:16 ERROR [regulation_monitor.app.web.report_email_helper] Report email delivery failed: Email send failed: [Errno -2] Name or service not known
+2026-07-20 12:39:16 ERROR [regulation_monitor.app.web.report_email_helper] Report test email failed: 535 Authentication failed
+2026-07-20 12:39:29 INFO [regulation_monitor.main] ============================================================
+2026-07-20 12:39:29 INFO [regulation_monitor.main] AI Regulation Monitor — Demo Mode
+2026-07-20 12:39:29 INFO [regulation_monitor.main] ============================================================
+2026-07-20 12:39:29 INFO [regulation_monitor.main] Demo configuration: enabled=False
+2026-07-20 12:39:29 INFO [regulation_monitor.main] 
+2026-07-20 12:39:29 INFO [regulation_monitor.main] --- Sample Monitoring Result ---
+2026-07-20 12:39:29 INFO [regulation_monitor.main] Source: EU AI Act — Regulatory Framework (eu_ai_act)
+2026-07-20 12:39:29 INFO [regulation_monitor.main] Status: analyzed
+2026-07-20 12:39:29 INFO [regulation_monitor.main] Message: Demo change detected and analyzed
+2026-07-20 12:39:29 INFO [regulation_monitor.main] Snapshot=1 Diff=1 Analysis=1
+2026-07-20 12:39:29 INFO [regulation_monitor.main] 
+2026-07-20 12:39:29 INFO [regulation_monitor.main] --- AI Impact Analysis ---
+2026-07-20 12:39:29 INFO [regulation_monitor.main] Impact level: MEDIUM
+2026-07-20 12:39:29 INFO [regulation_monitor.main] Confidence: HIGH
+2026-07-20 12:39:29 INFO [regulation_monitor.main] Reason: Updated guidance on high-risk AI system obligations for consumer devices with embedded AI capabilities.
+2026-07-20 12:39:29 INFO [regulation_monitor.main] Affected modules: AI features, Voice assistant, Cybersecurity controls
+2026-07-20 12:39:29 INFO [regulation_monitor.main]   1. Review AI feature classification against EU AI Act risk tiers
+2026-07-20 12:39:29 INFO [regulation_monitor.main]   2. Update technical documentation for voice assistant components
+2026-07-20 12:39:29 INFO [regulation_monitor.main]   3. Schedule internal compliance review for Q3
+2026-07-20 12:39:29 INFO [regulation_monitor.main] 
+2026-07-20 12:39:29 INFO [regulation_monitor.main] --- Knowledge Item ---
+2026-07-20 12:39:29 INFO [regulation_monitor.main] Title: EU AI Act — Regulatory Framework
+2026-07-20 12:39:29 INFO [regulation_monitor.main] Category: AI Regulation
+2026-07-20 12:39:29 INFO [regulation_monitor.main] Modules: AI features, Voice assistant, Cybersecurity controls
+2026-07-20 12:39:29 INFO [regulation_monitor.main] Summary: Updated guidance on high-risk AI system obligations for consumer devices with embedded AI capabilities.
+2026-07-20 12:39:29 INFO [regulation_monitor.main] 
+2026-07-20 12:39:29 INFO [regulation_monitor.main] --- Report Summary ---
+2026-07-20 12:39:29 INFO [regulation_monitor.main] Report ID: 2026-07-16_weekly_report_demo
+2026-07-20 12:39:29 INFO [regulation_monitor.main] Generated at: 2026-07-16T08:30:00
+2026-07-20 12:39:29 INFO [regulation_monitor.main] Changes: total=2 medium=1 low=1
+2026-07-20 12:39:29 INFO [regulation_monitor.main] Executive summary: One MEDIUM-risk EU AI Act update and one LOW-risk product compliance notice during the reporting period. No immediate blocking compliance actions required.
+2026-07-20 12:39:29 INFO [regulation_monitor.main] 
+2026-07-20 12:39:29 INFO [regulation_monitor.main] Demo complete — sample data from data/demo/
+2026-07-20 12:39:29 INFO [regulation_monitor.main] ============================================================
+2026-07-20 12:39:31 INFO [regulation_monitor.__main__] ============================================================
+2026-07-20 12:39:31 INFO [regulation_monitor.__main__] AI Regulation Monitor — Demo Mode
+2026-07-20 12:39:31 INFO [regulation_monitor.__main__] ============================================================
+2026-07-20 12:39:31 INFO [regulation_monitor.__main__] Demo configuration: enabled=False
+2026-07-20 12:39:31 INFO [regulation_monitor.__main__] 
+2026-07-20 12:39:31 INFO [regulation_monitor.__main__] --- Sample Monitoring Result ---
+2026-07-20 12:39:31 INFO [regulation_monitor.__main__] Source: EU AI Act — Regulatory Framework (eu_ai_act)
+2026-07-20 12:39:31 INFO [regulation_monitor.__main__] Status: analyzed
+2026-07-20 12:39:31 INFO [regulation_monitor.__main__] Message: Demo change detected and analyzed
+2026-07-20 12:39:31 INFO [regulation_monitor.__main__] Snapshot=1 Diff=1 Analysis=1
+2026-07-20 12:39:31 INFO [regulation_monitor.__main__] 
+2026-07-20 12:39:31 INFO [regulation_monitor.__main__] --- AI Impact Analysis ---
+2026-07-20 12:39:31 INFO [regulation_monitor.__main__] Impact level: MEDIUM
+2026-07-20 12:39:31 INFO [regulation_monitor.__main__] Confidence: HIGH
+2026-07-20 12:39:31 INFO [regulation_monitor.__main__] Reason: Updated guidance on high-risk AI system obligations for consumer devices with embedded AI capabilities.
+2026-07-20 12:39:31 INFO [regulation_monitor.__main__] Affected modules: AI features, Voice assistant, Cybersecurity controls
+2026-07-20 12:39:31 INFO [regulation_monitor.__main__]   1. Review AI feature classification against EU AI Act risk tiers
+2026-07-20 12:39:31 INFO [regulation_monitor.__main__]   2. Update technical documentation for voice assistant components
+2026-07-20 12:39:31 INFO [regulation_monitor.__main__]   3. Schedule internal compliance review for Q3
+2026-07-20 12:39:31 INFO [regulation_monitor.__main__] 
+2026-07-20 12:39:31 INFO [regulation_monitor.__main__] --- Knowledge Item ---
+2026-07-20 12:39:31 INFO [regulation_monitor.__main__] Title: EU AI Act — Regulatory Framework
+2026-07-20 12:39:31 INFO [regulation_monitor.__main__] Category: AI Regulation
+2026-07-20 12:39:31 INFO [regulation_monitor.__main__] Modules: AI features, Voice assistant, Cybersecurity controls
+2026-07-20 12:39:31 INFO [regulation_monitor.__main__] Summary: Updated guidance on high-risk AI system obligations for consumer devices with embedded AI capabilities.
+2026-07-20 12:39:31 INFO [regulation_monitor.__main__] 
+2026-07-20 12:39:31 INFO [regulation_monitor.__main__] --- Report Summary ---
+2026-07-20 12:39:31 INFO [regulation_monitor.__main__] Report ID: 2026-07-16_weekly_report_demo
+2026-07-20 12:39:31 INFO [regulation_monitor.__main__] Generated at: 2026-07-16T08:30:00
+2026-07-20 12:39:31 INFO [regulation_monitor.__main__] Changes: total=2 medium=1 low=1
+2026-07-20 12:39:31 INFO [regulation_monitor.__main__] Executive summary: One MEDIUM-risk EU AI Act update and one LOW-risk product compliance notice during the reporting period. No immediate blocking compliance actions required.
+2026-07-20 12:39:31 INFO [regulation_monitor.__main__] 
+2026-07-20 12:39:31 INFO [regulation_monitor.__main__] Demo complete — sample data from data/demo/
+2026-07-20 12:39:31 INFO [regulation_monitor.__main__] ============================================================
+2026-07-20 13:13:05 ERROR [regulation_monitor.app.web.email_settings_api] Email settings test failed: [WinError 10060] 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。
+2026-07-20 13:20:48 ERROR [regulation_monitor.app.web.email_settings_api] Email settings test failed: [WinError 10060] 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。
+2026-07-20 13:56:13 ERROR [regulation_monitor.app.web.email_settings_api] Email settings test failed: (535, b'Error: authentication failed')
+2026-07-20 13:57:33 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 13:57:33 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 13:57:45 ERROR [regulation_monitor.app.web.email_settings_api] Email settings test failed: SMTP password is not configured.
+2026-07-20 13:58:13 ERROR [regulation_monitor.app.web.email_settings_api] Email settings test failed: SMTP password is not configured.
+2026-07-20 13:58:27 ERROR [regulation_monitor.app.web.report_email_helper] Report test email failed: (535, b'Error: authentication failed')
+2026-07-20 13:58:31 ERROR [regulation_monitor.app.web.email_settings_api] Email settings test failed: (535, b'Error: authentication failed')
+2026-07-20 13:59:53 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 13:59:53 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 13:59:55 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 13:59:55 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 13:59:59 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 13:59:59 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 14:00:02 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 14:00:02 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 14:00:04 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 14:00:04 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 14:00:10 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 14:00:10 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 14:00:21 ERROR [regulation_monitor.app.web.report_email_helper] Report email delivery failed: Email send failed: [Errno -2] Name or service not known
+NoneType: None
+2026-07-20 14:00:22 ERROR [regulation_monitor.app.web.report_email_helper] Report test email failed: 535 Authentication failed
+Traceback (most recent call last):
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\web\report_email_helper.py", line 501, in send_test_report_email
+    send_email_fn(
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\unittest\mock.py", line 1124, in __call__
+    return self._mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\unittest\mock.py", line 1128, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\unittest\mock.py", line 1183, in _execute_mock_call
+    raise effect
+app.notification.email_sender.EmailSendError: 535 Authentication failed
+2026-07-20 14:00:37 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 14:00:37 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 14:00:42 ERROR [regulation_monitor.app.web.report_email_helper] Report email delivery failed: Email send failed: [Errno -2] Name or service not known
+NoneType: None
+2026-07-20 14:00:43 ERROR [regulation_monitor.app.web.report_email_helper] Report test email failed: 535 Authentication failed
+Traceback (most recent call last):
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\web\report_email_helper.py", line 501, in send_test_report_email
+    send_email_fn(
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\unittest\mock.py", line 1124, in __call__
+    return self._mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\unittest\mock.py", line 1128, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\unittest\mock.py", line 1183, in _execute_mock_call
+    raise effect
+app.notification.email_sender.EmailSendError: 535 Authentication failed
+2026-07-20 14:01:03 ERROR [regulation_monitor.app.notification.email_sender] SMTP delivery failed (SMTPAuthenticationError): host=mail.hisense.com port=465 use_ssl=True use_tls=False
+Traceback (most recent call last):
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 219, in send_smtp_message
+    server.login(username, password)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 750, in login
+    raise last_exception
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 739, in login
+    (code, resp) = self.auth(
+                   ^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 662, in auth
+    raise SMTPAuthenticationError(code, resp)
+smtplib.SMTPAuthenticationError: (535, b'Error: authentication failed')
+2026-07-20 14:01:03 ERROR [regulation_monitor.app.web.email_settings_api] Email settings test failed after SMTP send attempt
+Traceback (most recent call last):
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 219, in send_smtp_message
+    server.login(username, password)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 750, in login
+    raise last_exception
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 739, in login
+    (code, resp) = self.auth(
+                   ^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 662, in auth
+    raise SMTPAuthenticationError(code, resp)
+smtplib.SMTPAuthenticationError: (535, b'Error: authentication failed')
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\web\email_settings_api.py", line 68, in api_send_email_settings_test
+    sender(
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 236, in send_email
+    send_smtp_message(
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 223, in send_smtp_message
+    raise EmailSendError(str(error)) from error
+app.notification.email_sender.EmailSendError: (535, b'Error: authentication failed')
+2026-07-20 14:01:09 ERROR [regulation_monitor.app.notification.email_sender] SMTP delivery failed (SMTPAuthenticationError): host=mail.hisense.com port=465 use_ssl=True use_tls=False
+Traceback (most recent call last):
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 219, in send_smtp_message
+    server.login(username, password)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 750, in login
+    raise last_exception
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 739, in login
+    (code, resp) = self.auth(
+                   ^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 662, in auth
+    raise SMTPAuthenticationError(code, resp)
+smtplib.SMTPAuthenticationError: (535, b'Error: authentication failed')
+2026-07-20 14:01:09 ERROR [regulation_monitor.app.web.email_settings_api] Email settings test failed after SMTP send attempt
+Traceback (most recent call last):
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 219, in send_smtp_message
+    server.login(username, password)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 750, in login
+    raise last_exception
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 739, in login
+    (code, resp) = self.auth(
+                   ^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 662, in auth
+    raise SMTPAuthenticationError(code, resp)
+smtplib.SMTPAuthenticationError: (535, b'Error: authentication failed')
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\web\email_settings_api.py", line 68, in api_send_email_settings_test
+    sender(
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 236, in send_email
+    send_smtp_message(
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 223, in send_smtp_message
+    raise EmailSendError(str(error)) from error
+app.notification.email_sender.EmailSendError: (535, b'Error: authentication failed')
+2026-07-20 14:01:25 ERROR [regulation_monitor.app.notification.email_sender] SMTP delivery failed (SMTPAuthenticationError): host=mail.hisense.com port=465 use_ssl=True use_tls=False
+Traceback (most recent call last):
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 219, in send_smtp_message
+    server.login(username, password)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 750, in login
+    raise last_exception
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 739, in login
+    (code, resp) = self.auth(
+                   ^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 662, in auth
+    raise SMTPAuthenticationError(code, resp)
+smtplib.SMTPAuthenticationError: (535, b'Error: authentication failed')
+2026-07-20 14:01:25 ERROR [regulation_monitor.app.web.email_settings_api] Email settings test failed after SMTP send attempt
+Traceback (most recent call last):
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 219, in send_smtp_message
+    server.login(username, password)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 750, in login
+    raise last_exception
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 739, in login
+    (code, resp) = self.auth(
+                   ^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 662, in auth
+    raise SMTPAuthenticationError(code, resp)
+smtplib.SMTPAuthenticationError: (535, b'Error: authentication failed')
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\web\email_settings_api.py", line 68, in api_send_email_settings_test
+    sender(
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 236, in send_email
+    send_smtp_message(
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 223, in send_smtp_message
+    raise EmailSendError(str(error)) from error
+app.notification.email_sender.EmailSendError: (535, b'Error: authentication failed')
+2026-07-20 14:04:45 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 14:04:45 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 14:05:03 ERROR [regulation_monitor.app.notification.email_sender] SMTP delivery failed (SMTPAuthenticationError): host=mail.hisense.com port=465 use_ssl=True use_tls=False
+Traceback (most recent call last):
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 219, in send_smtp_message
+    server.login(username, password)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 750, in login
+    raise last_exception
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 739, in login
+    (code, resp) = self.auth(
+                   ^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 662, in auth
+    raise SMTPAuthenticationError(code, resp)
+smtplib.SMTPAuthenticationError: (535, b'Error: authentication failed')
+2026-07-20 14:05:03 ERROR [regulation_monitor.app.web.email_settings_api] Email settings test failed after SMTP send attempt
+Traceback (most recent call last):
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 219, in send_smtp_message
+    server.login(username, password)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 750, in login
+    raise last_exception
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 739, in login
+    (code, resp) = self.auth(
+                   ^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 662, in auth
+    raise SMTPAuthenticationError(code, resp)
+smtplib.SMTPAuthenticationError: (535, b'Error: authentication failed')
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\web\email_settings_api.py", line 68, in api_send_email_settings_test
+    sender(
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 236, in send_email
+    send_smtp_message(
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 223, in send_smtp_message
+    raise EmailSendError(str(error)) from error
+app.notification.email_sender.EmailSendError: (535, b'Error: authentication failed')
+2026-07-20 14:06:32 ERROR [regulation_monitor.app.notification.email_sender] SMTP delivery failed (SMTPAuthenticationError): host=mail.hisense.com port=465 use_ssl=True use_tls=False
+Traceback (most recent call last):
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 219, in send_smtp_message
+    server.login(username, password)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 750, in login
+    raise last_exception
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 739, in login
+    (code, resp) = self.auth(
+                   ^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 662, in auth
+    raise SMTPAuthenticationError(code, resp)
+smtplib.SMTPAuthenticationError: (535, b'Error: authentication failed')
+2026-07-20 14:06:32 ERROR [regulation_monitor.app.web.email_settings_api] Email settings test failed after SMTP send attempt
+Traceback (most recent call last):
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 219, in send_smtp_message
+    server.login(username, password)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 750, in login
+    raise last_exception
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 739, in login
+    (code, resp) = self.auth(
+                   ^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 662, in auth
+    raise SMTPAuthenticationError(code, resp)
+smtplib.SMTPAuthenticationError: (535, b'Error: authentication failed')
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\web\email_settings_api.py", line 68, in api_send_email_settings_test
+    sender(
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 236, in send_email
+    send_smtp_message(
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 223, in send_smtp_message
+    raise EmailSendError(str(error)) from error
+app.notification.email_sender.EmailSendError: (535, b'Error: authentication failed')
+2026-07-20 14:07:18 ERROR [regulation_monitor.app.notification.email_sender] SMTP delivery failed (SMTPAuthenticationError): host=mail.hisense.com port=465 use_ssl=True use_tls=False
+Traceback (most recent call last):
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 219, in send_smtp_message
+    server.login(username, password)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 750, in login
+    raise last_exception
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 739, in login
+    (code, resp) = self.auth(
+                   ^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 662, in auth
+    raise SMTPAuthenticationError(code, resp)
+smtplib.SMTPAuthenticationError: (535, b'Error: authentication failed')
+2026-07-20 14:07:18 ERROR [regulation_monitor.app.web.email_settings_api] Email settings test failed after SMTP send attempt
+Traceback (most recent call last):
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 219, in send_smtp_message
+    server.login(username, password)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 750, in login
+    raise last_exception
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 739, in login
+    (code, resp) = self.auth(
+                   ^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 662, in auth
+    raise SMTPAuthenticationError(code, resp)
+smtplib.SMTPAuthenticationError: (535, b'Error: authentication failed')
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\web\email_settings_api.py", line 68, in api_send_email_settings_test
+    sender(
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 236, in send_email
+    send_smtp_message(
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 223, in send_smtp_message
+    raise EmailSendError(str(error)) from error
+app.notification.email_sender.EmailSendError: (535, b'Error: authentication failed')
+2026-07-20 14:09:56 ERROR [regulation_monitor.app.notification.email_sender] SMTP delivery failed (SMTPAuthenticationError): host=mail.hisense.com port=465 use_ssl=True use_tls=False
+Traceback (most recent call last):
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 219, in send_smtp_message
+    server.login(username, password)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 750, in login
+    raise last_exception
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 739, in login
+    (code, resp) = self.auth(
+                   ^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 662, in auth
+    raise SMTPAuthenticationError(code, resp)
+smtplib.SMTPAuthenticationError: (535, b'Error: authentication failed')
+2026-07-20 14:10:39 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 14:10:39 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 14:10:42 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 14:10:42 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 14:10:44 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 14:10:44 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 14:11:00 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 14:11:00 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 14:11:02 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 14:11:02 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 14:11:08 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 14:11:08 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 14:11:12 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 14:11:12 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 14:11:18 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 14:11:18 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 14:11:33 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 14:11:33 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 14:11:36 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 14:11:36 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 14:11:59 INFO [regulation_monitor.app.notification.email_sender] SMTP connection attempt: provider=unknown smtp_host=smtp.example.com smtp_port=587 use_ssl=False use_tls=True username_present=False password_configured=False
+2026-07-20 14:11:59 INFO [regulation_monitor.app.notification.email_sender] SMTP connection attempt: provider=unknown smtp_host=smtp.example.com smtp_port=587 use_ssl=False use_tls=True username_present=True password_configured=True
+2026-07-20 14:11:59 INFO [regulation_monitor.app.notification.email_sender] SMTP connection attempt: provider=unknown smtp_host=smtp.example.com smtp_port=465 use_ssl=True use_tls=False username_present=True password_configured=True
+2026-07-20 14:11:59 INFO [regulation_monitor.app.notification.email_sender] SMTP connection attempt: provider=unknown smtp_host=smtp.example.com smtp_port=587 use_ssl=False use_tls=True username_present=True password_configured=True
+2026-07-20 14:11:59 ERROR [regulation_monitor.app.web.report_email_helper] Report email delivery failed: Email send failed: [Errno -2] Name or service not known
+NoneType: None
+2026-07-20 14:12:00 ERROR [regulation_monitor.app.web.report_email_helper] Report test email failed: 535 Authentication failed
+Traceback (most recent call last):
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\web\report_email_helper.py", line 503, in send_test_report_email
+    send_email_fn(
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\unittest\mock.py", line 1124, in __call__
+    return self._mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\unittest\mock.py", line 1128, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\unittest\mock.py", line 1183, in _execute_mock_call
+    raise effect
+app.notification.email_sender.EmailSendError: 535 Authentication failed
+2026-07-20 14:12:17 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 14:12:17 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 14:12:23 INFO [regulation_monitor.app.notification.email_sender] SMTP connection attempt: provider=unknown smtp_host=smtp.example.com smtp_port=587 use_ssl=False use_tls=True username_present=False password_configured=False
+2026-07-20 14:12:24 INFO [regulation_monitor.app.notification.email_sender] SMTP connection attempt: provider=unknown smtp_host=smtp.example.com smtp_port=587 use_ssl=False use_tls=True username_present=True password_configured=True
+2026-07-20 14:12:24 INFO [regulation_monitor.app.notification.email_sender] SMTP connection attempt: provider=unknown smtp_host=smtp.example.com smtp_port=465 use_ssl=True use_tls=False username_present=True password_configured=True
+2026-07-20 14:12:24 INFO [regulation_monitor.app.notification.email_sender] SMTP connection attempt: provider=unknown smtp_host=smtp.example.com smtp_port=587 use_ssl=False use_tls=True username_present=True password_configured=True
+2026-07-20 14:12:37 ERROR [regulation_monitor.app.web.report_email_helper] Report email delivery failed: Email send failed: [Errno -2] Name or service not known
+NoneType: None
+2026-07-20 14:12:38 ERROR [regulation_monitor.app.web.report_email_helper] Report test email failed: 535 Authentication failed
+Traceback (most recent call last):
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\web\report_email_helper.py", line 503, in send_test_report_email
+    send_email_fn(
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\unittest\mock.py", line 1124, in __call__
+    return self._mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\unittest\mock.py", line 1128, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\unittest\mock.py", line 1183, in _execute_mock_call
+    raise effect
+app.notification.email_sender.EmailSendError: 535 Authentication failed
+2026-07-20 14:13:01 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 14:13:01 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 14:13:04 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 14:13:04 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 14:25:55 INFO [regulation_monitor.app.notification.email_sender] SMTP connection attempt: provider=hisense smtp_host=mail.hisense.com smtp_port=465 use_ssl=True use_tls=False username_present=True password_configured=True
+2026-07-20 14:25:57 ERROR [regulation_monitor.app.notification.email_sender] SMTP delivery failed (SMTPAuthenticationError): host=mail.hisense.com port=465 use_ssl=True use_tls=False
+Traceback (most recent call last):
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 239, in send_smtp_message
+    server.login(username, password)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 750, in login
+    raise last_exception
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 739, in login
+    (code, resp) = self.auth(
+                   ^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 662, in auth
+    raise SMTPAuthenticationError(code, resp)
+smtplib.SMTPAuthenticationError: (535, b'Error: authentication failed')
+2026-07-20 14:25:57 ERROR [regulation_monitor.app.web.email_settings_api] Email settings test failed after SMTP send attempt
+Traceback (most recent call last):
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 239, in send_smtp_message
+    server.login(username, password)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 750, in login
+    raise last_exception
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 739, in login
+    (code, resp) = self.auth(
+                   ^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 662, in auth
+    raise SMTPAuthenticationError(code, resp)
+smtplib.SMTPAuthenticationError: (535, b'Error: authentication failed')
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\web\email_settings_api.py", line 68, in api_send_email_settings_test
+    sender(
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 256, in send_email
+    send_smtp_message(
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 243, in send_smtp_message
+    raise EmailSendError(str(error)) from error
+app.notification.email_sender.EmailSendError: (535, b'Error: authentication failed')
+2026-07-20 15:04:09 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 15:04:09 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 15:12:21 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 15:12:21 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 15:12:35 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 15:12:35 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 15:12:41 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-20 15:12:41 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-20 15:13:13 INFO [regulation_monitor.main] ============================================================
+2026-07-20 15:13:13 INFO [regulation_monitor.main] AI Regulation Monitor — Demo Mode
+2026-07-20 15:13:13 INFO [regulation_monitor.main] ============================================================
+2026-07-20 15:13:13 INFO [regulation_monitor.main] Demo configuration: enabled=False
+2026-07-20 15:13:13 INFO [regulation_monitor.main] 
+2026-07-20 15:13:13 INFO [regulation_monitor.main] --- Sample Monitoring Result ---
+2026-07-20 15:13:13 INFO [regulation_monitor.main] Source: EU AI Act — Regulatory Framework (eu_ai_act)
+2026-07-20 15:13:13 INFO [regulation_monitor.main] Status: analyzed
+2026-07-20 15:13:13 INFO [regulation_monitor.main] Message: Demo change detected and analyzed
+2026-07-20 15:13:13 INFO [regulation_monitor.main] Snapshot=1 Diff=1 Analysis=1
+2026-07-20 15:13:13 INFO [regulation_monitor.main] 
+2026-07-20 15:13:13 INFO [regulation_monitor.main] --- AI Impact Analysis ---
+2026-07-20 15:13:13 INFO [regulation_monitor.main] Impact level: MEDIUM
+2026-07-20 15:13:13 INFO [regulation_monitor.main] Confidence: HIGH
+2026-07-20 15:13:13 INFO [regulation_monitor.main] Reason: Updated guidance on high-risk AI system obligations for consumer devices with embedded AI capabilities.
+2026-07-20 15:13:13 INFO [regulation_monitor.main] Affected modules: AI features, Voice assistant, Cybersecurity controls
+2026-07-20 15:13:13 INFO [regulation_monitor.main]   1. Review AI feature classification against EU AI Act risk tiers
+2026-07-20 15:13:13 INFO [regulation_monitor.main]   2. Update technical documentation for voice assistant components
+2026-07-20 15:13:13 INFO [regulation_monitor.main]   3. Schedule internal compliance review for Q3
+2026-07-20 15:13:13 INFO [regulation_monitor.main] 
+2026-07-20 15:13:13 INFO [regulation_monitor.main] --- Knowledge Item ---
+2026-07-20 15:13:13 INFO [regulation_monitor.main] Title: EU AI Act — Regulatory Framework
+2026-07-20 15:13:13 INFO [regulation_monitor.main] Category: AI Regulation
+2026-07-20 15:13:13 INFO [regulation_monitor.main] Modules: AI features, Voice assistant, Cybersecurity controls
+2026-07-20 15:13:13 INFO [regulation_monitor.main] Summary: Updated guidance on high-risk AI system obligations for consumer devices with embedded AI capabilities.
+2026-07-20 15:13:13 INFO [regulation_monitor.main] 
+2026-07-20 15:13:13 INFO [regulation_monitor.main] --- Report Summary ---
+2026-07-20 15:13:13 INFO [regulation_monitor.main] Report ID: 2026-07-16_weekly_report_demo
+2026-07-20 15:13:13 INFO [regulation_monitor.main] Generated at: 2026-07-16T08:30:00
+2026-07-20 15:13:13 INFO [regulation_monitor.main] Changes: total=2 medium=1 low=1
+2026-07-20 15:13:13 INFO [regulation_monitor.main] Executive summary: One MEDIUM-risk EU AI Act update and one LOW-risk product compliance notice during the reporting period. No immediate blocking compliance actions required.
+2026-07-20 15:13:13 INFO [regulation_monitor.main] 
+2026-07-20 15:13:13 INFO [regulation_monitor.main] Demo complete — sample data from data/demo/
+2026-07-20 15:13:13 INFO [regulation_monitor.main] ============================================================
+2026-07-20 15:13:16 INFO [regulation_monitor.__main__] ============================================================
+2026-07-20 15:13:16 INFO [regulation_monitor.__main__] AI Regulation Monitor — Demo Mode
+2026-07-20 15:13:16 INFO [regulation_monitor.__main__] ============================================================
+2026-07-20 15:13:16 INFO [regulation_monitor.__main__] Demo configuration: enabled=False
+2026-07-20 15:13:16 INFO [regulation_monitor.__main__] 
+2026-07-20 15:13:16 INFO [regulation_monitor.__main__] --- Sample Monitoring Result ---
+2026-07-20 15:13:16 INFO [regulation_monitor.__main__] Source: EU AI Act — Regulatory Framework (eu_ai_act)
+2026-07-20 15:13:16 INFO [regulation_monitor.__main__] Status: analyzed
+2026-07-20 15:13:16 INFO [regulation_monitor.__main__] Message: Demo change detected and analyzed
+2026-07-20 15:13:16 INFO [regulation_monitor.__main__] Snapshot=1 Diff=1 Analysis=1
+2026-07-20 15:13:16 INFO [regulation_monitor.__main__] 
+2026-07-20 15:13:16 INFO [regulation_monitor.__main__] --- AI Impact Analysis ---
+2026-07-20 15:13:16 INFO [regulation_monitor.__main__] Impact level: MEDIUM
+2026-07-20 15:13:16 INFO [regulation_monitor.__main__] Confidence: HIGH
+2026-07-20 15:13:16 INFO [regulation_monitor.__main__] Reason: Updated guidance on high-risk AI system obligations for consumer devices with embedded AI capabilities.
+2026-07-20 15:13:16 INFO [regulation_monitor.__main__] Affected modules: AI features, Voice assistant, Cybersecurity controls
+2026-07-20 15:13:16 INFO [regulation_monitor.__main__]   1. Review AI feature classification against EU AI Act risk tiers
+2026-07-20 15:13:16 INFO [regulation_monitor.__main__]   2. Update technical documentation for voice assistant components
+2026-07-20 15:13:16 INFO [regulation_monitor.__main__]   3. Schedule internal compliance review for Q3
+2026-07-20 15:13:16 INFO [regulation_monitor.__main__] 
+2026-07-20 15:13:16 INFO [regulation_monitor.__main__] --- Knowledge Item ---
+2026-07-20 15:13:16 INFO [regulation_monitor.__main__] Title: EU AI Act — Regulatory Framework
+2026-07-20 15:13:16 INFO [regulation_monitor.__main__] Category: AI Regulation
+2026-07-20 15:13:16 INFO [regulation_monitor.__main__] Modules: AI features, Voice assistant, Cybersecurity controls
+2026-07-20 15:13:16 INFO [regulation_monitor.__main__] Summary: Updated guidance on high-risk AI system obligations for consumer devices with embedded AI capabilities.
+2026-07-20 15:13:16 INFO [regulation_monitor.__main__] 
+2026-07-20 15:13:16 INFO [regulation_monitor.__main__] --- Report Summary ---
+2026-07-20 15:13:16 INFO [regulation_monitor.__main__] Report ID: 2026-07-16_weekly_report_demo
+2026-07-20 15:13:16 INFO [regulation_monitor.__main__] Generated at: 2026-07-16T08:30:00
+2026-07-20 15:13:16 INFO [regulation_monitor.__main__] Changes: total=2 medium=1 low=1
+2026-07-20 15:13:16 INFO [regulation_monitor.__main__] Executive summary: One MEDIUM-risk EU AI Act update and one LOW-risk product compliance notice during the reporting period. No immediate blocking compliance actions required.
+2026-07-20 15:13:16 INFO [regulation_monitor.__main__] 
+2026-07-20 15:13:16 INFO [regulation_monitor.__main__] Demo complete — sample data from data/demo/
+2026-07-20 15:13:16 INFO [regulation_monitor.__main__] ============================================================
+2026-07-20 15:14:04 INFO [regulation_monitor.main] ============================================================
+2026-07-20 15:14:04 INFO [regulation_monitor.main] AI Regulation Monitor — Demo Mode
+2026-07-20 15:14:04 INFO [regulation_monitor.main] ============================================================
+2026-07-20 15:14:04 INFO [regulation_monitor.main] Demo configuration: enabled=False
+2026-07-20 15:14:04 INFO [regulation_monitor.main] 
+2026-07-20 15:14:04 INFO [regulation_monitor.main] --- Sample Monitoring Result ---
+2026-07-20 15:14:04 INFO [regulation_monitor.main] Source: EU AI Act — Regulatory Framework (eu_ai_act)
+2026-07-20 15:14:04 INFO [regulation_monitor.main] Status: analyzed
+2026-07-20 15:14:04 INFO [regulation_monitor.main] Message: Demo change detected and analyzed
+2026-07-20 15:14:04 INFO [regulation_monitor.main] Snapshot=1 Diff=1 Analysis=1
+2026-07-20 15:14:04 INFO [regulation_monitor.main] 
+2026-07-20 15:14:04 INFO [regulation_monitor.main] --- AI Impact Analysis ---
+2026-07-20 15:14:04 INFO [regulation_monitor.main] Impact level: MEDIUM
+2026-07-20 15:14:04 INFO [regulation_monitor.main] Confidence: HIGH
+2026-07-20 15:14:04 INFO [regulation_monitor.main] Reason: Updated guidance on high-risk AI system obligations for consumer devices with embedded AI capabilities.
+2026-07-20 15:14:04 INFO [regulation_monitor.main] Affected modules: AI features, Voice assistant, Cybersecurity controls
+2026-07-20 15:14:04 INFO [regulation_monitor.main]   1. Review AI feature classification against EU AI Act risk tiers
+2026-07-20 15:14:04 INFO [regulation_monitor.main]   2. Update technical documentation for voice assistant components
+2026-07-20 15:14:04 INFO [regulation_monitor.main]   3. Schedule internal compliance review for Q3
+2026-07-20 15:14:04 INFO [regulation_monitor.main] 
+2026-07-20 15:14:04 INFO [regulation_monitor.main] --- Knowledge Item ---
+2026-07-20 15:14:04 INFO [regulation_monitor.main] Title: EU AI Act — Regulatory Framework
+2026-07-20 15:14:04 INFO [regulation_monitor.main] Category: AI Regulation
+2026-07-20 15:14:04 INFO [regulation_monitor.main] Modules: AI features, Voice assistant, Cybersecurity controls
+2026-07-20 15:14:04 INFO [regulation_monitor.main] Summary: Updated guidance on high-risk AI system obligations for consumer devices with embedded AI capabilities.
+2026-07-20 15:14:04 INFO [regulation_monitor.main] 
+2026-07-20 15:14:04 INFO [regulation_monitor.main] --- Report Summary ---
+2026-07-20 15:14:04 INFO [regulation_monitor.main] Report ID: 2026-07-16_weekly_report_demo
+2026-07-20 15:14:04 INFO [regulation_monitor.main] Generated at: 2026-07-16T08:30:00
+2026-07-20 15:14:04 INFO [regulation_monitor.main] Changes: total=2 medium=1 low=1
+2026-07-20 15:14:04 INFO [regulation_monitor.main] Executive summary: One MEDIUM-risk EU AI Act update and one LOW-risk product compliance notice during the reporting period. No immediate blocking compliance actions required.
+2026-07-20 15:14:04 INFO [regulation_monitor.main] 
+2026-07-20 15:14:04 INFO [regulation_monitor.main] Demo complete — sample data from data/demo/
+2026-07-20 15:14:04 INFO [regulation_monitor.main] ============================================================
+2026-07-20 15:14:06 INFO [regulation_monitor.__main__] ============================================================
+2026-07-20 15:14:06 INFO [regulation_monitor.__main__] AI Regulation Monitor — Demo Mode
+2026-07-20 15:14:06 INFO [regulation_monitor.__main__] ============================================================
+2026-07-20 15:14:06 INFO [regulation_monitor.__main__] Demo configuration: enabled=False
+2026-07-20 15:14:06 INFO [regulation_monitor.__main__] 
+2026-07-20 15:14:06 INFO [regulation_monitor.__main__] --- Sample Monitoring Result ---
+2026-07-20 15:14:06 INFO [regulation_monitor.__main__] Source: EU AI Act — Regulatory Framework (eu_ai_act)
+2026-07-20 15:14:06 INFO [regulation_monitor.__main__] Status: analyzed
+2026-07-20 15:14:06 INFO [regulation_monitor.__main__] Message: Demo change detected and analyzed
+2026-07-20 15:14:06 INFO [regulation_monitor.__main__] Snapshot=1 Diff=1 Analysis=1
+2026-07-20 15:14:06 INFO [regulation_monitor.__main__] 
+2026-07-20 15:14:06 INFO [regulation_monitor.__main__] --- AI Impact Analysis ---
+2026-07-20 15:14:06 INFO [regulation_monitor.__main__] Impact level: MEDIUM
+2026-07-20 15:14:06 INFO [regulation_monitor.__main__] Confidence: HIGH
+2026-07-20 15:14:06 INFO [regulation_monitor.__main__] Reason: Updated guidance on high-risk AI system obligations for consumer devices with embedded AI capabilities.
+2026-07-20 15:14:06 INFO [regulation_monitor.__main__] Affected modules: AI features, Voice assistant, Cybersecurity controls
+2026-07-20 15:14:06 INFO [regulation_monitor.__main__]   1. Review AI feature classification against EU AI Act risk tiers
+2026-07-20 15:14:06 INFO [regulation_monitor.__main__]   2. Update technical documentation for voice assistant components
+2026-07-20 15:14:06 INFO [regulation_monitor.__main__]   3. Schedule internal compliance review for Q3
+2026-07-20 15:14:06 INFO [regulation_monitor.__main__] 
+2026-07-20 15:14:06 INFO [regulation_monitor.__main__] --- Knowledge Item ---
+2026-07-20 15:14:06 INFO [regulation_monitor.__main__] Title: EU AI Act — Regulatory Framework
+2026-07-20 15:14:06 INFO [regulation_monitor.__main__] Category: AI Regulation
+2026-07-20 15:14:06 INFO [regulation_monitor.__main__] Modules: AI features, Voice assistant, Cybersecurity controls
+2026-07-20 15:14:06 INFO [regulation_monitor.__main__] Summary: Updated guidance on high-risk AI system obligations for consumer devices with embedded AI capabilities.
+2026-07-20 15:14:06 INFO [regulation_monitor.__main__] 
+2026-07-20 15:14:06 INFO [regulation_monitor.__main__] --- Report Summary ---
+2026-07-20 15:14:06 INFO [regulation_monitor.__main__] Report ID: 2026-07-16_weekly_report_demo
+2026-07-20 15:14:06 INFO [regulation_monitor.__main__] Generated at: 2026-07-16T08:30:00
+2026-07-20 15:14:06 INFO [regulation_monitor.__main__] Changes: total=2 medium=1 low=1
+2026-07-20 15:14:06 INFO [regulation_monitor.__main__] Executive summary: One MEDIUM-risk EU AI Act update and one LOW-risk product compliance notice during the reporting period. No immediate blocking compliance actions required.
+2026-07-20 15:14:06 INFO [regulation_monitor.__main__] 
+2026-07-20 15:14:06 INFO [regulation_monitor.__main__] Demo complete — sample data from data/demo/
+2026-07-20 15:14:06 INFO [regulation_monitor.__main__] ============================================================

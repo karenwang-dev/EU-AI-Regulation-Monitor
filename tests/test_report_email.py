@@ -90,10 +90,11 @@ class TestReportEmail(unittest.TestCase):
         self.assertIn("EU AI Act Update", html_body)
         self.assertIn("Risk Summary", html_body)
 
-    @patch("app.report.email_sender.smtplib.SMTP")
-    def test_send_report_email_sends_html_with_attachment(self, mock_smtp):
+    @patch("app.notification.email_sender.create_smtp_connection")
+    def test_send_report_email_sends_html_with_attachment(self, mock_create):
         mock_server = MagicMock()
-        mock_smtp.return_value.__enter__.return_value = mock_server
+        mock_create.return_value.__enter__.return_value = mock_server
+        mock_create.return_value.__exit__.return_value = False
 
         attachment_path = self.reports_dir / "2026-07-16_weekly_report.json"
         self.reports_dir.mkdir(parents=True, exist_ok=True)
@@ -111,7 +112,6 @@ class TestReportEmail(unittest.TestCase):
             attachment_path=attachment_path,
         )
 
-        mock_server.starttls.assert_called_once()
         mock_server.sendmail.assert_called_once()
         sent_message = mock_server.sendmail.call_args.args[2]
         self.assertIn("text/html", sent_message)
@@ -124,6 +124,7 @@ class TestReportEmail(unittest.TestCase):
             self._sample_report(),
             report_config_file=self.report_config_file,
             notification_file=self.notification_file,
+            email_settings_file=self.reports_dir / "missing_email_settings.json",
             send_report_email_fn=MagicMock(),
         )
 
@@ -138,6 +139,7 @@ class TestReportEmail(unittest.TestCase):
             self._sample_report(),
             report_config_file=self.report_config_file,
             notification_file=self.notification_file,
+            email_settings_file=self.reports_dir / "missing_email_settings.json",
             send_report_email_fn=send_mock,
         )
 
@@ -152,6 +154,7 @@ class TestReportEmail(unittest.TestCase):
             self._sample_report(),
             report_config_file=self.report_config_file,
             notification_file=self.notification_file,
+            email_settings_file=self.reports_dir / "missing_email_settings.json",
             send_report_email_fn=send_mock,
         )
 
@@ -167,11 +170,58 @@ class TestReportEmail(unittest.TestCase):
             self._sample_report(),
             report_config_file=self.report_config_file,
             notification_file=self.notification_file,
+            email_settings_file=self.reports_dir / "missing_email_settings.json",
             send_report_email_fn=send_mock,
         )
 
         self.assertEqual(result["status"], "Failed")
         self.assertFalse(result["sent"])
+
+    @patch.dict("os.environ", {"SMTP_PASSWORD": "legacy-gmail-password"}, clear=False)
+    @patch(
+        "app.config.email_settings.decrypt_secret",
+        return_value="hisense-password",
+    )
+    def test_notify_weekly_report_prefers_saved_ui_settings_over_legacy_env(
+        self,
+        decrypt_mock,
+    ):
+        from app.config.email_settings import save_email_settings
+
+        settings_file = self.reports_dir / "email_settings.json"
+        key_file = self.reports_dir / "email_settings.key"
+        self.reports_dir.mkdir(parents=True, exist_ok=True)
+        save_email_settings(
+            {
+                "provider": "hisense",
+                "username": "user@hisense.com",
+                "password": "hisense-password",
+                "recipients": ["recipient@example.com"],
+            },
+            settings_file=settings_file,
+            key_file=key_file,
+        )
+        self._write_report_config()
+        send_mock = MagicMock()
+
+        result = notify_weekly_report(
+            self._sample_report(),
+            report_config_file=self.report_config_file,
+            notification_file=self.notification_file,
+            email_settings_file=settings_file,
+            send_report_email_fn=send_mock,
+        )
+
+        self.assertEqual(result["status"], "Sent")
+        send_mock.assert_called_once()
+        smtp_config = send_mock.call_args.args[1]
+        self.assertEqual(smtp_config["provider"], "hisense")
+        self.assertEqual(smtp_config["smtp_host"], "mail.hisense.com")
+        self.assertEqual(smtp_config["smtp_port"], 465)
+        self.assertTrue(smtp_config["use_ssl"])
+        self.assertFalse(smtp_config["use_tls"])
+        self.assertEqual(smtp_config["smtp_password"], "hisense-password")
+        self.assertNotEqual(smtp_config["smtp_password"], "legacy-gmail-password")
 
     def test_generation_continues_after_email_failure(self):
         report_data = {
@@ -301,7 +351,7 @@ class TestReportEmailWeb(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         content = response.content
-        self.assertIn(b"Email Status", content)
+        self.assertIn(b"Email Delivery", content)
         self.assertIn(b">Sent<", content)
         self.assertIn(b"The latest report email was sent successfully.", content)
 

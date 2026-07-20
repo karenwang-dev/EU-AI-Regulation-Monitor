@@ -1,0 +1,348 @@
+2026-07-20 11:33:51 ERROR [regulation_monitor.app.web.report_email_helper] Report email delivery failed: Email send failed: [Errno -2] Name or service not known
+2026-07-20 11:33:51 ERROR [regulation_monitor.app.web.report_email_helper] Report email delivery failed: Email send failed: [Errno 11001] getaddrinfo failed
+2026-07-20 11:33:51 ERROR [regulation_monitor.app.web.report_email_helper] Report email delivery failed: Email send failed: [Errno 11001] getaddrinfo failed
+2026-07-20 11:33:51 ERROR [regulation_monitor.app.web.report_email_helper] Report test email failed: [Errno 11001] getaddrinfo failed
+2026-07-20 11:33:51 ERROR [regulation_monitor.app.web.report_email_helper] Report test email failed: 535 Authentication failed
+2026-07-20 11:35:03 ERROR [regulation_monitor.app.web.report_email_helper] Report email delivery failed: Email send failed: [Errno -2] Name or service not known
+2026-07-20 11:35:03 ERROR [regulation_monitor.app.web.report_email_helper] Report test email failed: 535 Authentication failed
+2026-07-20 11:48:42 ERROR [regulation_monitor.app.web.report_email_helper] Report email delivery failed: Email send failed: [Errno -2] Name or service not known
+2026-07-20 11:48:43 ERROR [regulation_monitor.app.web.report_email_helper] Report test email failed: 535 Authentication failed
+2026-07-20 11:50:18 ERROR [regulation_monitor.app.web.email_settings_api] Email settings test failed: [WinError 10060] 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。
+2026-07-20 11:50:18 ERROR [regulation_monitor.app.web.report_email_helper] Report email delivery failed: Email send failed: [Errno -2] Name or service not known
+2026-07-20 11:50:19 ERROR [regulation_monitor.app.web.report_email_helper] Report test email failed: 535 Authentication failed
+2026-07-20 11:50:58 ERROR [regulation_monitor.app.web.report_email_helper] Report email delivery failed: Email send failed: [Errno -2] Name or service not known
+2026-07-20 11:50:59 ERROR [regulation_monitor.app.web.report_email_helper] Report test email failed: 535 Authentication failed
+2026-07-20 11:51:28 ERROR [regulation_monitor.app.web.report_email_helper] Report email delivery failed: Email send failed: [Errno -2] Name or service not known
+2026-07-20 11:51:28 ERROR [regulation_monitor.app.web.report_email_helper] Report test email failed: 535 Authentication failed
+2026-07-20 12:08:25 ERROR [regulation_monitor.app.web.report_email_helper] Report email delivery failed: Email send failed: [WinError 10060] 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。
+2026-07-20 12:09:02 ERROR [regulation_monitor.app.web.report_email_helper] Report test email failed: [WinError 10060] 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。
+2026-07-20 12:37:18 ERROR [regulation_monitor.app.web.report_email_helper] Report email delivery failed: Email send failed: [Errno -2] Name or service not known
+2026-07-20 12:37:19 ERROR [regulation_monitor.app.web.report_email_helper] Report test email failed: 535 Authentication failed
+2026-07-20 12:38:08 ERROR [regulation_monitor.app.web.report_email_helper] Report email delivery failed: Email send failed: [Errno -2] Name or service not known
+2026-07-20 12:38:08 ERROR [regulation_monitor.app.web.report_email_helper] Report test email failed: 535 Authentication failed
+2026-07-20 12:39:16 ERROR [regulation_monitor.app.web.report_email_helper] Report email delivery failed: Email send failed: [Errno -2] Name or service not known
+2026-07-20 12:39:16 ERROR [regulation_monitor.app.web.report_email_helper] Report test email failed: 535 Authentication failed
+2026-07-20 13:13:05 ERROR [regulation_monitor.app.web.email_settings_api] Email settings test failed: [WinError 10060] 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。
+2026-07-20 13:20:48 ERROR [regulation_monitor.app.web.email_settings_api] Email settings test failed: [WinError 10060] 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。
+2026-07-20 13:56:13 ERROR [regulation_monitor.app.web.email_settings_api] Email settings test failed: (535, b'Error: authentication failed')
+2026-07-20 13:57:45 ERROR [regulation_monitor.app.web.email_settings_api] Email settings test failed: SMTP password is not configured.
+2026-07-20 13:58:13 ERROR [regulation_monitor.app.web.email_settings_api] Email settings test failed: SMTP password is not configured.
+2026-07-20 13:58:27 ERROR [regulation_monitor.app.web.report_email_helper] Report test email failed: (535, b'Error: authentication failed')
+2026-07-20 13:58:31 ERROR [regulation_monitor.app.web.email_settings_api] Email settings test failed: (535, b'Error: authentication failed')
+2026-07-20 14:00:21 ERROR [regulation_monitor.app.web.report_email_helper] Report email delivery failed: Email send failed: [Errno -2] Name or service not known
+NoneType: None
+2026-07-20 14:00:22 ERROR [regulation_monitor.app.web.report_email_helper] Report test email failed: 535 Authentication failed
+Traceback (most recent call last):
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\web\report_email_helper.py", line 501, in send_test_report_email
+    send_email_fn(
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\unittest\mock.py", line 1124, in __call__
+    return self._mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\unittest\mock.py", line 1128, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\unittest\mock.py", line 1183, in _execute_mock_call
+    raise effect
+app.notification.email_sender.EmailSendError: 535 Authentication failed
+2026-07-20 14:00:42 ERROR [regulation_monitor.app.web.report_email_helper] Report email delivery failed: Email send failed: [Errno -2] Name or service not known
+NoneType: None
+2026-07-20 14:00:43 ERROR [regulation_monitor.app.web.report_email_helper] Report test email failed: 535 Authentication failed
+Traceback (most recent call last):
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\web\report_email_helper.py", line 501, in send_test_report_email
+    send_email_fn(
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\unittest\mock.py", line 1124, in __call__
+    return self._mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\unittest\mock.py", line 1128, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\unittest\mock.py", line 1183, in _execute_mock_call
+    raise effect
+app.notification.email_sender.EmailSendError: 535 Authentication failed
+2026-07-20 14:01:03 ERROR [regulation_monitor.app.notification.email_sender] SMTP delivery failed (SMTPAuthenticationError): host=mail.hisense.com port=465 use_ssl=True use_tls=False
+Traceback (most recent call last):
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 219, in send_smtp_message
+    server.login(username, password)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 750, in login
+    raise last_exception
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 739, in login
+    (code, resp) = self.auth(
+                   ^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 662, in auth
+    raise SMTPAuthenticationError(code, resp)
+smtplib.SMTPAuthenticationError: (535, b'Error: authentication failed')
+2026-07-20 14:01:03 ERROR [regulation_monitor.app.web.email_settings_api] Email settings test failed after SMTP send attempt
+Traceback (most recent call last):
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 219, in send_smtp_message
+    server.login(username, password)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 750, in login
+    raise last_exception
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 739, in login
+    (code, resp) = self.auth(
+                   ^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 662, in auth
+    raise SMTPAuthenticationError(code, resp)
+smtplib.SMTPAuthenticationError: (535, b'Error: authentication failed')
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\web\email_settings_api.py", line 68, in api_send_email_settings_test
+    sender(
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 236, in send_email
+    send_smtp_message(
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 223, in send_smtp_message
+    raise EmailSendError(str(error)) from error
+app.notification.email_sender.EmailSendError: (535, b'Error: authentication failed')
+2026-07-20 14:01:09 ERROR [regulation_monitor.app.notification.email_sender] SMTP delivery failed (SMTPAuthenticationError): host=mail.hisense.com port=465 use_ssl=True use_tls=False
+Traceback (most recent call last):
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 219, in send_smtp_message
+    server.login(username, password)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 750, in login
+    raise last_exception
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 739, in login
+    (code, resp) = self.auth(
+                   ^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 662, in auth
+    raise SMTPAuthenticationError(code, resp)
+smtplib.SMTPAuthenticationError: (535, b'Error: authentication failed')
+2026-07-20 14:01:09 ERROR [regulation_monitor.app.web.email_settings_api] Email settings test failed after SMTP send attempt
+Traceback (most recent call last):
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 219, in send_smtp_message
+    server.login(username, password)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 750, in login
+    raise last_exception
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 739, in login
+    (code, resp) = self.auth(
+                   ^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 662, in auth
+    raise SMTPAuthenticationError(code, resp)
+smtplib.SMTPAuthenticationError: (535, b'Error: authentication failed')
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\web\email_settings_api.py", line 68, in api_send_email_settings_test
+    sender(
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 236, in send_email
+    send_smtp_message(
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 223, in send_smtp_message
+    raise EmailSendError(str(error)) from error
+app.notification.email_sender.EmailSendError: (535, b'Error: authentication failed')
+2026-07-20 14:01:25 ERROR [regulation_monitor.app.notification.email_sender] SMTP delivery failed (SMTPAuthenticationError): host=mail.hisense.com port=465 use_ssl=True use_tls=False
+Traceback (most recent call last):
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 219, in send_smtp_message
+    server.login(username, password)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 750, in login
+    raise last_exception
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 739, in login
+    (code, resp) = self.auth(
+                   ^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 662, in auth
+    raise SMTPAuthenticationError(code, resp)
+smtplib.SMTPAuthenticationError: (535, b'Error: authentication failed')
+2026-07-20 14:01:25 ERROR [regulation_monitor.app.web.email_settings_api] Email settings test failed after SMTP send attempt
+Traceback (most recent call last):
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 219, in send_smtp_message
+    server.login(username, password)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 750, in login
+    raise last_exception
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 739, in login
+    (code, resp) = self.auth(
+                   ^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 662, in auth
+    raise SMTPAuthenticationError(code, resp)
+smtplib.SMTPAuthenticationError: (535, b'Error: authentication failed')
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\web\email_settings_api.py", line 68, in api_send_email_settings_test
+    sender(
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 236, in send_email
+    send_smtp_message(
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 223, in send_smtp_message
+    raise EmailSendError(str(error)) from error
+app.notification.email_sender.EmailSendError: (535, b'Error: authentication failed')
+2026-07-20 14:05:03 ERROR [regulation_monitor.app.notification.email_sender] SMTP delivery failed (SMTPAuthenticationError): host=mail.hisense.com port=465 use_ssl=True use_tls=False
+Traceback (most recent call last):
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 219, in send_smtp_message
+    server.login(username, password)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 750, in login
+    raise last_exception
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 739, in login
+    (code, resp) = self.auth(
+                   ^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 662, in auth
+    raise SMTPAuthenticationError(code, resp)
+smtplib.SMTPAuthenticationError: (535, b'Error: authentication failed')
+2026-07-20 14:05:03 ERROR [regulation_monitor.app.web.email_settings_api] Email settings test failed after SMTP send attempt
+Traceback (most recent call last):
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 219, in send_smtp_message
+    server.login(username, password)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 750, in login
+    raise last_exception
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 739, in login
+    (code, resp) = self.auth(
+                   ^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 662, in auth
+    raise SMTPAuthenticationError(code, resp)
+smtplib.SMTPAuthenticationError: (535, b'Error: authentication failed')
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\web\email_settings_api.py", line 68, in api_send_email_settings_test
+    sender(
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 236, in send_email
+    send_smtp_message(
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 223, in send_smtp_message
+    raise EmailSendError(str(error)) from error
+app.notification.email_sender.EmailSendError: (535, b'Error: authentication failed')
+2026-07-20 14:06:32 ERROR [regulation_monitor.app.notification.email_sender] SMTP delivery failed (SMTPAuthenticationError): host=mail.hisense.com port=465 use_ssl=True use_tls=False
+Traceback (most recent call last):
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 219, in send_smtp_message
+    server.login(username, password)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 750, in login
+    raise last_exception
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 739, in login
+    (code, resp) = self.auth(
+                   ^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 662, in auth
+    raise SMTPAuthenticationError(code, resp)
+smtplib.SMTPAuthenticationError: (535, b'Error: authentication failed')
+2026-07-20 14:06:32 ERROR [regulation_monitor.app.web.email_settings_api] Email settings test failed after SMTP send attempt
+Traceback (most recent call last):
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 219, in send_smtp_message
+    server.login(username, password)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 750, in login
+    raise last_exception
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 739, in login
+    (code, resp) = self.auth(
+                   ^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 662, in auth
+    raise SMTPAuthenticationError(code, resp)
+smtplib.SMTPAuthenticationError: (535, b'Error: authentication failed')
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\web\email_settings_api.py", line 68, in api_send_email_settings_test
+    sender(
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 236, in send_email
+    send_smtp_message(
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 223, in send_smtp_message
+    raise EmailSendError(str(error)) from error
+app.notification.email_sender.EmailSendError: (535, b'Error: authentication failed')
+2026-07-20 14:07:18 ERROR [regulation_monitor.app.notification.email_sender] SMTP delivery failed (SMTPAuthenticationError): host=mail.hisense.com port=465 use_ssl=True use_tls=False
+Traceback (most recent call last):
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 219, in send_smtp_message
+    server.login(username, password)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 750, in login
+    raise last_exception
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 739, in login
+    (code, resp) = self.auth(
+                   ^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 662, in auth
+    raise SMTPAuthenticationError(code, resp)
+smtplib.SMTPAuthenticationError: (535, b'Error: authentication failed')
+2026-07-20 14:07:18 ERROR [regulation_monitor.app.web.email_settings_api] Email settings test failed after SMTP send attempt
+Traceback (most recent call last):
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 219, in send_smtp_message
+    server.login(username, password)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 750, in login
+    raise last_exception
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 739, in login
+    (code, resp) = self.auth(
+                   ^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 662, in auth
+    raise SMTPAuthenticationError(code, resp)
+smtplib.SMTPAuthenticationError: (535, b'Error: authentication failed')
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\web\email_settings_api.py", line 68, in api_send_email_settings_test
+    sender(
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 236, in send_email
+    send_smtp_message(
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 223, in send_smtp_message
+    raise EmailSendError(str(error)) from error
+app.notification.email_sender.EmailSendError: (535, b'Error: authentication failed')
+2026-07-20 14:09:56 ERROR [regulation_monitor.app.notification.email_sender] SMTP delivery failed (SMTPAuthenticationError): host=mail.hisense.com port=465 use_ssl=True use_tls=False
+Traceback (most recent call last):
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 219, in send_smtp_message
+    server.login(username, password)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 750, in login
+    raise last_exception
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 739, in login
+    (code, resp) = self.auth(
+                   ^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 662, in auth
+    raise SMTPAuthenticationError(code, resp)
+smtplib.SMTPAuthenticationError: (535, b'Error: authentication failed')
+2026-07-20 14:11:59 ERROR [regulation_monitor.app.web.report_email_helper] Report email delivery failed: Email send failed: [Errno -2] Name or service not known
+NoneType: None
+2026-07-20 14:12:00 ERROR [regulation_monitor.app.web.report_email_helper] Report test email failed: 535 Authentication failed
+Traceback (most recent call last):
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\web\report_email_helper.py", line 503, in send_test_report_email
+    send_email_fn(
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\unittest\mock.py", line 1124, in __call__
+    return self._mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\unittest\mock.py", line 1128, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\unittest\mock.py", line 1183, in _execute_mock_call
+    raise effect
+app.notification.email_sender.EmailSendError: 535 Authentication failed
+2026-07-20 14:12:37 ERROR [regulation_monitor.app.web.report_email_helper] Report email delivery failed: Email send failed: [Errno -2] Name or service not known
+NoneType: None
+2026-07-20 14:12:38 ERROR [regulation_monitor.app.web.report_email_helper] Report test email failed: 535 Authentication failed
+Traceback (most recent call last):
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\web\report_email_helper.py", line 503, in send_test_report_email
+    send_email_fn(
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\unittest\mock.py", line 1124, in __call__
+    return self._mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\unittest\mock.py", line 1128, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\unittest\mock.py", line 1183, in _execute_mock_call
+    raise effect
+app.notification.email_sender.EmailSendError: 535 Authentication failed
+2026-07-20 14:25:57 ERROR [regulation_monitor.app.notification.email_sender] SMTP delivery failed (SMTPAuthenticationError): host=mail.hisense.com port=465 use_ssl=True use_tls=False
+Traceback (most recent call last):
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 239, in send_smtp_message
+    server.login(username, password)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 750, in login
+    raise last_exception
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 739, in login
+    (code, resp) = self.auth(
+                   ^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 662, in auth
+    raise SMTPAuthenticationError(code, resp)
+smtplib.SMTPAuthenticationError: (535, b'Error: authentication failed')
+2026-07-20 14:25:57 ERROR [regulation_monitor.app.web.email_settings_api] Email settings test failed after SMTP send attempt
+Traceback (most recent call last):
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 239, in send_smtp_message
+    server.login(username, password)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 750, in login
+    raise last_exception
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 739, in login
+    (code, resp) = self.auth(
+                   ^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\smtplib.py", line 662, in auth
+    raise SMTPAuthenticationError(code, resp)
+smtplib.SMTPAuthenticationError: (535, b'Error: authentication failed')
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\web\email_settings_api.py", line 68, in api_send_email_settings_test
+    sender(
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 256, in send_email
+    send_smtp_message(
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 243, in send_smtp_message
+    raise EmailSendError(str(error)) from error
+app.notification.email_sender.EmailSendError: (535, b'Error: authentication failed')

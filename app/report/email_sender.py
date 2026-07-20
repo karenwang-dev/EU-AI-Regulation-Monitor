@@ -1,15 +1,12 @@
 from __future__ import annotations
 
 import html
-import json
-import os
-import smtplib
 from email.mime.application import MIMEApplication
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from pathlib import Path
 
-from app.notification.email_sender import EmailSendError
+from app.notification.email_sender import EmailSendError, send_smtp_message
 
 
 def _escape(value) -> str:
@@ -122,26 +119,12 @@ def send_report_email(
             attachment["Content-Disposition"] = f'attachment; filename="{path.name}"'
             message.attach(attachment)
 
-    password_env = smtp_config.get("smtp_password_env", "SMTP_PASSWORD")
-    password = os.getenv(password_env, "")
-
     try:
-        with smtplib.SMTP(
-            smtp_config["smtp_host"],
-            smtp_config["smtp_port"],
-            timeout=30,
-        ) as server:
-            if smtp_config.get("use_tls", True):
-                server.starttls()
-
-            username = smtp_config.get("smtp_username", "")
-            if username or password:
-                server.login(username, password)
-
-            server.sendmail(
-                smtp_config["from_address"],
-                smtp_config["to_addresses"],
-                message.as_string(),
-            )
-    except Exception as error:
+        send_smtp_message(
+            smtp_config,
+            from_address=smtp_config["from_address"],
+            to_addresses=smtp_config["to_addresses"],
+            message_content=message.as_string(),
+        )
+    except EmailSendError as error:
         raise EmailSendError(str(error)) from error

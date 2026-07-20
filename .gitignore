@@ -9,6 +9,7 @@ venv/
 
 # Environment variables
 .env
+data/.email_settings_key
 
 # Generated output
 output/

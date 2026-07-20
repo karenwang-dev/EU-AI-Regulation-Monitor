@@ -146,7 +146,7 @@ class TestDashboardWeb(unittest.TestCase):
         mock_load_monitors.return_value = [self.monitor]
 
         with mock.patch(
-            "app.web.app._count_analyses_by_impact",
+            "app.web.app._count_changes_by_impact",
             return_value={"HIGH": 1, "MEDIUM": 0, "LOW": 0},
         ):
             response = self.client.get("/")
@@ -157,10 +157,63 @@ class TestDashboardWeb(unittest.TestCase):
         self.assertIn("border-danger", content)
         self.assertIn("border-secondary", content)
         self.assertIn("text-secondary", content)
-        self.assertNotIn("border-warning", content)
-        self.assertNotIn("text-warning", content)
-        self.assertNotIn("border-success", content)
-        self.assertNotIn("text-success", content)
+        self.assertNotIn('dashboard-risk-card border-warning', content)
+        self.assertNotIn('fw-semibold text-warning-emphasis">MEDIUM', content)
+        self.assertNotIn('dashboard-risk-card border-success', content)
+        self.assertNotIn('fw-semibold text-success">LOW', content)
+        self.assertRegex(
+            content,
+            r'fw-semibold text-secondary">MEDIUM</div>',
+        )
+        self.assertRegex(
+            content,
+            r'fw-semibold text-secondary">LOW</div>',
+        )
+
+    @mock.patch("app.web.app.load_monitors", autospec=True)
+    def test_dashboard_active_risk_cards_use_impact_classes(
+        self,
+        mock_load_monitors,
+    ):
+        mock_load_monitors.return_value = [self.monitor]
+
+        with mock.patch(
+            "app.web.app._count_changes_by_impact",
+            return_value={"HIGH": 2, "MEDIUM": 1, "LOW": 3},
+        ):
+            response = self.client.get("/")
+
+        self.assertEqual(response.status_code, 200)
+        content = response.text
+        self.assertRegex(
+            content,
+            r'fw-semibold text-danger">HIGH</div>',
+        )
+        self.assertRegex(
+            content,
+            r'display-6 mt-2 text-danger">2</div>',
+        )
+        self.assertIn("bg-danger-subtle", content)
+        self.assertRegex(
+            content,
+            r'fw-semibold text-warning-emphasis">MEDIUM</div>',
+        )
+        self.assertRegex(
+            content,
+            r'display-6 mt-2 text-warning-emphasis">1</div>',
+        )
+        self.assertIn("bg-warning-subtle", content)
+        self.assertRegex(
+            content,
+            r'fw-semibold text-success">LOW</div>',
+        )
+        self.assertRegex(
+            content,
+            r'display-6 mt-2 text-success">3</div>',
+        )
+        self.assertIn("bg-success-subtle", content)
+        self.assertNotIn("text-dark", content)
+        self.assertNotIn("link-dark", content)
 
     @mock.patch("app.web.app.load_monitors", autospec=True)
     def test_dashboard_recent_activity_shows_run_and_status(

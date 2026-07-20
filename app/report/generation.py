@@ -73,6 +73,7 @@ def create_and_save_weekly_report(
     storage: StorageService | None = None,
     client=None,
     reports_dir: Path | str | None = None,
+    email_settings_file: Path | str | None = None,
     build_weekly_report_fn=build_weekly_report,
     generate_weekly_report_fn=generate_weekly_report,
     save_report_fn=save_report,
@@ -102,6 +103,7 @@ def create_and_save_weekly_report(
         notification_result = notify_weekly_report_fn(
             stored,
             attachment_path=attachment_path,
+            email_settings_file=email_settings_file,
         )
     except Exception as error:
         print(f"Weekly report email notification failed: {error}")

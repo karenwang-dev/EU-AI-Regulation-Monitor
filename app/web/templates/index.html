@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from "_macros.html" import dashboard_risk_card %}
 
 {% block content %}
 <div class="page-header">
@@ -29,39 +30,9 @@
             </div>
         </a>
     </div>
-    <div class="col-6 col-lg-4 col-xl-2">
-        <a href="/changes?impact=HIGH" class="stat-card-link" aria-label="View high risk changes">
-            <div class="card shadow-sm stat-card dashboard-stat-card h-100{% if high_risk_count > 0 %} border-danger{% else %} border-secondary{% endif %}">
-                <div class="card-body">
-                    <div class="fw-semibold">HIGH</div>
-                    <div class="text-muted small">Immediate attention required</div>
-                    <div class="display-6 mt-2{% if high_risk_count > 0 %} text-danger{% else %} text-secondary{% endif %}">{{ high_risk_count }}</div>
-                </div>
-            </div>
-        </a>
-    </div>
-    <div class="col-6 col-lg-4 col-xl-2">
-        <a href="/changes?impact=MEDIUM" class="stat-card-link" aria-label="View medium risk changes">
-            <div class="card shadow-sm stat-card dashboard-stat-card h-100{% if medium_risk_count > 0 %} border-warning{% else %} border-secondary{% endif %}">
-                <div class="card-body">
-                    <div class="fw-semibold">MEDIUM</div>
-                    <div class="text-muted small">Review recommended</div>
-                    <div class="display-6 mt-2{% if medium_risk_count > 0 %} text-warning{% else %} text-secondary{% endif %}">{{ medium_risk_count }}</div>
-                </div>
-            </div>
-        </a>
-    </div>
-    <div class="col-6 col-lg-4 col-xl-2">
-        <a href="/changes?impact=LOW" class="stat-card-link" aria-label="View low risk changes">
-            <div class="card shadow-sm stat-card dashboard-stat-card h-100{% if low_risk_count > 0 %} border-success{% else %} border-secondary{% endif %}">
-                <div class="card-body">
-                    <div class="fw-semibold">LOW</div>
-                    <div class="text-muted small">For reference</div>
-                    <div class="display-6 mt-2{% if low_risk_count > 0 %} text-success{% else %} text-secondary{% endif %}">{{ low_risk_count }}</div>
-                </div>
-            </div>
-        </a>
-    </div>
+    {{ dashboard_risk_card("HIGH", high_risk_count, "/changes?impact=HIGH", "Immediate attention required", "View high risk changes") }}
+    {{ dashboard_risk_card("MEDIUM", medium_risk_count, "/changes?impact=MEDIUM", "Review recommended", "View medium risk changes") }}
+    {{ dashboard_risk_card("LOW", low_risk_count, "/changes?impact=LOW", "For reference", "View low risk changes") }}
 </div>
 
 <div class="card shadow-sm border-0">

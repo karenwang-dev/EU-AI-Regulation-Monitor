@@ -22,6 +22,13 @@ from app.knowledge.statistics import (
     fetch_all_knowledge_items,
 )
 from app.knowledge.timeline import build_regulation_timeline
+from app.web.change_helper import (
+    count_changes_by_impact,
+    filter_changes_by_impact,
+    is_displayable_change,
+    normalize_impact,
+    normalized_change_impact,
+)
 from app.web.insight_helper import (
     build_compliance_insights,
     build_insight_summary,
@@ -29,7 +36,19 @@ from app.web.insight_helper import (
     get_insight_filter_options,
 )
 from app.web.knowledge_helper import resolve_related_regulations
-from app.web.report_email_helper import resolve_report_email_display
+from app.web.report_email_helper import (
+    build_email_action_flags,
+    build_email_config_summary,
+    deliver_report_email,
+    resolve_report_email_display,
+    send_test_report_email,
+)
+from app.web.impact_ui import (
+    get_dashboard_risk_card_classes,
+    get_impact_badge_classes,
+)
+from app.config.email_settings import EMAIL_SETTINGS_FILE, load_email_settings_public
+from app.web.email_settings_api import register_email_settings_routes
 from app.web.report_api import register_report_routes
 from app.report.ai_generator import generate_weekly_report
 from app.report.builder import build_weekly_report
@@ -49,6 +68,8 @@ from app.version import APP_NAME, APP_VERSION
 
 TEMPLATES_DIR = Path(__file__).resolve().parent / "templates"
 templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
+templates.env.globals["dashboard_risk_card_classes"] = get_dashboard_risk_card_classes
+templates.env.globals["impact_badge_classes"] = get_impact_badge_classes
 CHANGES_PAGE_SIZE = 20
 logger = get_logger(__name__)
 
@@ -170,25 +191,10 @@ def _get_snapshot_by_id(
     return storage._row_to_snapshot(row)
 
 
-def _count_high_risk_analyses(storage: StorageService) -> int:
-    return _count_analyses_by_impact(storage).get("HIGH", 0)
-
-
-def _count_analyses_by_impact(storage: StorageService) -> dict[str, int]:
-    counts = {"HIGH": 0, "MEDIUM": 0, "LOW": 0}
-
-    with storage._connect() as connection:
-        rows = connection.execute(
-            "SELECT analysis_json FROM analyses"
-        ).fetchall()
-
-    for row in rows:
-        analysis = json.loads(row["analysis_json"])
-        level = str(analysis.get("impact_level", "NONE")).upper()
-        if level in counts:
-            counts[level] += 1
-
-    return counts
+def _count_changes_by_impact(storage: StorageService) -> dict[str, int]:
+    return count_changes_by_impact(
+        _get_changes_for_dashboard(storage, limit=None)
+    )
 
 
 def _count_todays_changes(storage: StorageService) -> int:
@@ -292,39 +298,48 @@ def _get_changes_for_dashboard(
                 storage,
                 diff["new_snapshot_id"],
             )
-            impact = analysis["analysis"] if analysis else {}
+            impact_data = analysis["analysis"] if analysis else {}
             monitor_info = monitor_map.get(diff["source_id"], {})
             snapshot = _get_snapshot_by_id(storage, diff["new_snapshot_id"])
             source_url = extract_source_url_from_evidence(
-                impact,
+                impact_data,
                 snapshot,
                 monitor_info,
             )
             discovered_depth = extract_discovered_depth_from_evidence(
-                impact,
+                impact_data,
                 snapshot,
                 monitor_info,
             )
+            change_record = {
+                "diff_id": diff["id"],
+                "analysis_id": analysis["id"] if analysis else None,
+                "regulation_name": monitor_info.get(
+                    "name",
+                    diff["source_id"],
+                ),
+                "source_id": diff["source_id"],
+                "date": diff["created_at"],
+                "analysis": impact_data,
+                "impact_level": normalized_change_impact(
+                    {
+                        "analysis": impact_data,
+                        "impact_level": impact_data.get("impact_level"),
+                        "impact": impact_data.get("impact"),
+                    }
+                ),
+                "affected_modules": impact_data.get("affected_modules", []),
+                "keywords": monitor_info.get("keywords", []),
+                "summary": _build_change_summary(diff),
+                "source_url": source_url,
+                "discovered_depth": discovered_depth,
+                "depth_label": format_depth_label(discovered_depth),
+            }
 
-            changes.append(
-                {
-                    "diff_id": diff["id"],
-                    "analysis_id": analysis["id"] if analysis else None,
-                    "regulation_name": monitor_info.get(
-                        "name",
-                        diff["source_id"],
-                    ),
-                    "source_id": diff["source_id"],
-                    "date": diff["created_at"],
-                    "impact_level": impact.get("impact_level", "NONE"),
-                    "affected_modules": impact.get("affected_modules", []),
-                    "keywords": monitor_info.get("keywords", []),
-                    "summary": _build_change_summary(diff),
-                    "source_url": source_url,
-                    "discovered_depth": discovered_depth,
-                    "depth_label": format_depth_label(discovered_depth),
-                }
-            )
+            if not is_displayable_change(change_record):
+                continue
+
+            changes.append(change_record)
 
     changes.sort(key=lambda item: item["date"], reverse=True)
     changes = enrich_changes_with_source_metadata(changes)
@@ -355,12 +370,7 @@ def _filter_changes(
         ]
 
     if impact.strip():
-        impact_value = impact.strip().upper()
-        filtered = [
-            change
-            for change in filtered
-            if str(change.get("impact_level", "NONE")).upper() == impact_value
-        ]
+        filtered = filter_changes_by_impact(filtered, impact)
 
     return filtered
 
@@ -480,8 +490,12 @@ def create_dashboard_app(
     reports_dir: Path | None = None,
     report_config_file: Path | None = None,
     notification_file: Path | None = None,
+    email_settings_file: Path | None = None,
     build_weekly_report_fn=None,
     generate_weekly_report_fn=None,
+    deliver_report_email_fn=None,
+    send_test_report_email_fn=None,
+    settings_send_email_fn=None,
 ) -> FastAPI:
     storage = storage_service or _get_service()
     app = FastAPI(title="AI Regulation Monitor Dashboard")
@@ -505,8 +519,18 @@ def create_dashboard_app(
         app,
         storage_service=storage,
         reports_dir=reports_dir,
+        report_config_file=report_config_file,
+        notification_file=notification_file,
+        email_settings_file=email_settings_file or EMAIL_SETTINGS_FILE,
         build_weekly_report_fn=build_weekly_report_fn or build_weekly_report,
         generate_weekly_report_fn=generate_weekly_report_fn or generate_weekly_report,
+        deliver_report_email_fn=deliver_report_email_fn or deliver_report_email,
+        send_test_report_email_fn=send_test_report_email_fn or send_test_report_email,
+    )
+    register_email_settings_routes(
+        app,
+        email_settings_file=email_settings_file or EMAIL_SETTINGS_FILE,
+        send_email_fn=settings_send_email_fn,
     )
 
     def _latest_run():
@@ -545,7 +569,7 @@ def create_dashboard_app(
     def dashboard_home(request: Request):
         latest_run = _latest_run()
         monitors = load_monitors()
-        impact_counts = _count_analyses_by_impact(storage)
+        impact_counts = _count_changes_by_impact(storage)
 
         return templates.TemplateResponse(
             request,
@@ -678,6 +702,16 @@ def create_dashboard_app(
             report,
             report_config_file=report_config_file,
             notification_file=notification_file,
+            email_settings_file=email_settings_file or EMAIL_SETTINGS_FILE,
+        )
+        email_config = build_email_config_summary(
+            report_config_file=report_config_file,
+            notification_file=notification_file,
+            email_settings_file=email_settings_file or EMAIL_SETTINGS_FILE,
+        )
+        email_actions = build_email_action_flags(report, email_display)
+        email_settings = load_email_settings_public(
+            email_settings_file or EMAIL_SETTINGS_FILE
         )
 
         return templates.TemplateResponse(
@@ -690,6 +724,9 @@ def create_dashboard_app(
                 "summary": summary,
                 "key_changes": key_changes,
                 "email_display": email_display,
+                "email_config": email_config,
+                "email_actions": email_actions,
+                "email_settings": email_settings,
             },
         )
 

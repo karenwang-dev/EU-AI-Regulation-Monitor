@@ -1,12 +1,19 @@
 {% macro impact_badge(level) %}
 {% set normalized = level|upper %}
-{% if normalized == "HIGH" %}
-<span class="badge rounded-pill text-bg-danger">{{ normalized }}</span>
-{% elif normalized == "MEDIUM" %}
-<span class="badge rounded-pill text-bg-warning text-dark">{{ normalized }}</span>
-{% elif normalized == "LOW" %}
-<span class="badge rounded-pill text-bg-success">{{ normalized }}</span>
-{% else %}
-<span class="badge rounded-pill text-bg-secondary">{{ normalized }}</span>
-{% endif %}
+<span class="{{ impact_badge_classes(normalized) }}">{{ normalized }}</span>
+{% endmacro %}
+
+{% macro dashboard_risk_card(level, count, href, subtitle, aria_label) %}
+{% set ui = dashboard_risk_card_classes(level, count) %}
+<div class="col-6 col-lg-4 col-xl-2">
+    <a href="{{ href }}" class="stat-card-link" aria-label="{{ aria_label }}">
+        <div class="card shadow-sm stat-card dashboard-stat-card dashboard-risk-card h-100 {{ ui.border_class }}{% if ui.background_class %} {{ ui.background_class }}{% endif %}">
+            <div class="card-body">
+                <div class="fw-semibold {{ ui.label_class }}">{{ level }}</div>
+                <div class="text-muted small">{{ subtitle }}</div>
+                <div class="display-6 mt-2 {{ ui.count_class }}">{{ count }}</div>
+            </div>
+        </div>
+    </a>
+</div>
 {% endmacro %}

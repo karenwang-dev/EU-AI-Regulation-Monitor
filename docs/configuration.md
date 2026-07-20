@@ -86,3 +86,56 @@ Overall `status` is `warning` when required configuration is missing, `error` wh
 - Do not commit `.env` to version control
 - Use separate keys for development and production where possible
 - Rotate API keys if they are exposed
+
+## Email Settings (Dashboard)
+
+Report email can be configured from the Reports page without editing `.env`. Settings are stored in `data/email_settings.json` with encrypted passwords. The encryption key lives in `data/.email_settings_key`. Neither file should be committed to Git.
+
+Corporate networks may block public SMTP servers such as Gmail while allowing internal company SMTP servers.
+
+### Gmail
+
+| Setting | Value |
+|---------|-------|
+| Provider | Gmail |
+| SMTP Host | `smtp.gmail.com` |
+| SMTP Port | `587` |
+| Security | STARTTLS |
+| Username | Full Gmail address |
+| Password | Google App Password |
+
+### Hisense Coremail
+
+| Setting | Value |
+|---------|-------|
+| Provider | Hisense |
+| SMTP Host | `mail.hisense.com` |
+| SMTP Port | `465` |
+| Security | SSL / SMTPS |
+| Username | Full `@hisense.com` email address |
+| Password | Company email password or SMTP authorization password |
+
+Hisense Coremail uses implicit SSL (`SMTP_SSL`) on port 465. Do not enable STARTTLS for this provider.
+
+### Outlook
+
+| Setting | Value |
+|---------|-------|
+| Provider | Outlook |
+| SMTP Host | `smtp.office365.com` |
+| SMTP Port | `587` |
+| Security | STARTTLS |
+
+### Custom SMTP
+
+Use Custom SMTP when you need a non-standard host, port, or security mode. Supported modes:
+
+- **SSL / SMTPS** — implicit SSL, typically port 465
+- **STARTTLS** — upgrade on plain SMTP, typically port 587
+- **None** — plain SMTP without encryption
+
+SSL and STARTTLS cannot both be enabled at the same time.
+
+### Legacy `.env` SMTP
+
+If `data/email_settings.json` is not configured, the platform falls back to `config/notification.json`, `config/report.json`, and the optional `SMTP_PASSWORD` environment variable.
