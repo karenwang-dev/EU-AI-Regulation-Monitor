@@ -4,9 +4,19 @@ from pathlib import Path
 from fastapi import APIRouter, FastAPI, HTTPException
 from pydantic import BaseModel
 
-from app.monitors.execution import MonitorAlreadyRunningError, MonitorExecutionService
+from app.core.logging import get_logger
+from app.core.paths import PROJECT_ROOT
+from app.monitors.execution import (
+    MonitorAlreadyRunningError,
+    MonitorExecutionService,
+    MonitorRunPersistenceError,
+)
 from app.monitors.repository import MonitorRepository, get_monitor_repository
+from app.monitors.run_store import get_monitor_run_store
+from app.run_history import RUN_HISTORY_FILE
 from app.source.source_loader import MonitorConfigError, normalize_legacy_source
+
+logger = get_logger(__name__)
 
 
 def generate_monitor_id(name: str, existing_ids: set[str]) -> str:
@@ -45,6 +55,31 @@ class MonitorUpdateRequest(BaseModel):
     crawl_mode: str | None = None
     max_depth: int | None = None
     max_pages: int | None = None
+
+
+class MonitorRunResponse(BaseModel):
+    monitor_id: str
+    status: str
+    change_status: str
+    execution_status: str
+    pages_checked: int
+    pages_changed: int
+    homepage_changed: bool
+    child_pages_changed: int
+    snapshot_id: int | None = None
+    diff_id: int | None = None
+    started_at: str
+    finished_at: str
+    error: str | None = None
+    run_history_id: int
+    duration_ms: int
+    run_history_summary_id: str | None = None
+
+
+class MonitorRunErrorDetail(BaseModel):
+    detail: str
+    monitor_id: str
+    error_code: str
 
 
 class MonitorStore:
@@ -170,17 +205,54 @@ def create_monitor_router(
             "monitor": deleted,
         }
 
-    @router.post("/api/monitors/{monitor_id}/run")
+    @router.post(
+        "/api/monitors/{monitor_id}/run",
+        response_model=MonitorRunResponse,
+        responses={
+            409: {"model": MonitorRunErrorDetail},
+            500: {"model": MonitorRunErrorDetail},
+        },
+    )
     def run_monitor(monitor_id: str):
         try:
             return runner.run_monitor(monitor_id, triggered_by="manual_ui")
         except MonitorAlreadyRunningError as error:
             raise HTTPException(
                 status_code=409,
-                detail="Monitor is already running",
+                detail={
+                    "detail": "Monitor is already running",
+                    "monitor_id": monitor_id,
+                    "error_code": "MONITOR_ALREADY_RUNNING",
+                },
             ) from error
         except LookupError as error:
             raise HTTPException(status_code=404, detail=str(error)) from error
+        except MonitorRunPersistenceError as error:
+            logger.exception(
+                "Monitor run persistence failed: monitor_id=%s",
+                monitor_id,
+            )
+            raise HTTPException(
+                status_code=500,
+                detail={
+                    "detail": str(error),
+                    "monitor_id": monitor_id,
+                    "error_code": "RUN_PERSISTENCE_FAILED",
+                },
+            ) from error
+        except Exception as error:
+            logger.exception(
+                "Monitor run failed: monitor_id=%s",
+                monitor_id,
+            )
+            raise HTTPException(
+                status_code=500,
+                detail={
+                    "detail": "Monitor run failed",
+                    "monitor_id": monitor_id,
+                    "error_code": "RUN_EXECUTION_FAILED",
+                },
+            ) from error
 
     return router
 
@@ -199,7 +271,11 @@ def register_monitor_routes(
         repository = get_monitor_repository()
 
     store = MonitorStore(repository=repository)
-    runner = execution_service or MonitorExecutionService(repository=repository)
+    runner = execution_service or MonitorExecutionService(
+        repository=repository,
+        history_file=(PROJECT_ROOT / RUN_HISTORY_FILE).resolve(),
+        run_store=get_monitor_run_store(db_path=repository.db_path),
+    )
     app.include_router(create_monitor_router(store, execution_service=runner))
     app.state.monitor_repository = repository
     app.state.monitor_execution_service = runner

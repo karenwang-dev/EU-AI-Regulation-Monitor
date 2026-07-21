@@ -5,6 +5,7 @@ import sqlite3
 from datetime import datetime
 from pathlib import Path
 
+from app.core.json_utils import dumps_json_safe, to_json_safe
 from app.core.paths import get_default_monitor_db_path
 
 _RUNS_SCHEMA = """
@@ -76,17 +77,23 @@ def build_page_results(url_results: list[dict] | None) -> list[dict]:
     for item in url_results or []:
         page_change = item.get("page_change") or {}
         page_results.append(
-            {
-                "url": item.get("url", ""),
-                "page_title": item.get("title") or item.get("name") or item.get("url", ""),
-                "page_type": map_page_type(item),
-                "status": map_page_result_status(item),
-                "snapshot_id": item.get("snapshot_id"),
-                "previous_snapshot_id": item.get("previous_snapshot_id"),
-                "diff_id": item.get("diff_id"),
-                "content_hash": item.get("content_hash") or item.get("after_hash"),
-                "error": item.get("message") if item.get("status") == "error" else None,
-            }
+            to_json_safe(
+                {
+                    "url": item.get("url", ""),
+                    "page_title": item.get("title")
+                    or item.get("name")
+                    or item.get("url", ""),
+                    "page_type": map_page_type(item),
+                    "status": map_page_result_status(item),
+                    "snapshot_id": item.get("snapshot_id"),
+                    "previous_snapshot_id": item.get("previous_snapshot_id"),
+                    "diff_id": item.get("diff_id"),
+                    "content_hash": item.get("content_hash") or item.get("after_hash"),
+                    "error": item.get("message")
+                    if item.get("status") == "error"
+                    else None,
+                }
+            )
         )
     return page_results
 
@@ -181,7 +188,7 @@ class MonitorRunStore:
                     snapshot_id,
                     diff_id,
                     error,
-                    json.dumps(page_results or [], ensure_ascii=False),
+                    dumps_json_safe(page_results or []),
                     1 if legacy else 0,
                     created_at,
                 ),

@@ -402,7 +402,12 @@ class MonitorManualRunApiTests(unittest.TestCase):
         response = client.post(f"/api/monitors/{LOCAL_TEST_MONITOR_ID}/run")
         service._running.discard(LOCAL_TEST_MONITOR_ID)
         self.assertEqual(response.status_code, 409)
-        self.assertEqual(response.json()["detail"], "Monitor is already running")
+        detail = response.json()["detail"]
+        if isinstance(detail, dict):
+            self.assertEqual(detail["detail"], "Monitor is already running")
+            self.assertEqual(detail["error_code"], "MONITOR_ALREADY_RUNNING")
+        else:
+            self.assertEqual(detail, "Monitor is already running")
 
     def test_execution_service_raises_when_already_running(self):
         service = MonitorExecutionService(repository=self.repository)

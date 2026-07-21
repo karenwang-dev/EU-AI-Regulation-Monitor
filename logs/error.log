@@ -346,3 +346,44 @@ Traceback (most recent call last):
   File "D:\Volume\01- Projects\AI_Regulation_Project\app\notification\email_sender.py", line 243, in send_smtp_message
     raise EmailSendError(str(error)) from error
 app.notification.email_sender.EmailSendError: (535, b'Error: authentication failed')
+2026-07-21 12:04:15 ERROR [regulation_monitor.app.monitors.execution] Failed to persist monitor run: monitor_id=local-multipage-change-test
+Traceback (most recent call last):
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\monitors\execution.py", line 145, in _run_monitor_locked
+    run_history_id = self.run_store.save_run(
+                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\unittest\mock.py", line 1124, in __call__
+    return self._mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\unittest\mock.py", line 1128, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\unittest\mock.py", line 1183, in _execute_mock_call
+    raise effect
+RuntimeError: db write failed
+2026-07-21 12:04:15 ERROR [regulation_monitor.app.web.monitor_api] Monitor run persistence failed: monitor_id=local-multipage-change-test
+Traceback (most recent call last):
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\monitors\execution.py", line 145, in _run_monitor_locked
+    run_history_id = self.run_store.save_run(
+                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\unittest\mock.py", line 1124, in __call__
+    return self._mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\unittest\mock.py", line 1128, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\unittest\mock.py", line 1183, in _execute_mock_call
+    raise effect
+RuntimeError: db write failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\web\monitor_api.py", line 218, in run_monitor
+    return runner.run_monitor(monitor_id, triggered_by="manual_ui")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\monitors\execution.py", line 68, in run_monitor
+    return self._run_monitor_locked(monitor_id, triggered_by=triggered_by)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Volume\01- Projects\AI_Regulation_Project\app\monitors\execution.py", line 176, in _run_monitor_locked
+    raise MonitorRunPersistenceError(
+app.monitors.execution.MonitorRunPersistenceError: Failed to save monitor run

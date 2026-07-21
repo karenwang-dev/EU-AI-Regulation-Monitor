@@ -32,11 +32,11 @@ def _summarize_results(results: list[dict]) -> dict:
 
 def save_run_history(
     results: list[dict],
-    history_file: Path = RUN_HISTORY_FILE,
+    history_file: Path | None = None,
     run_ids: list[int] | None = None,
 ) -> dict:
     entry = _summarize_results(results)
-    history_path = Path(history_file)
+    history_path = Path(history_file or RUN_HISTORY_FILE)
     history_path.parent.mkdir(parents=True, exist_ok=True)
 
     if history_path.exists():

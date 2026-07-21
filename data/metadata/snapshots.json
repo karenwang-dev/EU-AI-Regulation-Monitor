@@ -1048,5 +1048,75 @@
     "timestamp": "2026-07-21T10:46:31.921863",
     "file": "D:\\Volume\\01- Projects\\AI_Regulation_Project\\data\\raw\\2026-07-21\\local-multipage-change-test_dev_change-test-site_policy-b_104631.md",
     "hash": "115a9d1357c6f755b6470c921c386a434b8a3fc622ebcc6c1c2615ce15fd4703"
+  },
+  {
+    "source_id": "local-multipage-change-test",
+    "url": "http://127.0.0.1:8080/dev/change-test-site",
+    "timestamp": "2026-07-21T11:58:49.109707",
+    "file": "D:\\Volume\\01- Projects\\AI_Regulation_Project\\data\\raw\\2026-07-21\\local-multipage-change-test_dev_change-test-site_115849.md",
+    "hash": "9b60ffbdc9ccccd73a9d0aec81dba9f71bceccb43c8da68aa00456f098dd9c8e"
+  },
+  {
+    "source_id": "local-multipage-change-test",
+    "url": "http://127.0.0.1:8080/dev/change-test-site/policy-a",
+    "timestamp": "2026-07-21T11:58:49.124579",
+    "file": "D:\\Volume\\01- Projects\\AI_Regulation_Project\\data\\raw\\2026-07-21\\local-multipage-change-test_dev_change-test-site_policy-a_115849.md",
+    "hash": "28e0b2d4d3a4dfe5c0f9baefadd554e7d8c7134da8b9b863db6327c703dc3bb3"
+  },
+  {
+    "source_id": "local-multipage-change-test",
+    "url": "http://127.0.0.1:8080/dev/change-test-site/policy-b",
+    "timestamp": "2026-07-21T11:58:49.157773",
+    "file": "D:\\Volume\\01- Projects\\AI_Regulation_Project\\data\\raw\\2026-07-21\\local-multipage-change-test_dev_change-test-site_policy-b_115849.md",
+    "hash": "115a9d1357c6f755b6470c921c386a434b8a3fc622ebcc6c1c2615ce15fd4703"
+  },
+  {
+    "source_id": "local-multipage-change-test",
+    "url": "http://127.0.0.1:8080/dev/change-test-site",
+    "timestamp": "2026-07-21T12:11:23.835293",
+    "file": "D:\\Volume\\01- Projects\\AI_Regulation_Project\\data\\raw\\2026-07-21\\local-multipage-change-test_dev_change-test-site_121123.md",
+    "hash": "9b60ffbdc9ccccd73a9d0aec81dba9f71bceccb43c8da68aa00456f098dd9c8e"
+  },
+  {
+    "source_id": "local-multipage-change-test",
+    "url": "http://127.0.0.1:8080/dev/change-test-site/policy-a",
+    "timestamp": "2026-07-21T12:11:23.856238",
+    "file": "D:\\Volume\\01- Projects\\AI_Regulation_Project\\data\\raw\\2026-07-21\\local-multipage-change-test_dev_change-test-site_policy-a_121123.md",
+    "hash": "28e0b2d4d3a4dfe5c0f9baefadd554e7d8c7134da8b9b863db6327c703dc3bb3"
+  },
+  {
+    "source_id": "local-multipage-change-test",
+    "url": "http://127.0.0.1:8080/dev/change-test-site/policy-b",
+    "timestamp": "2026-07-21T12:11:23.892153",
+    "file": "D:\\Volume\\01- Projects\\AI_Regulation_Project\\data\\raw\\2026-07-21\\local-multipage-change-test_dev_change-test-site_policy-b_121123.md",
+    "hash": "115a9d1357c6f755b6470c921c386a434b8a3fc622ebcc6c1c2615ce15fd4703"
+  },
+  {
+    "source_id": "chemicals",
+    "url": "https://single-market-economy.ec.europa.eu/index.php/news_en",
+    "timestamp": "2026-07-21T12:17:25.110328",
+    "file": "D:\\Volume\\01- Projects\\AI_Regulation_Project\\data\\raw\\2026-07-21\\chemicals_index.php_news_en_121725.md",
+    "hash": "7d836f8de3b3bcc4ba0965d1f3f6c21c21210177d31f743f2e78e52e103f59c6"
+  },
+  {
+    "source_id": "chemicals",
+    "url": "https://single-market-economy.ec.europa.eu/news/brexit-transition-stakeholder-guidance-eu-rules-relation-export-cultural-goods-2020-03-20_en",
+    "timestamp": "2026-07-21T12:17:29.524848",
+    "file": "D:\\Volume\\01- Projects\\AI_Regulation_Project\\data\\raw\\2026-07-21\\chemicals_news_brexit-transition-stakeholder-guidance-eu-rules-relation-export-cultural-go_121729.md",
+    "hash": "4e0a53a6031e95661239ddae7c0ca6cf5eb17020d45a14a0f74bab85c40e546d"
+  },
+  {
+    "source_id": "chemicals",
+    "url": "https://single-market-economy.ec.europa.eu/news/brexit-transition-stakeholder-guidance-eu-rules-relation-online-purchase-subsequent-parcel-delivery-2020-03-19_en",
+    "timestamp": "2026-07-21T12:17:33.107724",
+    "file": "D:\\Volume\\01- Projects\\AI_Regulation_Project\\data\\raw\\2026-07-21\\chemicals_news_brexit-transition-stakeholder-guidance-eu-rules-relation-online-purchase-su_121733.md",
+    "hash": "370afcf38bc7d4dbedd1c89f9a14fa5a89cf9e2417cf2f08f74b4d316bba2b5d"
+  },
+  {
+    "source_id": "chemicals",
+    "url": "https://single-market-economy.ec.europa.eu/news/digital-product-passport-registry-now-live-2026-07-20_en",
+    "timestamp": "2026-07-21T12:17:36.667633",
+    "file": "D:\\Volume\\01- Projects\\AI_Regulation_Project\\data\\raw\\2026-07-21\\chemicals_news_digital-product-passport-registry-now-live-2026-07-20_en_121736.md",
+    "hash": "98e7b2cb9b526233eee614dce5e92dda9700a1d19aabb0f4671d08ccaafd7d43"
   }
 ]

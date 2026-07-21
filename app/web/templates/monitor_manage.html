@@ -371,6 +371,32 @@ async function toggleMonitorEnabled(monitorId) {
     await loadMonitors();
 }
 
+async function parseHttpResponse(response) {
+    const contentType = response.headers.get("content-type") || "";
+    if (contentType.includes("application/json")) {
+        try {
+            return {payload: await response.json(), bodyText: null};
+        } catch (error) {
+            const bodyText = await response.text();
+            return {payload: null, bodyText};
+        }
+    }
+    return {payload: null, bodyText: await response.text()};
+}
+
+function formatRunError(response, payload, bodyText) {
+    if (payload && typeof payload.detail === "object" && payload.detail !== null) {
+        return payload.detail.detail || JSON.stringify(payload.detail);
+    }
+    if (payload && payload.detail) {
+        return String(payload.detail);
+    }
+    if (bodyText) {
+        return bodyText.trim();
+    }
+    return "Monitor run failed.";
+}
+
 async function runMonitor(button) {
     const monitorId = button.dataset.id;
     const originalLabel = button.textContent;
@@ -382,9 +408,15 @@ async function runMonitor(button) {
         const response = await fetch(`/api/monitors/${monitorId}/run`, {
             method: "POST",
         });
-        const payload = await response.json();
+        const {payload, bodyText} = await parseHttpResponse(response);
         if (!response.ok) {
-            throw new Error(payload.detail || "Monitor run failed.");
+            const message = formatRunError(response, payload, bodyText);
+            throw new Error(`Monitor run failed (HTTP ${response.status}): ${message}`);
+        }
+        if (!payload) {
+            throw new Error(
+                `Monitor run failed (HTTP ${response.status}): Unexpected non-JSON response`
+            );
         }
 
         const runLink = payload.run_history_id
@@ -406,6 +438,7 @@ async function runMonitor(button) {
         await loadMonitors();
     } catch (error) {
         showAlert(error.message);
+    } finally {
         button.disabled = false;
         button.removeAttribute("aria-busy");
         button.textContent = originalLabel;

@@ -5,6 +5,7 @@ from datetime import datetime
 from pathlib import Path
 
 from app.core.logging import get_logger
+from app.core.paths import PROJECT_ROOT
 from app.monitors.repository import SQLiteMonitorRepository, get_monitor_repository
 from app.monitors.run_store import (
     build_page_results,
@@ -12,13 +13,19 @@ from app.monitors.run_store import (
     get_monitor_run_store,
 )
 from app.pipeline import MonitoringPipeline
-from app.run_history import save_run_history
+from app.run_history import RUN_HISTORY_FILE, save_run_history
 
 logger = get_logger(__name__)
 
 
 class MonitorAlreadyRunningError(Exception):
     pass
+
+
+class MonitorRunPersistenceError(Exception):
+    def __init__(self, message: str, *, monitor_id: str):
+        super().__init__(message)
+        self.monitor_id = monitor_id
 
 
 class MonitorExecutionService:
@@ -31,7 +38,11 @@ class MonitorExecutionService:
     ):
         self.repository = repository or get_monitor_repository()
         self.pipeline_factory = pipeline_factory or MonitoringPipeline
-        self.history_file = history_file
+        self.history_file = (
+            Path(history_file).resolve()
+            if history_file is not None
+            else (PROJECT_ROOT / RUN_HISTORY_FILE).resolve()
+        )
         self.run_store = run_store or get_monitor_run_store(
             db_path=self.repository.db_path
         )
@@ -53,11 +64,21 @@ class MonitorExecutionService:
                 raise MonitorAlreadyRunningError()
             self._running.add(monitor_id)
 
+        try:
+            return self._run_monitor_locked(monitor_id, triggered_by=triggered_by)
+        finally:
+            with self._lock:
+                self._running.discard(monitor_id)
+
+    def _run_monitor_locked(
+        self,
+        monitor_id: str,
+        *,
+        triggered_by: str,
+    ) -> dict:
         started_at = datetime.now()
         monitor = self.repository.get_by_id(monitor_id)
         if monitor is None:
-            with self._lock:
-                self._running.discard(monitor_id)
             raise LookupError(f"Monitor not found: {monitor_id}")
 
         self.repository.save_execution_state(
@@ -80,6 +101,10 @@ class MonitorExecutionService:
             pipeline = self.pipeline_factory()
             pipeline_result = pipeline.process_source(monitor)
         except Exception as error:
+            logger.exception(
+                "Monitor pipeline execution failed: monitor_id=%s",
+                monitor_id,
+            )
             error_message = str(error)
             pipeline_result = {
                 "source_id": monitor_id,
@@ -106,7 +131,9 @@ class MonitorExecutionService:
         pages_failed = sum(1 for item in url_results if item.get("status") == "error")
         page_results = build_page_results(url_results)
 
-        execution_failed = pipeline_result.get("status") == "error" or bool(error_message)
+        execution_failed = pipeline_result.get("status") == "error" or bool(
+            error_message
+        )
         execution_status = "failed" if execution_failed else "success"
         change_status = derive_change_status(
             pipeline_result,
@@ -114,33 +141,82 @@ class MonitorExecutionService:
             execution_failed,
         )
 
-        run_history_id = self.run_store.save_run(
-            monitor_id=monitor_id,
-            monitor_name=monitor.get("name", monitor_id),
-            triggered_by=triggered_by,
-            execution_status=execution_status,
-            change_status=change_status,
-            started_at=started_at.isoformat(),
-            finished_at=finished_at.isoformat(),
-            duration_ms=duration_ms,
-            pages_checked=pages_checked,
-            pages_changed=pages_changed,
-            homepage_changed=homepage_changed,
-            child_pages_changed=child_pages_changed,
-            pages_added=pages_added,
-            pages_removed=pages_removed,
-            pages_failed=pages_failed,
-            snapshot_id=pipeline_result.get("snapshot_id"),
-            diff_id=pipeline_result.get("diff_id"),
-            error=error_message,
-            page_results=page_results,
-        )
+        try:
+            run_history_id = self.run_store.save_run(
+                monitor_id=monitor_id,
+                monitor_name=monitor.get("name", monitor_id),
+                triggered_by=triggered_by,
+                execution_status=execution_status,
+                change_status=change_status,
+                started_at=started_at.isoformat(),
+                finished_at=finished_at.isoformat(),
+                duration_ms=duration_ms,
+                pages_checked=pages_checked,
+                pages_changed=pages_changed,
+                homepage_changed=homepage_changed,
+                child_pages_changed=child_pages_changed,
+                pages_added=pages_added,
+                pages_removed=pages_removed,
+                pages_failed=pages_failed,
+                snapshot_id=pipeline_result.get("snapshot_id"),
+                diff_id=pipeline_result.get("diff_id"),
+                error=error_message,
+                page_results=page_results,
+            )
+        except Exception as error:
+            logger.exception(
+                "Failed to persist monitor run: monitor_id=%s",
+                monitor_id,
+            )
+            self._mark_execution_failed(
+                monitor_id,
+                finished_at=finished_at,
+                error_message=str(error),
+            )
+            raise MonitorRunPersistenceError(
+                "Failed to save monitor run",
+                monitor_id=monitor_id,
+            ) from error
 
-        history_entry = save_run_history(
-            [pipeline_result],
-            history_file=self.history_file,
-            run_ids=[run_history_id],
-        )
+        if run_history_id is None:
+            self._mark_execution_failed(
+                monitor_id,
+                finished_at=finished_at,
+                error_message="Run persistence returned no run_history_id",
+            )
+            raise MonitorRunPersistenceError(
+                "Failed to save monitor run",
+                monitor_id=monitor_id,
+            )
+
+        try:
+            history_entry = save_run_history(
+                [pipeline_result],
+                history_file=self.history_file,
+                run_ids=[run_history_id],
+            )
+        except Exception as error:
+            logger.exception(
+                "Failed to update run history file: monitor_id=%s history_file=%s",
+                monitor_id,
+                self.history_file,
+            )
+            self._mark_execution_failed(
+                monitor_id,
+                finished_at=finished_at,
+                error_message=str(error),
+                run_history_id=run_history_id,
+                execution_status=execution_status,
+                change_status=change_status,
+                pages_changed=pages_changed,
+                pages_checked=pages_checked,
+                snapshot_id=pipeline_result.get("snapshot_id"),
+                diff_id=pipeline_result.get("diff_id"),
+            )
+            raise MonitorRunPersistenceError(
+                "Failed to save monitor run history",
+                monitor_id=monitor_id,
+            ) from error
 
         self.repository.save_execution_state(
             monitor_id,
@@ -173,9 +249,6 @@ class MonitorExecutionService:
             run_history_id,
         )
 
-        with self._lock:
-            self._running.discard(monitor_id)
-
         return {
             "monitor_id": monitor_id,
             "status": change_status,
@@ -190,7 +263,34 @@ class MonitorExecutionService:
             "started_at": started_at.isoformat(),
             "finished_at": finished_at.isoformat(),
             "error": error_message,
-            "run_history_id": run_history_id,
+            "run_history_id": int(run_history_id),
             "duration_ms": duration_ms,
             "run_history_summary_id": history_entry.get("run_history_id"),
         }
+
+    def _mark_execution_failed(
+        self,
+        monitor_id: str,
+        *,
+        finished_at: datetime,
+        error_message: str,
+        run_history_id: int | None = None,
+        execution_status: str = "failed",
+        change_status: str = "failed",
+        pages_changed: int = 0,
+        pages_checked: int = 0,
+        snapshot_id: int | None = None,
+        diff_id: int | None = None,
+    ) -> None:
+        self.repository.save_execution_state(
+            monitor_id,
+            execution_status=execution_status,
+            last_run_at=finished_at.isoformat(),
+            last_change_status=change_status,
+            last_pages_changed=pages_changed,
+            last_pages_checked=pages_checked,
+            last_snapshot_id=snapshot_id,
+            last_diff_id=diff_id,
+            last_error=error_message,
+            last_run_history_id=str(run_history_id) if run_history_id else None,
+        )

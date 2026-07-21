@@ -579,6 +579,20 @@ def create_dashboard_app(
         if result["status"] == "ok":
             logger.info("Configuration validation passed")
 
+    if execution_service is None:
+        from app.core.paths import PROJECT_ROOT
+        from app.run_history import RUN_HISTORY_FILE
+
+        execution_service = MonitorExecutionService(
+            repository=monitors_repository,
+            history_file=(
+                history_file.resolve()
+                if history_file is not None
+                else (PROJECT_ROOT / RUN_HISTORY_FILE).resolve()
+            ),
+            run_store=get_monitor_run_store(db_path=storage.db_path),
+        )
+
     register_monitor_routes(
         app,
         monitors_file=monitors_file,
