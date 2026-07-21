@@ -2,14 +2,27 @@ from __future__ import annotations
 
 import re
 
+CATEGORY_ACRONYMS = frozenset({"eu", "ai", "dsa", "dma", "gdpr", "uk", "us"})
+
+
+def _format_category_word(word: str) -> str:
+    lower = word.lower()
+    if lower in CATEGORY_ACRONYMS:
+        return lower.upper()
+    return word.capitalize()
+
 
 def format_category_label(category: str | None) -> str:
     if not category:
         return "Other"
-    if " " in category and "_" not in category:
-        return category
-    words = re.sub(r"[_-]+", " ", category.strip()).split()
-    return " ".join(word.capitalize() for word in words if word)
+    cleaned = category.strip()
+    if not cleaned:
+        return "Other"
+    if " " in cleaned and "_" not in cleaned:
+        words = cleaned.split()
+        return " ".join(_format_category_word(word) for word in words if word)
+    words = re.sub(r"[_-]+", " ", cleaned).split()
+    return " ".join(_format_category_word(word) for word in words if word)
 
 
 def change_status_badge_class(change_status: str | None) -> str:

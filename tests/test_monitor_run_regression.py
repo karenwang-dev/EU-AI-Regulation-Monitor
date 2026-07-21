@@ -440,8 +440,13 @@ class MonitorRunRegressionTests(unittest.TestCase):
                 monitors_repository=self.repository,
             )
         ).get("/monitors")
-        self.assertIn(b"parseHttpResponse", response.content)
-        self.assertNotIn(b"const payload = await response.json();", response.content)
+        content = response.content
+        self.assertIn(b"parseHttpResponse", content)
+        self.assertIn(b"async function runMonitor", content)
+        run_monitor_start = content.index(b"async function runMonitor")
+        run_monitor_end = content.index(b"function setCrawlDefaults", run_monitor_start)
+        run_monitor_block = content[run_monitor_start:run_monitor_end]
+        self.assertNotIn(b"await response.json()", run_monitor_block)
 
     def test_frontend_handles_plain_text_error_fallback(self):
         response = TestClient(

@@ -416,6 +416,31 @@ class SQLiteMonitorRepository:
                 ),
             )
 
+    def list_categories(self) -> list[str]:
+        categories: list[str] = []
+        seen: set[str] = set()
+        for monitor in self.list_all():
+            category = monitor.get("category")
+            if category is None:
+                continue
+            cleaned = str(category).strip()
+            if not cleaned:
+                continue
+            key = cleaned.lower()
+            if key in seen:
+                continue
+            seen.add(key)
+            categories.append(cleaned)
+        return sorted(categories, key=str.lower)
+
+    def get_category_options(self, current: str | None = None) -> list[str]:
+        from app.monitors.categories import merge_category_options
+
+        return merge_category_options(
+            stored=self.list_categories(),
+            current=current,
+        )
+
     # Backward-compatible aliases
     def list_monitors(self) -> list[dict]:
         return self.list_all()

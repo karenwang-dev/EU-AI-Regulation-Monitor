@@ -1,7 +1,7 @@
 import re
 from pathlib import Path
 
-from fastapi import APIRouter, FastAPI, HTTPException
+from fastapi import APIRouter, FastAPI, HTTPException, Query
 from pydantic import BaseModel
 
 from app.core.logging import get_logger
@@ -11,6 +11,11 @@ from app.monitors.execution import (
     MonitorExecutionService,
     MonitorRunPersistenceError,
 )
+from app.monitors.categories import (
+    CategoryValidationError,
+    normalize_category,
+)
+from app.monitors.display_helpers import format_category_label
 from app.monitors.repository import MonitorRepository, get_monitor_repository
 from app.monitors.run_store import get_monitor_run_store
 from app.run_history import RUN_HISTORY_FILE
@@ -106,7 +111,7 @@ class MonitorStore:
                 for keyword in payload.keywords
                 if keyword.strip()
             ],
-            "category": payload.category.strip(),
+            "category": self._normalize_category_value(payload.category),
             "frequency": payload.frequency.strip(),
             "enabled": payload.enabled,
             "crawl_mode": payload.crawl_mode.strip(),
@@ -140,7 +145,7 @@ class MonitorStore:
                 if keyword.strip()
             ]
         if "category" in updates:
-            updates["category"] = updates["category"].strip()
+            updates["category"] = self._normalize_category_value(updates["category"])
         if "frequency" in updates:
             updates["frequency"] = updates["frequency"].strip()
         if "crawl_mode" in updates:
@@ -156,6 +161,20 @@ class MonitorStore:
     def delete_monitor(self, monitor_id: str) -> dict:
         return self.repository.delete(monitor_id)
 
+    def list_category_options(self, current: str | None = None) -> list[dict]:
+        options = self.repository.get_category_options(current=current)
+        return [
+            {"value": value, "label": format_category_label(value)}
+            for value in options
+        ]
+
+    @staticmethod
+    def _normalize_category_value(value: str) -> str:
+        try:
+            return normalize_category(value)
+        except CategoryValidationError as error:
+            raise ValueError(str(error)) from error
+
 
 def create_monitor_router(
     store: MonitorStore,
@@ -163,6 +182,10 @@ def create_monitor_router(
 ) -> APIRouter:
     router = APIRouter()
     runner = execution_service or MonitorExecutionService(repository=store.repository)
+
+    @router.get("/api/monitors/categories")
+    def get_monitor_categories(current: str | None = Query(default=None)):
+        return {"categories": store.list_category_options(current=current)}
 
     @router.get("/api/monitors")
     def get_monitors():

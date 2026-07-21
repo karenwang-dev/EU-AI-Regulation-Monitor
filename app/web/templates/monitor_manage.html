@@ -108,12 +108,20 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="monitorCategory" class="form-label">Category</label>
-                            <select class="form-select" id="monitorCategory" required>
-                                <option value="AI Regulation">AI Regulation</option>
-                                <option value="Product Compliance">Product Compliance</option>
-                                <option value="Cybersecurity">Cybersecurity</option>
-                                <option value="Other">Other</option>
-                            </select>
+                            <input
+                                type="text"
+                                class="form-control"
+                                id="monitorCategory"
+                                name="category"
+                                list="monitorCategoryOptions"
+                                autocomplete="off"
+                                required>
+                            <datalist id="monitorCategoryOptions"></datalist>
+                            <div class="form-text">
+                                Select a suggestion or type a new category.
+                                Stored as a machine-friendly value; displayed as
+                                <span id="monitorCategoryPreview" class="text-muted">—</span>.
+                            </div>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="monitorFrequency" class="form-label">Frequency</label>
@@ -166,6 +174,9 @@ const monitorModal = new bootstrap.Modal(monitorModalElement);
 const monitorForm = document.getElementById("monitorForm");
 const alertContainer = document.getElementById("alertContainer");
 let monitorsCache = [];
+let categoryOptionsCache = [];
+
+const CATEGORY_ACRONYMS = new Set(["eu", "ai", "dsa", "dma", "gdpr", "uk", "us"]);
 
 function showAlert(message, type = "danger") {
     alertContainer.innerHTML = `
@@ -180,18 +191,64 @@ function formatFrequency(value) {
     return value.charAt(0).toUpperCase() + value.slice(1);
 }
 
+function formatCategoryWord(word) {
+    const lower = word.toLowerCase();
+    if (CATEGORY_ACRONYMS.has(lower)) {
+        return lower.toUpperCase();
+    }
+    return lower.charAt(0).toUpperCase() + lower.slice(1);
+}
+
 function formatCategory(value) {
     if (!value) {
         return "Other";
     }
     if (value.includes(" ") && !value.includes("_")) {
-        return value;
+        return value
+            .split(/\s+/)
+            .filter(Boolean)
+            .map(formatCategoryWord)
+            .join(" ");
     }
     return value
         .split(/[_-]+/)
         .filter(Boolean)
-        .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+        .map(formatCategoryWord)
         .join(" ");
+}
+
+function updateCategoryPreview() {
+    const input = document.getElementById("monitorCategory");
+    const preview = document.getElementById("monitorCategoryPreview");
+    if (!input || !preview) {
+        return;
+    }
+    preview.textContent = formatCategory(input.value.trim());
+}
+
+function renderCategoryOptions(options) {
+    const datalist = document.getElementById("monitorCategoryOptions");
+    if (!datalist) {
+        return;
+    }
+    datalist.innerHTML = options.map((option) => {
+        const value = typeof option === "string" ? option : option.value;
+        const label = typeof option === "string" ? formatCategory(option) : option.label;
+        return `<option value="${escapeHtml(value)}">${escapeHtml(label)}</option>`;
+    }).join("");
+}
+
+async function loadCategoryOptions(currentCategory = "") {
+    const query = currentCategory
+        ? `?current=${encodeURIComponent(currentCategory)}`
+        : "";
+    const response = await fetch(`/api/monitors/categories${query}`);
+    if (!response.ok) {
+        return;
+    }
+    const payload = await response.json();
+    categoryOptionsCache = payload.categories || [];
+    renderCategoryOptions(categoryOptionsCache);
 }
 
 function formatCrawlMode(value) {
@@ -337,7 +394,9 @@ function renderMonitors(monitors) {
         button.addEventListener("click", () => runMonitor(button));
     });
     document.querySelectorAll(".edit-monitor-btn").forEach((button) => {
-        button.addEventListener("click", () => openEditModal(button.dataset.id));
+        button.addEventListener("click", () => {
+            openEditModal(button.dataset.id);
+        });
     });
     document.querySelectorAll(".toggle-monitor-btn").forEach((button) => {
         button.addEventListener("click", () => toggleMonitorEnabled(button.dataset.id));
@@ -480,27 +539,33 @@ function openCreateModal() {
     monitorForm.reset();
     document.getElementById("monitorEnabled").checked = true;
     setCrawlDefaults();
+    loadCategoryOptions();
+    document.getElementById("monitorCategory").value = "";
+    updateCategoryPreview();
     monitorModal.show();
 }
 
-function openEditModal(monitorId) {
+async function openEditModal(monitorId) {
     const monitor = monitorsCache.find((item) => item.id === monitorId);
     if (!monitor) {
         showAlert("Monitor not found.");
         return;
     }
 
+    await loadCategoryOptions(monitor.category || "");
+
     document.getElementById("monitorModalTitle").textContent = "Edit Monitor";
     document.getElementById("monitorId").value = monitor.id;
     document.getElementById("monitorName").value = monitor.name;
     document.getElementById("monitorUrl").value = monitor.url;
     document.getElementById("monitorKeywords").value = monitor.keywords.join("\n");
-    document.getElementById("monitorCategory").value = monitor.category;
+    document.getElementById("monitorCategory").value = monitor.category || "";
     document.getElementById("monitorFrequency").value = monitor.frequency;
     document.getElementById("monitorCrawlMode").value = monitor.crawl_mode || "single";
     document.getElementById("monitorMaxDepth").value = monitor.max_depth ?? 0;
     document.getElementById("monitorMaxPages").value = monitor.max_pages ?? 1;
     document.getElementById("monitorEnabled").checked = monitor.enabled;
+    updateCategoryPreview();
     monitorModal.show();
 }
 
@@ -561,6 +626,8 @@ monitorForm.addEventListener("submit", async (event) => {
 });
 
 document.getElementById("addMonitorBtn").addEventListener("click", openCreateModal);
+document.getElementById("monitorCategory").addEventListener("input", updateCategoryPreview);
+loadCategoryOptions();
 loadMonitors();
 </script>
 {% endblock %}

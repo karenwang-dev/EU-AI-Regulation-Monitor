@@ -79,6 +79,8 @@ class MonitorUiV115Tests(unittest.TestCase):
             format_category_label("national_regulation"),
             "National Regulation",
         )
+        self.assertEqual(format_category_label("eu_regulation"), "EU Regulation")
+        self.assertEqual(format_category_label("ai_act"), "AI Act")
 
     def test_monitor_page_has_grouped_action_controls(self):
         response = self.client.get("/monitors")
