@@ -1,0 +1,126 @@
+Radio Equipment Directive (RED) - Internal Market, Industry, Entrepreneurship and SMEs
+
+ [Skip to main content](https://single-market-economy.ec.europa.eu/sectors/electrical-and-electronic-engineering-industries-eei/radio-equipment-directive-red_en?prefLang=bg#main-content)
+
+This site uses cookies. Visit our [cookies policy page](https://commission.europa.eu/cookies-policy_en) or click the link in any footer for more information and to change your preferences.
+
+[Accept all cookies](https://single-market-economy.ec.europa.eu/sectors/electrical-and-electronic-engineering-industries-eei/radio-equipment-directive-red_en?prefLang=bg#accept) [Accept only essential cookies](https://single-market-economy.ec.europa.eu/sectors/electrical-and-electronic-engineering-industries-eei/radio-equipment-directive-red_en?prefLang=bg#refuse)
+
+![](https://webtools.europa.eu/images/flags/eu.svg)An official website of the European UnionAn official EU websiteHow do you know?
+
+All official European Union website addresses are in the **europa.eu** domain.
+
+[See all EU institutions and bodies](https://european-union.europa.eu/institutions-law-budget/institutions-and-bodies/search-all-eu-institutions-and-bodies_en)
+
+# Radio Equipment Directive (RED)
+
+**The** [**radio equipment directive 2014/53/EU**](http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32014L0053&locale=en) **(RED) establishes a regulatory framework for placing radio equipment on the market. It ensures a single market for radio equipment by setting essential requirements for safety and health, electromagnetic compatibility, and the efficient use of the radio spectrum. It also provides the basis for further regulation governing some additional aspects. These include technical features for the protection of privacy, personal data and against fraud. Furthermore, additional aspects cover interoperability, access to emergency services, and compliance regarding the combination of radio equipment and software.**
+
+[One common charging solution for all](https://ec.europa.eu/growth/sectors/electrical-and-electronic-engineering-industries-eei/radio-equipment-directive-red/one-common-charging-solution-all_en)
+
+## What the European Commission is doing
+
+**Update on Articles 3(3)(d), (e) and (f)**
+
+[Commission strengthens cybersecurity of radio equipment](https://ec.europa.eu/growth/news/commission-strengthens-cybersecurity-wireless-devices-and-products-2021-10-29_en).
+
+The Commission adopted a Delegated Act of the Radio Equipment Directive activating Articles 3(3)(d), (e) and (f) for certain categories of radio equipment to increase the level of cybersecurity, personal data protection and privacy.
+
+Earlier, the Commission authorised a contractor to conduct an impact assessment study on protection in internet-connected radio equipment and wearable radio equipment.
+
+Specifically, it focused on
+
+- the protection of personal data and privacy
+- the protection from fraud
+
+Different options were considered, in line with the inception impact assessment.
+
+[See the final report of the study](https://ec.europa.eu/docsroom/documents/40763).
+
+**Update on Articles 3(3)(i) and 4**
+
+The initiative to ensure the compliance of radio equipment is not compromised when software is updated or uploaded and to ensure, where applicable, continued access to emergency services began in 2018. A [study on reconfigurable radio systems](https://op.europa.eu/en/publication-detail/-/publication/743131bb-200c-11ec-bd8e-01aa75ed71a1/language-en/format-PDF/source-248296311) supporting an impact assessment focusing on cybersecurity requirements was published on 27 September 2021.
+
+In 2021, the Commission decided to pause the initiative following the announcement of the Cyber Resilience Act (CRA), due to potential overlaps. In 2023, it was agreed that cybersecurity requirements would transfer from the Radio Equipment Directive (RED) to the CRA. As a result, this [initiative](https://ec.europa.eu/info/law/better-regulation/have-your-say/initiatives/14610-Activation-of-EU-rules-on-radio-equipment-for-reconfigurable-radio-systems_en) was resumed, because software updates and uploads can also cause harmful interference, etc., which remains within the scope of the RED.
+
+As the previous study focused on cybersecurity, which is no longer part of this initiative, it is necessary to conduct a new study. This study will serve as a basis for an impact assessment to ensure that reconfigurable radio systems on the EU single market stay compliant with the RED after installing new or modified software.
+
+## About the Directive
+
+The RED aligned the previous directive, the radio and telecommunication terminal equipment directive ( [1999/5/EC](http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:31999L0005&locale=en) (R&TTED), with the [new legislative framework](https://single-market-economy.ec.europa.eu/single-market/goods/new-legislative-framework_en) for the marketing of products.
+
+The revision also took account of the need for improved market surveillance. In particular, for the traceability obligations of manufacturers, importers and distributors. It has improved market surveillance instruments. One example is the possibility for required preregistration of radio equipment in categories with low compliance levels.
+
+The RED was published in the OJEU on 22 May 2014, entered into force on 11 June 2014 and is applicable as of 13 June 2016. It included a one-year transitional period, which ended on 12 June 2017 (Article 48). During the transitional phase, manufacturers were allowed to place on the market radio equipment compliant with either the RED or the EU legislation applicable before 13 June 2016 (e.g. R&TTED).
+
+For more details on the application of the RED, see the RED guide under the guidance section below.
+
+### Delegated and implementing acts under the RED
+
+- [Commission Delegated Regulation (EU) 2022/30](https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=uriserv%3AOJ.L_.2022.007.01.0006.01.ENG&toc=OJ%3AL%3A2022%3A007%3ATOC) of 29 October 2021 supplementing Directive 2014/53/EU of the European Parliament and of the Council with regard to the application of the essential requirements referred to in Article 3(3), points (d), (e) and (f), of that Directive
+- [Commission Delegated Regulation (EU) 2019/320](https://eur-lex.europa.eu/legal-content/EN/TXT/?toc=OJ%3AL%3A2019%3A055%3ATOC&uri=uriserv%3AOJ.L_.2019.055.01.0001.01.ENG)of 12 December 2018 with regard to the application of the essential requirements referred to in Article 3(3)(g) of Directive 2014/53/EU in order to ensure caller location in emergency communications from mobile devices
+  - Article 2 provides that it shall apply from 17 March 2022. Recital 14 states that "nothing in this Regulation should be interpreted as preventing economic operators from complying with it from the date of its entry into force".
+- [Commission Implementing Regulation (EU) 2017/1354](http://eur-lex.europa.eu/legal-content/EN/TXT/?qid=1503312673424&uri=CELEX:32017R1354)specifies how to present the information provided for in Article 10(10) of Directive 2014/53/EU.
+  - Download the [high-resolution pictogram](https://ec.europa.eu/growth/sites/default/files/2017-08/pictogram-red_0.png) (described in Commission Implementing Regulation 2017/1354 - Article 10(10) of Radio Equipment Directive 2014/53/EU) - for printed product documentation
+- Commission decisions adopted according to the R&TTED remain applicable under the RED as far as they are not incompatible with the RED (for details, see the RED guide under the guidance section below).
+
+## Guidance
+
+[The RED guide](https://single-market-economy.ec.europa.eu/document/download/a0c7e4c5-27db-4c59-9c43-a380ed21563f_en?filename=20181219%20RED%20guide.pdf) aims to help with the common application of the RED. It has no weight in law but deals with practical issues that are of interest to manufacturers and other stakeholders. The guide will be continuously updated, following the discussions and the opinion of the TCAM.
+
+[Radio equipment directive FAQ](https://single-market-economy.ec.europa.eu/document/download/eaa8a3d6-61c3-41b1-b14c-5067c693bd52_en?filename=RED-FAQ.pdf): relates to the transition between the R&TTED and the RED.
+
+See also
+
+- [Subclasses: class 1 equipment – from January 2020](https://single-market-economy.ec.europa.eu/document/download/b770d0ab-32b0-4d8d-a622-397b39167f4e_en?filename=EG%20RE%20%2805%2904%20-%20RED%20Subclasses%20of%20Class%201%20%28January%202020%29.pdf) (January 2020 version of indicative and non-exhaustive list)
+- [Subclasses: class 1 equipment - January 2018 until 31 December 2019](https://single-market-economy.ec.europa.eu/document/download/72db2db4-3f86-42da-8d57-ba0138ab8cec_en?filename=TCAM%20Subclasses%20%2817%2908%20rev%202%20-%20RED%20Subclasses%20of%20Class%201%20%284%20December%202017%29.pdf) (January 2018 version of indicative and non-exhaustive list)
+- [Subclasses: class 1 equipment - October 2016 until 31 December 2017](https://ec.europa.eu/docsroom/documents/26021) (October 2016 version of indicative and non-exhaustive list) - please note that in this document, some references to old Commission decisions or harmonised standards should read as references to the most recent Commission decisions or harmonised standards
+- [Notification of draft interface regulations](https://single-market-economy.ec.europa.eu/document/download/ca3a1275-0c22-4c8d-afb4-2b649dda7ad9_en?filename=Notification%20of%20draft%20interface%20regulations.pdf)
+
+## Committee (TCAM)
+
+Article 45 of the RED establishes the telecommunication conformity assessment and market surveillance committee ( [TCAM](https://circabc.europa.eu/faces/jsp/extension/wai/navigation/container.jsp?FormBanner:_idcl=navigationTitle&FormBanner_SUBMIT=1&org.apache.myfaces.trinidad.faces.STATE=DUMMY&id=75ddbd4d-d635-4fb8-93cd-571f720964e4&javax.faces.ViewState=aIk923rFtijsXYBzv52NJxj1FTIcD%2Fz7maFaTJO4OkA3ynYZPKE4jA8A6wpOwkyBXvKWLOzC%2FcHLERx9Qbivqb8QFh%2FBj4EdchZdS7pRBhvdnn6F1frGPeCRoS8YGY9w1VbbJdPafgGh95gr5qc1LvdsOAY%3D)), a committee related to [Regulation (EU) No 182/2011](https://eur-lex.europa.eu/legal-content/en/TXT/?uri=celex:32011R0182). TCAM gives its opinion on proposed implementing acts under the RED. It also discusses the application of the directive when issues are raised either by its chair or a representative of an EU country.
+
+## Standardisation
+
+- [Harmonised standards under the RED](https://single-market-economy.ec.europa.eu/single-market/goods/european-standards/harmonised-standards/radio-equipment_en)
+
+Voluntary harmonised standards in support of the RED have been and are being prepared by CENELEC and ETSI in reply to the [standardisation request M/536](http://ec.europa.eu/growth/tools-databases/mandates/index.cfm?fuseaction=search.detail&id=556)
+
+## Notified bodies
+
+- [Notified bodies relating to the RED](https://webgate.ec.europa.eu/single-market-compliance-space/notified-bodies/notified-body-list?filter=legislationId:154428,notificationStatusId:1)
+
+## Contact points
+
+- [Market surveillance authorities](https://single-market-economy.ec.europa.eu/document/download/dc79e710-71f2-473e-984d-d04cbf0b866f_en?filename=Radio%20Equipment%20Directive%202014_53_EU%20-%20Spectrum%20Authorities%20-%202025.01.03.pdf)
+- [Spectrum authorities](https://ec.europa.eu/docsroom/documents/46633)
+
+## Unregulated certificates warning
+
+Unregulated certificates, which are often called ‘voluntary certificates’ besides other names, are often issued for some products covered by EU harmonisation legislation by certification bodies not acting in their capacity as [notified bodies](https://webgate.ec.europa.eu/single-market-compliance-space/#/notified-bodies) under EU law. These practices are misleading since only notified bodies may issue certificates of compliance for harmonised products and only in the area for which they are notified. For example, if a body is notified to issue certificates for machinery, it should not issue certificates (voluntary or other) for non-machinery products (such as personal protective equipment – masks).
+
+Please note that, under EU law, **voluntary or other additional certificates are not a recognised means to prove compliance**. Consequently, they have no value in the case of checks by market surveillance authorities or customs. However, an exception arises in instances where voluntary certification is outlined in specific legislation. In such cases, while the certificate is not obligatory, it must adhere to explicit requirements if chosen to be acquired.
+
+Voluntary certificates can create the impression that the product conforms with applicable EU harmonisation legislation, although such certificates are not issued by an authorised body.
+
+Voluntary certificates must not be confused with third-party [conformity assessment](https://single-market-economy.ec.europa.eu/single-market/goods/building-blocks/conformity-assessment_en) certification by notified bodies within the area for of competence for which they are notified, due to the use of terms such as ‘certification’ or ‘independent third party’.
+
+[CE marking](https://single-market-economy.ec.europa.eu/single-market/ce-marking_en) can only be affixed after testing the product and performing the conformity assessment procedure prescribed by the applicable EU harmonisation legislation. It is not acceptable for certificates to bear a CE marking.
+
+## [​](https://ec.europa.eu/docsroom/documents/25821) Brexit
+
+- [See specific sectoral guidance notices for stakeholders](https://ec.europa.eu/info/strategy/relations-non-eu-countries/relations-united-kingdom/new-normal/consequences-brexit_en#sectoral-guidance-notices)
+- [Supplementary guidance concerning Article 10(10)](https://ec.europa.eu/docsroom/documents/43664)
+
+**Type of search results**AllNewsDocuments
+
+**Date**Any timeLast weekLast monthLast year
+
+**Language**българскиespañolčeštinadanskDeutscheestiελληνικάEnglishfrançaisGaeilgehrvatskiitalianolatviešulietuviųmagyarMaltiNederlandspolskiportuguêsromânăslovenčinaslovenščinasuomisvenska
+
+**Search on:**
+
+This site Internal Market, Industry, Entrepreneurship and SMEs
+
+All main Commission sites

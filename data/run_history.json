@@ -494,5 +494,113 @@
       20
     ],
     "primary_run_id": 20
+  },
+  {
+    "timestamp": "2026-07-21T12:39:38.282745",
+    "total_monitors": 1,
+    "changed_count": 0,
+    "analyzed_count": 0,
+    "failed_count": 0,
+    "run_history_id": "61",
+    "run_ids": [
+      21
+    ],
+    "primary_run_id": 21
+  },
+  {
+    "timestamp": "2026-07-21T12:39:58.734283",
+    "total_monitors": 1,
+    "changed_count": 0,
+    "analyzed_count": 0,
+    "failed_count": 0,
+    "run_history_id": "62",
+    "run_ids": [
+      22
+    ],
+    "primary_run_id": 22
+  },
+  {
+    "timestamp": "2026-07-21T12:40:54.870942",
+    "total_monitors": 1,
+    "changed_count": 0,
+    "analyzed_count": 0,
+    "failed_count": 0,
+    "run_history_id": "63",
+    "run_ids": [
+      23
+    ],
+    "primary_run_id": 23
+  },
+  {
+    "timestamp": "2026-07-21T12:41:10.959055",
+    "total_monitors": 1,
+    "changed_count": 0,
+    "analyzed_count": 0,
+    "failed_count": 0,
+    "run_history_id": "64",
+    "run_ids": [
+      24
+    ],
+    "primary_run_id": 24
+  },
+  {
+    "timestamp": "2026-07-21T12:41:17.786006",
+    "total_monitors": 1,
+    "changed_count": 0,
+    "analyzed_count": 0,
+    "failed_count": 0,
+    "run_history_id": "65",
+    "run_ids": [
+      25
+    ],
+    "primary_run_id": 25
+  },
+  {
+    "timestamp": "2026-07-21T12:41:19.414643",
+    "total_monitors": 1,
+    "changed_count": 0,
+    "analyzed_count": 0,
+    "failed_count": 0,
+    "run_history_id": "66",
+    "run_ids": [
+      26
+    ],
+    "primary_run_id": 26
+  },
+  {
+    "timestamp": "2026-07-21T12:41:22.213748",
+    "total_monitors": 1,
+    "changed_count": 0,
+    "analyzed_count": 0,
+    "failed_count": 0,
+    "run_history_id": "67",
+    "run_ids": [
+      27
+    ],
+    "primary_run_id": 27
+  },
+  {
+    "timestamp": "2026-07-21T12:41:26.948419",
+    "total_monitors": 1,
+    "changed_count": 0,
+    "analyzed_count": 0,
+    "failed_count": 0,
+    "run_history_id": "68",
+    "run_ids": [
+      28
+    ],
+    "primary_run_id": 28
+  },
+  {
+    "timestamp": "2026-07-21T12:42:30.528821",
+    "total_monitors": 1,
+    "changed_count": 3,
+    "analyzed_count": 1,
+    "failed_count": 0,
+    "run_history_id": "69",
+    "run_ids": [
+      29
+    ],
+    "primary_run_id": 29
   }
 ]

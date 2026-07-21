@@ -3,30 +3,73 @@
 {% block content %}
 <div class="page-header">
     <h1 class="h3 mb-1">About</h1>
-    <p class="text-muted mb-0">Internal regulation monitoring platform overview</p>
+    <p class="text-muted mb-0">Platform overview and release information</p>
 </div>
 
-<div class="row g-4">
-    <div class="col-lg-6">
-        <div class="card shadow-sm h-100">
+<div class="row g-4 mb-4">
+    <div class="col-12">
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4">
+                <div class="d-flex flex-wrap align-items-start justify-content-between gap-3 mb-3">
+                    <div>
+                        <h2 class="h4 mb-1">{{ product_title }}</h2>
+                        <p class="text-muted mb-0">Smart Monitoring &amp; Compliance Analysis Platform</p>
+                    </div>
+                    <span class="badge bg-primary fs-6">{{ app_version_display }}</span>
+                </div>
+                <p class="mb-2">
+                    EU AI Regulation Monitor is a lightweight platform for monitoring European regulations
+                    relevant to Smart TV products.
+                </p>
+                <p class="mb-0 text-muted">
+                    It automatically detects website updates, performs AI-assisted impact analysis, tracks
+                    historical changes, and provides compliance insights through an interactive web dashboard.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-lg-8">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-header bg-white py-3">
+                <h2 class="h5 mb-0">Features</h2>
+            </div>
             <div class="card-body">
-                <h2 class="h5 card-title">Application</h2>
-                <dl class="row mb-0">
-                    <dt class="col-sm-4">Name</dt>
-                    <dd class="col-sm-8">{{ app_name }}</dd>
-                    <dt class="col-sm-4">Version</dt>
-                    <dd class="col-sm-8"><span class="badge bg-secondary">{{ app_version }}</span></dd>
-                    <dt class="col-sm-4">Purpose</dt>
-                    <dd class="col-sm-8">Monitor EU regulation sources, detect changes, analyze impact, and produce compliance reports for Smart TV and connected device teams.</dd>
-                </dl>
+                <div class="row g-2">
+                    <div class="col-md-6">
+                        <ul class="list-unstyled mb-0 about-feature-list">
+                            <li>✓ Multi-source monitoring</li>
+                            <li>✓ Multi-page website crawling</li>
+                            <li>✓ AI-assisted impact analysis</li>
+                            <li>✓ Snapshot management</li>
+                            <li>✓ Change detection</li>
+                            <li>✓ Run history</li>
+                            <li>✓ Run Details</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <ul class="list-unstyled mb-0 about-feature-list">
+                            <li>✓ Dashboard</li>
+                            <li>✓ Manual monitoring</li>
+                            <li>✓ Scheduled monitoring</li>
+                            <li>✓ Report generation</li>
+                            <li>✓ REST API</li>
+                            <li>✓ SQLite persistence</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="col-lg-6">
-        <div class="card shadow-sm h-100">
+    <div class="col-lg-4">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-header bg-white py-3">
+                <h2 class="h5 mb-0">Configuration Status</h2>
+            </div>
             <div class="card-body">
-                <h2 class="h5 card-title">Configuration Status</h2>
                 <dl class="row mb-0">
                     <dt class="col-sm-5">Overall</dt>
                     <dd class="col-sm-7">
@@ -60,38 +103,91 @@
             </div>
         </div>
     </div>
+</div>
 
-    <div class="col-12">
-        <div class="card shadow-sm">
+<div class="row g-4 mb-4">
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-header bg-white py-3">
+                <h2 class="h5 mb-0">Platform</h2>
+            </div>
             <div class="card-body">
-                <h2 class="h5 card-title">Architecture Components</h2>
-                <div class="row g-3">
-                    {% for component in architecture_components %}
-                    <div class="col-md-6 col-lg-4">
-                        <div class="border rounded p-3 h-100 bg-white">
-                            <div class="fw-semibold">{{ component.name }}</div>
-                            <div class="small text-muted">{{ component.description }}</div>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">Backend</dt>
+                    <dd class="col-sm-8">FastAPI</dd>
+                    <dt class="col-sm-4">Frontend</dt>
+                    <dd class="col-sm-8">Bootstrap 5</dd>
+                    <dt class="col-sm-4">Database</dt>
+                    <dd class="col-sm-8">SQLite</dd>
+                    <dt class="col-sm-4">Crawler</dt>
+                    <dd class="col-sm-8">Firecrawl</dd>
+                    <dt class="col-sm-4">AI</dt>
+                    <dd class="col-sm-8">OpenAI Responses API</dd>
+                    <dt class="col-sm-4">Python</dt>
+                    <dd class="col-sm-8">3.11</dd>
+                </dl>
             </div>
         </div>
     </div>
 
-    <div class="col-12">
-        <div class="card shadow-sm">
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-header bg-white py-3">
+                <h2 class="h5 mb-0">Platform Statistics</h2>
+            </div>
             <div class="card-body">
-                <h2 class="h5 card-title">Documentation</h2>
-                <ul class="mb-0">
-                    <li><code>docs/architecture.md</code> — system design and data flow</li>
-                    <li><code>docs/user-guide.md</code> — day-to-day usage</li>
-                    <li><code>docs/configuration.md</code> — environment variables</li>
-                    <li><code>docs/deployment.md</code> — Docker deployment</li>
-                    <li><code>data/demo/</code> — sample snapshot, analysis, and report JSON files</li>
-                </ul>
+                <dl class="row mb-0">
+                    <dt class="col-sm-5">Version</dt>
+                    <dd class="col-sm-7">{{ app_version_display }}</dd>
+                    <dt class="col-sm-5">Tests</dt>
+                    <dd class="col-sm-7">447 Passed</dd>
+                    <dt class="col-sm-5">Architecture</dt>
+                    <dd class="col-sm-7">Multi-page Monitoring</dd>
+                    <dt class="col-sm-5">Run Storage</dt>
+                    <dd class="col-sm-7">SQLite</dd>
+                    <dt class="col-sm-5">UI</dt>
+                    <dd class="col-sm-7">Responsive Dashboard</dd>
+                </dl>
             </div>
         </div>
     </div>
 </div>
+
+<div class="row g-4 mb-4">
+    <div class="col-12">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white py-3">
+                <h2 class="h5 mb-0">Roadmap</h2>
+            </div>
+            <div class="card-body">
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="text-muted small">Upcoming Version</div>
+                        <div class="fs-5 fw-semibold">v1.2.0</div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="text-muted small mb-2">Planned Features</div>
+                        <ul class="mb-0 about-roadmap-list">
+                            <li>Website Explorer</li>
+                            <li>Page Tree</li>
+                            <li>Website Health</li>
+                            <li>Knowledge Base Search</li>
+                            <li>AI Summary</li>
+                            <li>Timeline View</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="about-footer text-center text-muted py-4">
+    <div class="small mb-2">&copy; 2026</div>
+    <div class="fw-semibold mb-3">EU AI Regulation Monitor</div>
+    <div class="small mb-1">Built with</div>
+    <div class="about-footer-tech">
+        Python · FastAPI · Bootstrap · SQLite · Firecrawl · OpenAI
+    </div>
+</footer>
 {% endblock %}

@@ -82,7 +82,7 @@ from app.core.paths import log_runtime_paths
 from app.scheduler_status import get_scheduler_health_status
 from app.config.validator import validate_configuration
 from app.core.logging import get_logger
-from app.version import APP_NAME, APP_VERSION
+from app.version import APP_NAME, APP_VERSION, APP_PRODUCT_TITLE, get_version_display
 
 
 TEMPLATES_DIR = Path(__file__).resolve().parent / "templates"
@@ -677,10 +677,11 @@ def create_dashboard_app(
                 "active_page": "about",
                 "app_name": APP_NAME,
                 "app_version": APP_VERSION,
+                "app_version_display": get_version_display(),
+                "product_title": APP_PRODUCT_TITLE,
                 "config_status": config_result["status"],
                 "missing_config": config_result["missing"],
                 "config_warnings": config_result["warnings"],
-                "architecture_components": ARCHITECTURE_COMPONENTS,
             },
         )
 

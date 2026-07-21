@@ -1118,5 +1118,152 @@
     "timestamp": "2026-07-21T12:17:36.667633",
     "file": "D:\\Volume\\01- Projects\\AI_Regulation_Project\\data\\raw\\2026-07-21\\chemicals_news_digital-product-passport-registry-now-live-2026-07-20_en_121736.md",
     "hash": "98e7b2cb9b526233eee614dce5e92dda9700a1d19aabb0f4671d08ccaafd7d43"
+  },
+  {
+    "source_id": "dvb",
+    "url": "https://dvb.org/news/dvb-i-book-germany-approved-clearing-path-to-market-launch",
+    "timestamp": "2026-07-21T12:40:58.227739",
+    "file": "D:\\Volume\\01- Projects\\AI_Regulation_Project\\data\\raw\\2026-07-21\\dvb_news_dvb-i-book-germany-approved-clearing-path-to-market-launch_124058.md",
+    "hash": "b9ba2d1cd1aea18d77a4ee2c94e530b3b6f5980ba3cd1c2b51667fc526630ff3"
+  },
+  {
+    "source_id": "hacker-news-change-test",
+    "url": "https://news.ycombinator.com/",
+    "timestamp": "2026-07-21T12:40:59.811788",
+    "file": "D:\\Volume\\01- Projects\\AI_Regulation_Project\\data\\raw\\2026-07-21\\hacker-news-change-test_root_124059.md",
+    "hash": "0841785a891069b716d13f9250f3b5433268b7192fc88a39cf8ffce85882aa86"
+  },
+  {
+    "source_id": "hacker-news-change-test",
+    "url": "https://news.ycombinator.com/ask",
+    "timestamp": "2026-07-21T12:41:01.423142",
+    "file": "D:\\Volume\\01- Projects\\AI_Regulation_Project\\data\\raw\\2026-07-21\\hacker-news-change-test_ask_124101.md",
+    "hash": "ee78970456cad0e5cad6e8f722ec0c4219eccce4f8fef66be0d381c8544f71f9"
+  },
+  {
+    "source_id": "hacker-news-change-test",
+    "url": "https://news.ycombinator.com/newest",
+    "timestamp": "2026-07-21T12:41:03.045553",
+    "file": "D:\\Volume\\01- Projects\\AI_Regulation_Project\\data\\raw\\2026-07-21\\hacker-news-change-test_newest_124103.md",
+    "hash": "f1af0eca96d2330b5364d073bf7c8612ab8335f1b322d06b5231f397b2844044"
+  },
+  {
+    "source_id": "dvb",
+    "url": "https://dvb.org/news/dvb-steering-board-approves-major-dvb-i-update-package",
+    "timestamp": "2026-07-21T12:41:03.994588",
+    "file": "D:\\Volume\\01- Projects\\AI_Regulation_Project\\data\\raw\\2026-07-21\\dvb_news_dvb-steering-board-approves-major-dvb-i-update-package_124103.md",
+    "hash": "d402aa75d2990c1bfafbd88043778ecb172b58f5572941517c37f14f1ed2380d"
+  },
+  {
+    "source_id": "hbbtv",
+    "url": "https://hbbtv.org/10-year-hbbtv-anniversary-special",
+    "timestamp": "2026-07-21T12:41:04.116360",
+    "file": "D:\\Volume\\01- Projects\\AI_Regulation_Project\\data\\raw\\2026-07-21\\hbbtv_10-year-hbbtv-anniversary-special_124104.md",
+    "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "source_id": "hacker-news-change-test",
+    "url": "https://news.ycombinator.com/show",
+    "timestamp": "2026-07-21T12:41:04.639994",
+    "file": "D:\\Volume\\01- Projects\\AI_Regulation_Project\\data\\raw\\2026-07-21\\hacker-news-change-test_show_124104.md",
+    "hash": "642d97b81e387aaa2c39a148e2dbfff7efd50b21e7f055297b70d7066e5f11f9"
+  },
+  {
+    "source_id": "hacker-news-change-test",
+    "url": "https://news.ycombinator.com/item?id=48864176",
+    "timestamp": "2026-07-21T12:41:06.265027",
+    "file": "D:\\Volume\\01- Projects\\AI_Regulation_Project\\data\\raw\\2026-07-21\\hacker-news-change-test_item_id_48864176_124106.md",
+    "hash": "814771e79eaf946f188d0e9305df8cbb836ebc249e49abb3ada347ee6fb0a86c"
+  },
+  {
+    "source_id": "hacker-news-change-test",
+    "url": "https://news.ycombinator.com/item?id=48912812",
+    "timestamp": "2026-07-21T12:41:07.763977",
+    "file": "D:\\Volume\\01- Projects\\AI_Regulation_Project\\data\\raw\\2026-07-21\\hacker-news-change-test_item_id_48912812_124107.md",
+    "hash": "1bb0b5cb9c006cf438a664f2a4083486d661dd3c34f066bb7968217003290cfd"
+  },
+  {
+    "source_id": "dvb",
+    "url": "https://dvb.org/news/how-we-built-a-reference-live-streaming-infrastructure-for-dvb-i-services",
+    "timestamp": "2026-07-21T12:41:09.098367",
+    "file": "D:\\Volume\\01- Projects\\AI_Regulation_Project\\data\\raw\\2026-07-21\\dvb_news_how-we-built-a-reference-live-streaming-infrastructure-for-dvb-i-services_124109.md",
+    "hash": "8d85809f276acfc0e18a464f810d233f969623249bc663581eb7b9baa858a312"
+  },
+  {
+    "source_id": "hacker-news-change-test",
+    "url": "https://news.ycombinator.com/item?id=48916512",
+    "timestamp": "2026-07-21T12:41:09.315617",
+    "file": "D:\\Volume\\01- Projects\\AI_Regulation_Project\\data\\raw\\2026-07-21\\hacker-news-change-test_item_id_48916512_124109.md",
+    "hash": "d101c7b3a6836f2db03a6f919ccd3146d781794bdb4f4a035fa0806350c11ed6"
+  },
+  {
+    "source_id": "hacker-news-change-test",
+    "url": "https://news.ycombinator.com/item?id=48923130",
+    "timestamp": "2026-07-21T12:41:10.916882",
+    "file": "D:\\Volume\\01- Projects\\AI_Regulation_Project\\data\\raw\\2026-07-21\\hacker-news-change-test_item_id_48923130_124110.md",
+    "hash": "6dcbcc6f14c549ba3ce560bc678ea2f1f28c4436aae6cba63a4570e336a1086b"
+  },
+  {
+    "source_id": "dvb",
+    "url": "https://dvb.org/",
+    "timestamp": "2026-07-21T12:41:13.206170",
+    "file": "D:\\Volume\\01- Projects\\AI_Regulation_Project\\data\\raw\\2026-07-21\\dvb_root_124113.md",
+    "hash": "99f8282eace471ae138e547f5d223c2426fb1a4ba2935ee98d19347fd9c4e6d6"
+  },
+  {
+    "source_id": "eu_ai_act",
+    "url": "https://digital-strategy.ec.europa.eu/en/library/guidelines-transparency-obligations-providers-and-deployers-ai-systems",
+    "timestamp": "2026-07-21T12:41:15.454120",
+    "file": "D:\\Volume\\01- Projects\\AI_Regulation_Project\\data\\raw\\2026-07-21\\eu_ai_act_en_library_guidelines-transparency-obligations-providers-and-deployers-ai-system_124115.md",
+    "hash": "1d48c8e93d8d244fa42167d19a209d10eac679cae66b3a402f36adac66e7ef94"
+  },
+  {
+    "source_id": "eu_ai_act",
+    "url": "https://digital-strategy.ec.europa.eu/en/news/commission-publishes-guidelines-transparency-obligations-providers-and-deployers-certain-ai-systems",
+    "timestamp": "2026-07-21T12:41:16.853264",
+    "file": "D:\\Volume\\01- Projects\\AI_Regulation_Project\\data\\raw\\2026-07-21\\eu_ai_act_en_news_commission-publishes-guidelines-transparency-obligations-providers-and-d_124116.md",
+    "hash": "c3d0ecba52f66cd3e63a283cf824ee8540c9caf9505b706d5ca3fe5c98ba6e7f"
+  },
+  {
+    "source_id": "dvb",
+    "url": "https://dvb.org/dvb-scene",
+    "timestamp": "2026-07-21T12:41:17.738525",
+    "file": "D:\\Volume\\01- Projects\\AI_Regulation_Project\\data\\raw\\2026-07-21\\dvb_dvb-scene_124117.md",
+    "hash": "0e03f7df4fb234ba1b64502ad7fb2b7bcb0e14c54569b24ee5217efd97c95c4b"
+  },
+  {
+    "source_id": "eu_ai_act",
+    "url": "https://digital-strategy.ec.europa.eu/en/policies/digital-inclusion",
+    "timestamp": "2026-07-21T12:41:19.364255",
+    "file": "D:\\Volume\\01- Projects\\AI_Regulation_Project\\data\\raw\\2026-07-21\\eu_ai_act_en_policies_digital-inclusion_124119.md",
+    "hash": "888ec54a8b5ba64ff7bdbe7754190e531d48b42f2cee604f5c2151731f440482"
+  },
+  {
+    "source_id": "eu_red",
+    "url": "https://single-market-economy.ec.europa.eu/sectors/electrical-and-electronic-engineering-industries-eei/radio-equipment-directive-red_en?prefLang=bg",
+    "timestamp": "2026-07-21T12:41:26.902191",
+    "file": "D:\\Volume\\01- Projects\\AI_Regulation_Project\\data\\raw\\2026-07-21\\eu_red_sectors_electrical-and-electronic-engineering-industries-eei_radio-equipment-dir_124126.md",
+    "hash": "700efe0b835d9276082995320e952fb69f35f69050dc7f2d35424a09180d4eaf"
+  },
+  {
+    "source_id": "hbbtv",
+    "url": "https://hbbtv.org/10th-hbbtv-symposium-and-awards-2022",
+    "timestamp": "2026-07-21T12:41:31.525343",
+    "file": "D:\\Volume\\01- Projects\\AI_Regulation_Project\\data\\raw\\2026-07-21\\hbbtv_10th-hbbtv-symposium-and-awards-2022_124131.md",
+    "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "source_id": "hbbtv",
+    "url": "https://hbbtv.org/11th-hbbtv-symposium-and-awards-2023",
+    "timestamp": "2026-07-21T12:41:58.295545",
+    "file": "D:\\Volume\\01- Projects\\AI_Regulation_Project\\data\\raw\\2026-07-21\\hbbtv_11th-hbbtv-symposium-and-awards-2023_124158.md",
+    "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "source_id": "hbbtv",
+    "url": "https://hbbtv.org/12th-hbbtv-symposium-and-awards-2024",
+    "timestamp": "2026-07-21T12:42:30.492099",
+    "file": "D:\\Volume\\01- Projects\\AI_Regulation_Project\\data\\raw\\2026-07-21\\hbbtv_12th-hbbtv-symposium-and-awards-2024_124230.md",
+    "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
   }
 ]
