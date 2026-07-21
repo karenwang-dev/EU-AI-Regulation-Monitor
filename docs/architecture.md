@@ -1,124 +1,177 @@
-# System Architecture
+# System Architecture — v1.1.5 Stable
 
-The AI Regulation Monitoring Platform is an internal tool that crawls official regulation sources, detects content changes, analyzes impact with AI, stores structured knowledge, and presents results through a web dashboard.
+The **EU AI Regulation Monitor** is an internal platform that crawls official regulation sources, detects multi-page content changes, analyzes impact with AI, stores structured knowledge, and presents results through a FastAPI web dashboard.
 
-## Architecture Diagram
+---
+
+## High-level diagram
 
 ```mermaid
 flowchart TB
-    subgraph Client["Web Dashboard"]
-        UI[Jinja2 Templates]
-        Pages[Dashboard / Changes / Knowledge / Reports / Insights]
+    subgraph UI["Web Dashboard (Bootstrap 5)"]
+        Dashboard[Dashboard]
+        Monitors[Monitor Management]
+        RunDetails[Run Details]
+        Changes[Changes]
+        Knowledge[Knowledge Base]
+        Reports[Reports]
     end
 
-    subgraph API["FastAPI"]
-        Routes[REST & HTML Routes]
-        Health[/health]
+    subgraph API["FastAPI Application"]
+        MonitorAPI["/api/monitors"]
+        RunAPI["/api/runs"]
+        KnowledgeAPI["/api/knowledge"]
+        ReportAPI["/api/reports"]
+        Health["/health"]
     end
 
-    subgraph Jobs["Scheduler"]
-        APScheduler[APScheduler]
-        Daily[Daily Monitors]
-        Weekly[Weekly Monitors]
-        ReportJob[Weekly Report Job]
+    subgraph Exec["Execution Layer"]
+        ExecService[MonitorExecutionService]
+        Scheduler[APScheduler]
+        CLI[main.py CLI]
     end
 
     subgraph Pipeline["Monitoring Pipeline"]
-        Crawler[Crawler]
+        Crawler[Firecrawl Crawler]
         Diff[Diff Engine]
-        AI[AI Analyzer]
-        Knowledge[Knowledge Builder]
-        Notify[Notifier]
+        AI[OpenAI Analyzer]
+        KB[Knowledge Builder]
     end
 
-    subgraph Reports["Report Generator"]
-        Builder[Report Data Builder]
-        AIGen[AI Report Generator]
-        Email[Email Delivery]
+    subgraph Repo["SQLite Repository Layer"]
+        MonitorRepo[(SQLiteMonitorRepository)]
+        RunStore[(MonitorRunStore)]
+        Storage[(StorageService)]
     end
 
-    subgraph Storage["Storage"]
-        SQLite[(SQLite DB)]
-        RawFiles[Raw Snapshots]
-        Reports[Report JSON]
-        Status[Scheduler Status]
+    subgraph Files["File Storage"]
+        Raw[data/raw/]
+        History[data/run_history.json]
+        ReportsDir[data/reports/]
     end
 
-    UI --> Routes
-    Pages --> Routes
-    Health --> SQLite
-
-    APScheduler --> Daily
-    APScheduler --> Weekly
-    APScheduler --> ReportJob
-
-    Daily --> Pipeline
-    Weekly --> Pipeline
-    ReportJob --> Reports
-
+    UI --> API
+    MonitorAPI --> MonitorRepo
+    RunAPI --> RunStore
+    MonitorAPI --> ExecService
+    ExecService --> Pipeline
+    ExecService --> RunStore
+    ExecService --> MonitorRepo
+    Scheduler --> Pipeline
+    CLI --> Pipeline
     Pipeline --> Crawler
     Crawler --> Diff
     Diff --> AI
-    AI --> Knowledge
-    Knowledge --> Notify
-
-    Pipeline --> SQLite
-    Pipeline --> RawFiles
-    Knowledge --> SQLite
-
-    Builder --> SQLite
-    Builder --> AIGen
-    AIGen --> Reports
-    AIGen --> Email
-
-    Routes --> SQLite
-    Routes --> Reports
+    AI --> KB
+    Pipeline --> Storage
+    Pipeline --> Raw
+    KB --> Storage
+    ExecService --> History
+    Health --> Storage
+    Health --> MonitorRepo
 ```
 
-## Components
+---
+
+## Core components
 
 | Component | Location | Role |
 |-----------|----------|------|
-| Web Dashboard | `app/web/` | HTML UI for monitors, changes, knowledge, insights, and reports |
-| FastAPI | `app/web/app.py` | HTTP server, page routes, REST APIs, health checks |
-| Scheduler | `app/scheduler.py` | Runs daily/weekly monitor jobs and scheduled report generation |
-| Crawler | `app/crawler/` | Fetches regulation pages via Firecrawl with caching and link discovery |
-| AI Analyzer | `app/ai/` | OpenAI-powered impact analysis and regulation extraction |
-| Knowledge Base | `app/knowledge/` | Builds searchable knowledge items, relationships, and statistics |
-| Report Generator | `app/report/` | Weekly report data assembly, AI narrative, storage, and email |
-| Storage | `app/storage/` | SQLite persistence for snapshots, diffs, analyses, and knowledge |
+| Web dashboard | `app/web/` | Jinja2 UI, REST routes, monitor management |
+| Monitor repository | `app/monitors/repository.py` | Canonical monitor CRUD in SQLite |
+| Run store | `app/monitors/run_store.py` | Persistent run history and page results |
+| Execution service | `app/monitors/execution.py` | Manual runs, lock, persistence orchestration |
+| Pipeline | `app/pipeline.py` | Per-monitor crawl → diff → analyze flow |
+| Crawler | `app/crawler/` | Firecrawl integration, link discovery |
+| Storage | `app/storage/service.py` | Snapshots, diffs, analyses, knowledge |
+| Scheduler | `app/scheduler.py` | Daily/weekly monitor and report jobs |
+| CLI | `main.py` | `run-once`, `scheduler`, `status`, `generate-report` |
 
-## Data Flow
+---
 
-1. **Monitor run** — Scheduler or CLI triggers the pipeline for enabled monitors.
-2. **Crawl** — Firecrawl retrieves page content; snapshots are saved to disk and SQLite.
-3. **Diff** — New content is compared to the previous snapshot.
-4. **Analyze** — When content changes, OpenAI assesses impact level and affected product modules.
-5. **Knowledge** — Structured regulation items are stored with relationships and metadata.
-6. **Notify** — Optional email alerts are sent for significant changes.
-7. **Report** — Weekly jobs aggregate changes into an AI-generated compliance report.
-8. **Dashboard** — Teams review changes, search knowledge, and download reports via the web UI.
+## Multi-page monitoring flow
 
-## External Dependencies
+```mermaid
+sequenceDiagram
+    participant UI as Monitor UI
+    participant API as FastAPI
+    participant Exec as ExecutionService
+    participant Pipe as Pipeline
+    participant Crawl as Crawler
+    participant DB as SQLite
 
-| Service | Purpose |
-|---------|---------|
-| Firecrawl | Web crawling and content extraction |
-| OpenAI | Regulation change analysis and report narrative |
-| SMTP | Email notifications and weekly report delivery |
+    UI->>API: POST /api/monitors/{id}/run
+    API->>Exec: run_monitor(id, manual_ui)
+    Exec->>DB: save_execution_state(running)
+    Exec->>Pipe: process_source(monitor)
+    Pipe->>Crawl: fetch homepage + child pages
+    Crawl->>Pipe: url_results[]
+    Pipe->>DB: snapshots, diffs, analyses
+    Exec->>DB: monitor_runs INSERT
+    Exec->>DB: monitor_execution UPDATE
+    Exec-->>API: run response + run_history_id
+    API-->>UI: JSON 200
+    UI->>API: GET /runs/{id}
+    API-->>UI: Run Details page
+```
 
-## Configuration
+Each URL in `url_results` carries its own status, snapshot IDs, and diff ID. Page-level results are serialized to `monitor_runs.page_results_json` for stable historical replay.
 
-- `config/monitors.json` — monitor sources, keywords, and schedules
-- `config/notification.json` — SMTP settings
-- `config/report.json` — weekly report schedule and email recipients
-- `.env` — API keys and secrets (see `docs/configuration.md`)
+---
 
-## Deployment
+## Monitor data authority
 
-The platform runs as two Docker services:
+```mermaid
+flowchart LR
+    Seed[config/monitors.json] -->|seed only| Repo[SQLiteMonitorRepository]
+    UI[Monitor Management UI] -->|CRUD| Repo
+    CLI[CLI / Scheduler] -->|load enabled| Repo
+    Repo --> DB[(data/storage.db)]
+```
 
-- **dashboard** — FastAPI on port 8080
-- **scheduler** — background APScheduler process
+Runtime monitor edits never write back to `config/monitors.json`.
 
-See `docs/deployment.md` for build and run instructions.
+---
+
+## Status model (v1.1.5)
+
+Two concepts are separated in the UI and run store:
+
+| Concept | Values | Meaning |
+|---------|--------|---------|
+| **Execution status** | `success`, `failed`, `running` | Did the run complete without error? |
+| **Change status** | `changed`, `unchanged`, `baseline`, `failed` | Were content changes detected? |
+
+---
+
+## Category management
+
+Categories are stored as normalized strings on each monitor (`national_regulation`). The UI:
+
+1. Loads suggestions from `GET /api/monitors/categories` (built-in + distinct stored values).
+2. Normalizes user input on create/update via `normalize_category()`.
+3. Displays labels via `format_category_label()` (with acronym support for EU, AI, DSA, etc.).
+
+---
+
+## Technology stack
+
+| Layer | Technology |
+|-------|------------|
+| Language | Python 3.11 |
+| Web framework | FastAPI + Uvicorn |
+| Templates | Jinja2 |
+| Frontend | Bootstrap 5.3 |
+| Database | SQLite |
+| Crawler | Firecrawl |
+| AI | OpenAI Responses API |
+| Scheduler | APScheduler |
+
+---
+
+## Related documents
+
+- [API.md](API.md)
+- [Database.md](Database.md)
+- [Deployment.md](Deployment.md)
+- [DeveloperGuide.md](DeveloperGuide.md)

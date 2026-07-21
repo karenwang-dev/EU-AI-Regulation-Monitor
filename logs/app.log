@@ -22638,3 +22638,343 @@ app.monitors.execution.MonitorRunPersistenceError: Failed to save monitor run
 2026-07-21 13:18:35 INFO [regulation_monitor.app.monitors.repository] startupMonitor repository: SQLiteMonitorRepository
 2026-07-21 13:18:35 INFO [regulation_monitor.app.monitors.repository] startupMonitor database: D:\Volume\01- Projects\AI_Regulation_Project\data\storage.db
 2026-07-21 13:18:35 INFO [regulation_monitor.app.monitors.repository] startupTotal monitors: 16
+2026-07-21 13:18:35 INFO [regulation_monitor.app.monitors.repository] startupEnabled monitor IDs: ['boe', 'chemicals', 'ci_plus', 'eu_cra', 'eu_ai_act', 'dvb', 'eu_red', 'ec', 'eu_portal', 'bmukn', 'de_bnetza', 'green_digital', 'hbbtv', 'eu_energy_efficiency']
+2026-07-21 11:27:14 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-21 11:27:14 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-21 11:27:14 WARNING [regulation_monitor.__main__] SMTP_PASSWORD is not set (optional)
+2026-07-21 11:27:14 INFO [regulation_monitor.__main__] Configuration validation passed
+2026-07-21 11:27:16 WARNING [regulation_monitor.__main__] SMTP_PASSWORD is not set (optional)
+2026-07-21 11:27:16 INFO [regulation_monitor.__main__] Configuration validation passed
+2026-07-21 11:27:20 WARNING [regulation_monitor.__main__] SMTP_PASSWORD is not set (optional)
+2026-07-21 11:27:20 INFO [regulation_monitor.__main__] Configuration validation passed
+2026-07-21 11:27:22 WARNING [regulation_monitor.__main__] SMTP_PASSWORD is not set (optional)
+2026-07-21 11:27:22 INFO [regulation_monitor.__main__] Configuration validation passed
+2026-07-21 11:27:24 WARNING [regulation_monitor.__main__] SMTP_PASSWORD is not set (optional)
+2026-07-21 11:27:24 INFO [regulation_monitor.__main__] Configuration validation passed
+2026-07-21 11:27:27 WARNING [regulation_monitor.__main__] SMTP_PASSWORD is not set (optional)
+2026-07-21 11:27:27 INFO [regulation_monitor.__main__] Configuration validation passed
+2026-07-21 11:27:32 WARNING [regulation_monitor.__main__] SMTP_PASSWORD is not set (optional)
+2026-07-21 11:27:32 INFO [regulation_monitor.__main__] Configuration validation passed
+2026-07-21 11:27:45 WARNING [regulation_monitor.__main__] SMTP_PASSWORD is not set (optional)
+2026-07-21 11:27:45 INFO [regulation_monitor.__main__] Configuration validation passed
+2026-07-21 11:28:00 WARNING [regulation_monitor.__main__] SMTP_PASSWORD is not set (optional)
+2026-07-21 11:28:00 INFO [regulation_monitor.__main__] Configuration validation passed
+2026-07-21 11:28:27 WARNING [regulation_monitor.__main__] SMTP_PASSWORD is not set (optional)
+2026-07-21 11:28:27 INFO [regulation_monitor.__main__] Configuration validation passed
+2026-07-21 11:29:20 WARNING [regulation_monitor.__main__] SMTP_PASSWORD is not set (optional)
+2026-07-21 11:29:20 INFO [regulation_monitor.__main__] Configuration validation passed
+2026-07-21 13:30:20 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-21 13:30:20 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-21 13:30:20 INFO [regulation_monitor.app.web.app] APP_ENV=development
+2026-07-21 13:30:20 INFO [regulation_monitor.app.web.app] Development mode=True
+2026-07-21 13:30:20 INFO [regulation_monitor.app.web.app] Development test site routes registered=True
+2026-07-21 13:30:20 INFO [regulation_monitor.app.web.app] Development test site route: /api/dev/change-test-site/homepage/change
+2026-07-21 13:30:20 INFO [regulation_monitor.app.web.app] Development test site route: /api/dev/change-test-site/policy-a/change
+2026-07-21 13:30:20 INFO [regulation_monitor.app.web.app] Development test site route: /api/dev/change-test-site/policy-b/change
+2026-07-21 13:30:20 INFO [regulation_monitor.app.web.app] Development test site route: /api/dev/change-test-site/policy-c/add
+2026-07-21 13:30:20 INFO [regulation_monitor.app.web.app] Development test site route: /api/dev/change-test-site/policy-c/remove
+2026-07-21 13:30:20 INFO [regulation_monitor.app.web.app] Development test site route: /api/dev/change-test-site/reset
+2026-07-21 13:30:20 INFO [regulation_monitor.app.web.app] Development test site route: /api/dev/change-test-site/run-monitor
+2026-07-21 13:30:20 INFO [regulation_monitor.app.web.app] Development test site route: /dev/change-test-site
+2026-07-21 13:30:20 INFO [regulation_monitor.app.web.app] Development test site route: /dev/change-test-site/controls
+2026-07-21 13:30:20 INFO [regulation_monitor.app.web.app] Development test site route: /dev/change-test-site/policy-a
+2026-07-21 13:30:20 INFO [regulation_monitor.app.web.app] Development test site route: /dev/change-test-site/policy-b
+2026-07-21 13:30:20 INFO [regulation_monitor.app.web.app] Development test site route: /dev/change-test-site/policy-c
+2026-07-21 13:30:20 INFO [regulation_monitor.app.web.app] Development test site route: /dev/change-test-site/status
+2026-07-21 13:30:20 INFO [regulation_monitor.app.core.paths] startup runtime path project_root=D:\Volume\01- Projects\AI_Regulation_Project
+2026-07-21 13:30:20 INFO [regulation_monitor.app.core.paths] startup runtime path database=D:\Volume\01- Projects\AI_Regulation_Project\data\storage.db
+2026-07-21 13:30:20 INFO [regulation_monitor.app.core.paths] startup runtime path raw_dir=D:\Volume\01- Projects\AI_Regulation_Project\data\raw
+2026-07-21 13:30:20 INFO [regulation_monitor.app.core.paths] startup runtime path snapshots_meta=D:\Volume\01- Projects\AI_Regulation_Project\data\metadata\snapshots.json
+2026-07-21 13:30:20 INFO [regulation_monitor.app.core.paths] startup runtime path monitors_config_seed=D:\Volume\01- Projects\AI_Regulation_Project\config\monitors.json
+2026-07-21 13:30:20 INFO [regulation_monitor.app.core.paths] startup runtime path monitors_repository=D:\Volume\01- Projects\AI_Regulation_Project\data\storage.db
+2026-07-21 13:30:20 INFO [regulation_monitor.app.core.paths] startup runtime path change_test_site_state=D:\Volume\01- Projects\AI_Regulation_Project\data\change_test_site.json
+2026-07-21 13:30:20 INFO [regulation_monitor.app.monitors.repository] startupMonitor repository: SQLiteMonitorRepository
+2026-07-21 13:30:20 INFO [regulation_monitor.app.monitors.repository] startupMonitor database: D:\Volume\01- Projects\AI_Regulation_Project\data\storage.db
+2026-07-21 13:30:20 INFO [regulation_monitor.app.monitors.repository] startupTotal monitors: 16
+2026-07-21 13:30:20 INFO [regulation_monitor.app.monitors.repository] startupEnabled monitor IDs: ['boe', 'chemicals', 'ci_plus', 'eu_cra', 'eu_ai_act', 'dvb', 'eu_red', 'ec', 'eu_portal', 'bmukn', 'de_bnetza', 'green_digital', 'hbbtv', 'eu_energy_efficiency']
+2026-07-21 11:40:40 WARNING [regulation_monitor.__main__] SMTP_PASSWORD is not set (optional)
+2026-07-21 11:40:40 INFO [regulation_monitor.__main__] Configuration validation passed
+2026-07-21 11:40:40 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 11:40:40 INFO [regulation_monitor.app.scheduler] AI Regulation Monitoring Scheduler
+2026-07-21 11:40:40 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 11:40:40 INFO [regulation_monitor.app.scheduler] Configured frequencies: daily, weekly
+2026-07-21 11:40:41 WARNING [regulation_monitor.app.web.app] SMTP_PASSWORD is not set (optional)
+2026-07-21 11:40:41 INFO [regulation_monitor.app.web.app] Configuration validation passed
+2026-07-21 11:40:41 INFO [regulation_monitor.app.web.app] APP_ENV=production
+2026-07-21 11:40:41 INFO [regulation_monitor.app.web.app] Development mode=False
+2026-07-21 11:40:41 INFO [regulation_monitor.app.web.app] Development test site routes registered=True
+2026-07-21 11:40:41 INFO [regulation_monitor.app.web.app] Development test site route: /api/dev/change-test-site/homepage/change
+2026-07-21 11:40:41 INFO [regulation_monitor.app.web.app] Development test site route: /api/dev/change-test-site/policy-a/change
+2026-07-21 11:40:41 INFO [regulation_monitor.app.web.app] Development test site route: /api/dev/change-test-site/policy-b/change
+2026-07-21 11:40:41 INFO [regulation_monitor.app.web.app] Development test site route: /api/dev/change-test-site/policy-c/add
+2026-07-21 11:40:41 INFO [regulation_monitor.app.web.app] Development test site route: /api/dev/change-test-site/policy-c/remove
+2026-07-21 11:40:41 INFO [regulation_monitor.app.web.app] Development test site route: /api/dev/change-test-site/reset
+2026-07-21 11:40:41 INFO [regulation_monitor.app.web.app] Development test site route: /api/dev/change-test-site/run-monitor
+2026-07-21 11:40:41 INFO [regulation_monitor.app.web.app] Development test site route: /dev/change-test-site
+2026-07-21 11:40:41 INFO [regulation_monitor.app.web.app] Development test site route: /dev/change-test-site/controls
+2026-07-21 11:40:41 INFO [regulation_monitor.app.web.app] Development test site route: /dev/change-test-site/policy-a
+2026-07-21 11:40:41 INFO [regulation_monitor.app.web.app] Development test site route: /dev/change-test-site/policy-b
+2026-07-21 11:40:41 INFO [regulation_monitor.app.web.app] Development test site route: /dev/change-test-site/policy-c
+2026-07-21 11:40:41 INFO [regulation_monitor.app.web.app] Development test site route: /dev/change-test-site/status
+2026-07-21 11:40:41 INFO [regulation_monitor.app.web.app] Change test site endpoints are gated until APP_ENV is development, dev, or test.
+2026-07-21 11:40:41 INFO [regulation_monitor.app.core.paths] startup runtime path project_root=/app
+2026-07-21 11:40:41 INFO [regulation_monitor.app.core.paths] startup runtime path database=/app/data/storage.db
+2026-07-21 11:40:41 INFO [regulation_monitor.app.core.paths] startup runtime path raw_dir=/app/data/raw
+2026-07-21 11:40:41 INFO [regulation_monitor.app.core.paths] startup runtime path snapshots_meta=/app/data/metadata/snapshots.json
+2026-07-21 11:40:41 INFO [regulation_monitor.app.core.paths] startup runtime path monitors_config_seed=/app/config/monitors.json
+2026-07-21 11:40:41 INFO [regulation_monitor.app.core.paths] startup runtime path monitors_repository=/app/data/storage.db
+2026-07-21 11:40:41 INFO [regulation_monitor.app.core.paths] startup runtime path change_test_site_state=/app/data/change_test_site.json
+2026-07-21 11:40:41 INFO [regulation_monitor.app.monitors.repository] startupMonitor repository: SQLiteMonitorRepository
+2026-07-21 11:40:41 INFO [regulation_monitor.app.monitors.repository] startupMonitor database: /app/data/storage.db
+2026-07-21 11:40:41 INFO [regulation_monitor.app.monitors.repository] startupTotal monitors: 16
+2026-07-21 11:40:41 INFO [regulation_monitor.app.monitors.repository] startupEnabled monitor IDs: ['boe', 'chemicals', 'ci_plus', 'eu_cra', 'eu_ai_act', 'dvb', 'eu_red', 'ec', 'eu_portal', 'bmukn', 'de_bnetza', 'green_digital', 'hbbtv', 'eu_energy_efficiency']
+2026-07-21 11:40:42 WARNING [regulation_monitor.__main__] SMTP_PASSWORD is not set (optional)
+2026-07-21 11:40:42 INFO [regulation_monitor.__main__] Configuration validation passed
+2026-07-21 11:40:42 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 11:40:42 INFO [regulation_monitor.app.scheduler] AI Regulation Monitoring Scheduler
+2026-07-21 11:40:42 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 11:40:42 INFO [regulation_monitor.app.scheduler] Configured frequencies: daily, weekly
+2026-07-21 11:40:44 WARNING [regulation_monitor.__main__] SMTP_PASSWORD is not set (optional)
+2026-07-21 11:40:44 INFO [regulation_monitor.__main__] Configuration validation passed
+2026-07-21 11:40:44 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 11:40:44 INFO [regulation_monitor.app.scheduler] AI Regulation Monitoring Scheduler
+2026-07-21 11:40:44 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 11:40:44 INFO [regulation_monitor.app.scheduler] Configured frequencies: daily, weekly
+2026-07-21 11:40:46 WARNING [regulation_monitor.__main__] SMTP_PASSWORD is not set (optional)
+2026-07-21 11:40:46 INFO [regulation_monitor.__main__] Configuration validation passed
+2026-07-21 11:40:46 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 11:40:46 INFO [regulation_monitor.app.scheduler] AI Regulation Monitoring Scheduler
+2026-07-21 11:40:46 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 11:40:46 INFO [regulation_monitor.app.scheduler] Configured frequencies: daily, weekly
+2026-07-21 11:40:49 WARNING [regulation_monitor.__main__] SMTP_PASSWORD is not set (optional)
+2026-07-21 11:40:49 INFO [regulation_monitor.__main__] Configuration validation passed
+2026-07-21 11:40:49 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 11:40:49 INFO [regulation_monitor.app.scheduler] AI Regulation Monitoring Scheduler
+2026-07-21 11:40:49 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 11:40:49 INFO [regulation_monitor.app.scheduler] Configured frequencies: daily, weekly
+2026-07-21 11:40:52 WARNING [regulation_monitor.__main__] SMTP_PASSWORD is not set (optional)
+2026-07-21 11:40:52 INFO [regulation_monitor.__main__] Configuration validation passed
+2026-07-21 11:40:52 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 11:40:52 INFO [regulation_monitor.app.scheduler] AI Regulation Monitoring Scheduler
+2026-07-21 11:40:52 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 11:40:52 INFO [regulation_monitor.app.scheduler] Configured frequencies: daily, weekly
+2026-07-21 11:40:57 WARNING [regulation_monitor.__main__] SMTP_PASSWORD is not set (optional)
+2026-07-21 11:40:57 INFO [regulation_monitor.__main__] Configuration validation passed
+2026-07-21 11:40:57 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 11:40:57 INFO [regulation_monitor.app.scheduler] AI Regulation Monitoring Scheduler
+2026-07-21 11:40:57 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 11:40:57 INFO [regulation_monitor.app.scheduler] Configured frequencies: daily, weekly
+2026-07-21 11:41:05 WARNING [regulation_monitor.__main__] SMTP_PASSWORD is not set (optional)
+2026-07-21 11:41:05 INFO [regulation_monitor.__main__] Configuration validation passed
+2026-07-21 11:41:05 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 11:41:05 INFO [regulation_monitor.app.scheduler] AI Regulation Monitoring Scheduler
+2026-07-21 11:41:05 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 11:41:05 INFO [regulation_monitor.app.scheduler] Configured frequencies: daily, weekly
+2026-07-21 11:41:20 WARNING [regulation_monitor.__main__] SMTP_PASSWORD is not set (optional)
+2026-07-21 11:41:20 INFO [regulation_monitor.__main__] Configuration validation passed
+2026-07-21 11:41:20 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 11:41:20 INFO [regulation_monitor.app.scheduler] AI Regulation Monitoring Scheduler
+2026-07-21 11:41:20 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 11:41:20 INFO [regulation_monitor.app.scheduler] Configured frequencies: daily, weekly
+2026-07-21 11:41:47 WARNING [regulation_monitor.__main__] SMTP_PASSWORD is not set (optional)
+2026-07-21 11:41:47 INFO [regulation_monitor.__main__] Configuration validation passed
+2026-07-21 11:41:47 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 11:41:47 INFO [regulation_monitor.app.scheduler] AI Regulation Monitoring Scheduler
+2026-07-21 11:41:47 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 11:41:47 INFO [regulation_monitor.app.scheduler] Configured frequencies: daily, weekly
+2026-07-21 11:42:40 WARNING [regulation_monitor.__main__] SMTP_PASSWORD is not set (optional)
+2026-07-21 11:42:40 INFO [regulation_monitor.__main__] Configuration validation passed
+2026-07-21 11:42:40 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 11:42:40 INFO [regulation_monitor.app.scheduler] AI Regulation Monitoring Scheduler
+2026-07-21 11:42:40 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 11:42:40 INFO [regulation_monitor.app.scheduler] Configured frequencies: daily, weekly
+2026-07-21 11:43:42 WARNING [regulation_monitor.__main__] SMTP_PASSWORD is not set (optional)
+2026-07-21 11:43:42 INFO [regulation_monitor.__main__] Configuration validation passed
+2026-07-21 11:43:42 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 11:43:42 INFO [regulation_monitor.app.scheduler] AI Regulation Monitoring Scheduler
+2026-07-21 11:43:42 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 11:43:42 INFO [regulation_monitor.app.scheduler] Configured frequencies: daily, weekly
+2026-07-21 11:44:44 WARNING [regulation_monitor.__main__] SMTP_PASSWORD is not set (optional)
+2026-07-21 11:44:44 INFO [regulation_monitor.__main__] Configuration validation passed
+2026-07-21 11:44:44 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 11:44:44 INFO [regulation_monitor.app.scheduler] AI Regulation Monitoring Scheduler
+2026-07-21 11:44:44 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 11:44:44 INFO [regulation_monitor.app.scheduler] Configured frequencies: daily, weekly
+2026-07-21 11:45:45 WARNING [regulation_monitor.__main__] SMTP_PASSWORD is not set (optional)
+2026-07-21 11:45:45 INFO [regulation_monitor.__main__] Configuration validation passed
+2026-07-21 11:45:45 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 11:45:45 INFO [regulation_monitor.app.scheduler] AI Regulation Monitoring Scheduler
+2026-07-21 11:45:45 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 11:45:45 INFO [regulation_monitor.app.scheduler] Configured frequencies: daily, weekly
+2026-07-21 11:46:47 WARNING [regulation_monitor.__main__] SMTP_PASSWORD is not set (optional)
+2026-07-21 11:46:47 INFO [regulation_monitor.__main__] Configuration validation passed
+2026-07-21 11:46:47 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 11:46:47 INFO [regulation_monitor.app.scheduler] AI Regulation Monitoring Scheduler
+2026-07-21 11:46:47 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 11:46:47 INFO [regulation_monitor.app.scheduler] Configured frequencies: daily, weekly
+2026-07-21 11:47:49 WARNING [regulation_monitor.__main__] SMTP_PASSWORD is not set (optional)
+2026-07-21 11:47:49 INFO [regulation_monitor.__main__] Configuration validation passed
+2026-07-21 11:47:49 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 11:47:49 INFO [regulation_monitor.app.scheduler] AI Regulation Monitoring Scheduler
+2026-07-21 11:47:49 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 11:47:49 INFO [regulation_monitor.app.scheduler] Configured frequencies: daily, weekly
+2026-07-21 11:48:50 WARNING [regulation_monitor.__main__] SMTP_PASSWORD is not set (optional)
+2026-07-21 11:48:50 INFO [regulation_monitor.__main__] Configuration validation passed
+2026-07-21 11:48:50 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 11:48:50 INFO [regulation_monitor.app.scheduler] AI Regulation Monitoring Scheduler
+2026-07-21 11:48:50 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 11:48:50 INFO [regulation_monitor.app.scheduler] Configured frequencies: daily, weekly
+2026-07-21 11:49:52 WARNING [regulation_monitor.__main__] SMTP_PASSWORD is not set (optional)
+2026-07-21 11:49:52 INFO [regulation_monitor.__main__] Configuration validation passed
+2026-07-21 11:49:52 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 11:49:52 INFO [regulation_monitor.app.scheduler] AI Regulation Monitoring Scheduler
+2026-07-21 11:49:52 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 11:49:52 INFO [regulation_monitor.app.scheduler] Configured frequencies: daily, weekly
+2026-07-21 11:50:53 WARNING [regulation_monitor.__main__] SMTP_PASSWORD is not set (optional)
+2026-07-21 11:50:53 INFO [regulation_monitor.__main__] Configuration validation passed
+2026-07-21 11:50:53 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 11:50:53 INFO [regulation_monitor.app.scheduler] AI Regulation Monitoring Scheduler
+2026-07-21 11:50:53 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 11:50:53 INFO [regulation_monitor.app.scheduler] Configured frequencies: daily, weekly
+2026-07-21 11:51:56 WARNING [regulation_monitor.__main__] SMTP_PASSWORD is not set (optional)
+2026-07-21 11:51:56 INFO [regulation_monitor.__main__] Configuration validation passed
+2026-07-21 11:51:56 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 11:51:56 INFO [regulation_monitor.app.scheduler] AI Regulation Monitoring Scheduler
+2026-07-21 11:51:56 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 11:51:56 INFO [regulation_monitor.app.scheduler] Configured frequencies: daily, weekly
+2026-07-21 11:52:58 WARNING [regulation_monitor.__main__] SMTP_PASSWORD is not set (optional)
+2026-07-21 11:52:58 INFO [regulation_monitor.__main__] Configuration validation passed
+2026-07-21 11:52:58 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 11:52:58 INFO [regulation_monitor.app.scheduler] AI Regulation Monitoring Scheduler
+2026-07-21 11:52:58 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 11:52:58 INFO [regulation_monitor.app.scheduler] Configured frequencies: daily, weekly
+2026-07-21 11:54:00 WARNING [regulation_monitor.__main__] SMTP_PASSWORD is not set (optional)
+2026-07-21 11:54:00 INFO [regulation_monitor.__main__] Configuration validation passed
+2026-07-21 11:54:00 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 11:54:00 INFO [regulation_monitor.app.scheduler] AI Regulation Monitoring Scheduler
+2026-07-21 11:54:00 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 11:54:00 INFO [regulation_monitor.app.scheduler] Configured frequencies: daily, weekly
+2026-07-21 11:55:02 WARNING [regulation_monitor.__main__] SMTP_PASSWORD is not set (optional)
+2026-07-21 11:55:02 INFO [regulation_monitor.__main__] Configuration validation passed
+2026-07-21 11:55:02 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 11:55:02 INFO [regulation_monitor.app.scheduler] AI Regulation Monitoring Scheduler
+2026-07-21 11:55:02 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 11:55:02 INFO [regulation_monitor.app.scheduler] Configured frequencies: daily, weekly
+2026-07-21 11:56:04 WARNING [regulation_monitor.__main__] SMTP_PASSWORD is not set (optional)
+2026-07-21 11:56:04 INFO [regulation_monitor.__main__] Configuration validation passed
+2026-07-21 11:56:04 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 11:56:04 INFO [regulation_monitor.app.scheduler] AI Regulation Monitoring Scheduler
+2026-07-21 11:56:04 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 11:56:04 INFO [regulation_monitor.app.scheduler] Configured frequencies: daily, weekly
+2026-07-21 11:57:07 WARNING [regulation_monitor.__main__] SMTP_PASSWORD is not set (optional)
+2026-07-21 11:57:07 INFO [regulation_monitor.__main__] Configuration validation passed
+2026-07-21 11:57:07 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 11:57:07 INFO [regulation_monitor.app.scheduler] AI Regulation Monitoring Scheduler
+2026-07-21 11:57:07 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 11:57:07 INFO [regulation_monitor.app.scheduler] Configured frequencies: daily, weekly
+2026-07-21 11:58:09 WARNING [regulation_monitor.__main__] SMTP_PASSWORD is not set (optional)
+2026-07-21 11:58:09 INFO [regulation_monitor.__main__] Configuration validation passed
+2026-07-21 11:58:10 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 11:58:10 INFO [regulation_monitor.app.scheduler] AI Regulation Monitoring Scheduler
+2026-07-21 11:58:10 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 11:58:10 INFO [regulation_monitor.app.scheduler] Configured frequencies: daily, weekly
+2026-07-21 11:59:12 WARNING [regulation_monitor.__main__] SMTP_PASSWORD is not set (optional)
+2026-07-21 11:59:12 INFO [regulation_monitor.__main__] Configuration validation passed
+2026-07-21 11:59:13 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 11:59:13 INFO [regulation_monitor.app.scheduler] AI Regulation Monitoring Scheduler
+2026-07-21 11:59:13 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 11:59:13 INFO [regulation_monitor.app.scheduler] Configured frequencies: daily, weekly
+2026-07-21 12:00:15 WARNING [regulation_monitor.__main__] SMTP_PASSWORD is not set (optional)
+2026-07-21 12:00:15 INFO [regulation_monitor.__main__] Configuration validation passed
+2026-07-21 12:00:15 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 12:00:15 INFO [regulation_monitor.app.scheduler] AI Regulation Monitoring Scheduler
+2026-07-21 12:00:15 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 12:00:15 INFO [regulation_monitor.app.scheduler] Configured frequencies: daily, weekly
+2026-07-21 12:01:17 WARNING [regulation_monitor.__main__] SMTP_PASSWORD is not set (optional)
+2026-07-21 12:01:17 INFO [regulation_monitor.__main__] Configuration validation passed
+2026-07-21 12:01:17 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 12:01:17 INFO [regulation_monitor.app.scheduler] AI Regulation Monitoring Scheduler
+2026-07-21 12:01:17 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 12:01:17 INFO [regulation_monitor.app.scheduler] Configured frequencies: daily, weekly
+2026-07-21 12:02:19 WARNING [regulation_monitor.__main__] SMTP_PASSWORD is not set (optional)
+2026-07-21 12:02:19 INFO [regulation_monitor.__main__] Configuration validation passed
+2026-07-21 12:02:19 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 12:02:19 INFO [regulation_monitor.app.scheduler] AI Regulation Monitoring Scheduler
+2026-07-21 12:02:19 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 12:02:19 INFO [regulation_monitor.app.scheduler] Configured frequencies: daily, weekly
+2026-07-21 12:03:21 WARNING [regulation_monitor.__main__] SMTP_PASSWORD is not set (optional)
+2026-07-21 12:03:21 INFO [regulation_monitor.__main__] Configuration validation passed
+2026-07-21 12:03:22 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 12:03:22 INFO [regulation_monitor.app.scheduler] AI Regulation Monitoring Scheduler
+2026-07-21 12:03:22 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 12:03:22 INFO [regulation_monitor.app.scheduler] Configured frequencies: daily, weekly
+2026-07-21 12:04:24 WARNING [regulation_monitor.__main__] SMTP_PASSWORD is not set (optional)
+2026-07-21 12:04:24 INFO [regulation_monitor.__main__] Configuration validation passed
+2026-07-21 12:04:24 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 12:04:24 INFO [regulation_monitor.app.scheduler] AI Regulation Monitoring Scheduler
+2026-07-21 12:04:24 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 12:04:24 INFO [regulation_monitor.app.scheduler] Configured frequencies: daily, weekly
+2026-07-21 12:05:26 WARNING [regulation_monitor.__main__] SMTP_PASSWORD is not set (optional)
+2026-07-21 12:05:26 INFO [regulation_monitor.__main__] Configuration validation passed
+2026-07-21 12:05:26 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 12:05:26 INFO [regulation_monitor.app.scheduler] AI Regulation Monitoring Scheduler
+2026-07-21 12:05:26 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 12:05:26 INFO [regulation_monitor.app.scheduler] Configured frequencies: daily, weekly
+2026-07-21 12:06:28 WARNING [regulation_monitor.__main__] SMTP_PASSWORD is not set (optional)
+2026-07-21 12:06:28 INFO [regulation_monitor.__main__] Configuration validation passed
+2026-07-21 12:06:28 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 12:06:28 INFO [regulation_monitor.app.scheduler] AI Regulation Monitoring Scheduler
+2026-07-21 12:06:28 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 12:06:28 INFO [regulation_monitor.app.scheduler] Configured frequencies: daily, weekly
+2026-07-21 12:07:30 WARNING [regulation_monitor.__main__] SMTP_PASSWORD is not set (optional)
+2026-07-21 12:07:30 INFO [regulation_monitor.__main__] Configuration validation passed
+2026-07-21 12:07:30 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 12:07:30 INFO [regulation_monitor.app.scheduler] AI Regulation Monitoring Scheduler
+2026-07-21 12:07:30 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 12:07:30 INFO [regulation_monitor.app.scheduler] Configured frequencies: daily, weekly
+2026-07-21 12:08:32 WARNING [regulation_monitor.__main__] SMTP_PASSWORD is not set (optional)
+2026-07-21 12:08:32 INFO [regulation_monitor.__main__] Configuration validation passed
+2026-07-21 12:08:32 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 12:08:32 INFO [regulation_monitor.app.scheduler] AI Regulation Monitoring Scheduler
+2026-07-21 12:08:32 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 12:08:32 INFO [regulation_monitor.app.scheduler] Configured frequencies: daily, weekly
+2026-07-21 12:09:34 WARNING [regulation_monitor.__main__] SMTP_PASSWORD is not set (optional)
+2026-07-21 12:09:34 INFO [regulation_monitor.__main__] Configuration validation passed
+2026-07-21 12:09:34 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 12:09:34 INFO [regulation_monitor.app.scheduler] AI Regulation Monitoring Scheduler
+2026-07-21 12:09:34 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 12:09:34 INFO [regulation_monitor.app.scheduler] Configured frequencies: daily, weekly
+2026-07-21 12:10:37 WARNING [regulation_monitor.__main__] SMTP_PASSWORD is not set (optional)
+2026-07-21 12:10:37 INFO [regulation_monitor.__main__] Configuration validation passed
+2026-07-21 12:10:37 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 12:10:37 INFO [regulation_monitor.app.scheduler] AI Regulation Monitoring Scheduler
+2026-07-21 12:10:37 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 12:10:37 INFO [regulation_monitor.app.scheduler] Configured frequencies: daily, weekly
+2026-07-21 12:10:41 INFO [regulation_monitor.app.monitors.execution] Manual monitor execution started: monitor_id=playout monitor_name=playout triggered_by=manual_ui
+2026-07-21 12:10:41 INFO [regulation_monitor.app.pipeline] Fetching fresh content for http://10.232.185.3:8002/Playout/
+2026-07-21 12:10:41 INFO [regulation_monitor.app.pipeline] Monitor run details: monitor_id=playout enabled=True config_source=/app/data/storage.db crawl_mode=single skip_ai_analysis=False
+2026-07-21 12:10:41 INFO [regulation_monitor.app.pipeline] Pages discovered=1 normalized_urls=['http://10.232.185.3:8002/Playout']
+2026-07-21 12:10:41 INFO [regulation_monitor.app.pipeline] Crawl cache bypass=False for monitor_id=playout
+2026-07-21 12:10:41 INFO [regulation_monitor.app.pipeline] Page result: url=http://10.232.185.3:8002/Playout/ normalized_url=http://10.232.185.3:8002/Playout status=error page_changed=None previous_snapshot_found=None previous_snapshot_id=None snapshot_id=None previous_hash=None after_hash=None page_type=None change_kind=None diff_id=None analysis_id=None cache_hit=None
+2026-07-21 12:10:41 INFO [regulation_monitor.app.pipeline] Page change summary: {'monitor_id': 'playout', 'pages_checked': 1, 'pages_changed': 0, 'pages_added': 0, 'pages_removed': 0, 'homepage_changed': False, 'child_pages_changed': 0, 'overall_status': 'no_change'}
+2026-07-21 12:10:41 INFO [regulation_monitor.app.monitors.execution] Manual monitor execution finished: monitor_id=playout monitor_name=playout triggered_by=manual_ui discovered_urls=[] pages_checked=1 pages_changed=0 duration_ms=676 execution_status=failed change_status=failed run_history_id=30
+2026-07-21 12:11:15 INFO [regulation_monitor.app.monitors.execution] Manual monitor execution started: monitor_id=playout monitor_name=playout triggered_by=manual_ui
+2026-07-21 12:11:15 INFO [regulation_monitor.app.pipeline] Fetching fresh content for http://10.232.185.3:8002/Playout/
+2026-07-21 12:11:16 INFO [regulation_monitor.app.pipeline] Monitor run details: monitor_id=playout enabled=True config_source=/app/data/storage.db crawl_mode=single skip_ai_analysis=False
+2026-07-21 12:11:16 INFO [regulation_monitor.app.pipeline] Pages discovered=1 normalized_urls=['http://10.232.185.3:8002/Playout']
+2026-07-21 12:11:16 INFO [regulation_monitor.app.pipeline] Crawl cache bypass=False for monitor_id=playout
+2026-07-21 12:11:16 INFO [regulation_monitor.app.pipeline] Page result: url=http://10.232.185.3:8002/Playout/ normalized_url=http://10.232.185.3:8002/Playout status=error page_changed=None previous_snapshot_found=None previous_snapshot_id=None snapshot_id=None previous_hash=None after_hash=None page_type=None change_kind=None diff_id=None analysis_id=None cache_hit=None
+2026-07-21 12:11:16 INFO [regulation_monitor.app.pipeline] Page change summary: {'monitor_id': 'playout', 'pages_checked': 1, 'pages_changed': 0, 'pages_added': 0, 'pages_removed': 0, 'homepage_changed': False, 'child_pages_changed': 0, 'overall_status': 'no_change'}
+2026-07-21 12:11:16 INFO [regulation_monitor.app.monitors.execution] Manual monitor execution finished: monitor_id=playout monitor_name=playout triggered_by=manual_ui discovered_urls=[] pages_checked=1 pages_changed=0 duration_ms=518 execution_status=failed change_status=failed run_history_id=31
+2026-07-21 12:11:39 WARNING [regulation_monitor.__main__] SMTP_PASSWORD is not set (optional)
+2026-07-21 12:11:39 INFO [regulation_monitor.__main__] Configuration validation passed
+2026-07-21 12:11:39 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 12:11:39 INFO [regulation_monitor.app.scheduler] AI Regulation Monitoring Scheduler
+2026-07-21 12:11:39 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 12:11:39 INFO [regulation_monitor.app.scheduler] Configured frequencies: daily, weekly
+2026-07-21 12:12:41 WARNING [regulation_monitor.__main__] SMTP_PASSWORD is not set (optional)
+2026-07-21 12:12:41 INFO [regulation_monitor.__main__] Configuration validation passed
+2026-07-21 12:12:41 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 12:12:41 INFO [regulation_monitor.app.scheduler] AI Regulation Monitoring Scheduler
+2026-07-21 12:12:41 INFO [regulation_monitor.app.scheduler] ============================================================
+2026-07-21 12:12:41 INFO [regulation_monitor.app.scheduler] Configured frequencies: daily, weekly

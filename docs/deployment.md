@@ -1,64 +1,93 @@
-# Deployment Guide
+# Deployment Guide — v1.1.5 Stable
 
-This guide covers Docker-based deployment of the AI Regulation Monitoring Platform for internal use.
+Docker-based deployment guide for the EU AI Regulation Monitor on internal networks.
+
+---
 
 ## Prerequisites
 
-- Docker
-- Docker Compose
+- Docker 20+
+- Docker Compose v2+
+- API keys for OpenAI and Firecrawl
 
-## Environment Setup
+---
 
-Copy the example environment file and fill in your credentials:
+## Quick deploy
 
 ```bash
 cp .env.example .env
+# Edit .env — set OPENAI_API_KEY, FIRECRAWL_API_KEY
+
+docker compose build
+docker compose up -d
 ```
 
-Required variables:
+Dashboard: http://localhost:8080
 
-| Variable | Description |
-|----------|-------------|
-| `OPENAI_API_KEY` | OpenAI API key for regulation analysis |
-| `FIRECRAWL_API_KEY` | Firecrawl API key for web crawling |
-| `SMTP_PASSWORD` | SMTP password for notification and report emails |
+---
 
-Do not commit `.env` to version control.
+## Services
 
-Persistent directories:
+```mermaid
+flowchart LR
+    subgraph Compose["docker-compose.yml"]
+        Dashboard[dashboard :8080]
+        Scheduler[scheduler]
+    end
 
-| Path | Purpose |
-|------|---------|
-| `data/` | SQLite database, snapshots, reports, run history |
-| `config/` | Monitor, notification, and report configuration |
-| `logs/` | Application log output |
+    subgraph Volumes["Host volumes"]
+        Data[data/]
+        Config[config/]
+        Logs[logs/]
+    end
 
-## Logging
-
-Application logs are written to the `logs/` directory (mounted as a volume in Docker):
-
-| File | Level | Contents |
-|------|-------|----------|
-| `logs/app.log` | INFO and above | General operational messages (pipeline runs, scheduler jobs, report generation) |
-| `logs/error.log` | ERROR | Failures and exceptions |
-
-View logs on the host:
-
-```bash
-tail -f logs/app.log
-tail -f logs/error.log
+    Dashboard --> Data
+    Dashboard --> Config
+    Dashboard --> Logs
+    Scheduler --> Data
+    Scheduler --> Config
+    Scheduler --> Logs
 ```
 
-Or via Docker Compose:
+| Service | Container | Command | Port |
+|---------|-----------|---------|------|
+| `dashboard` | `ai-regulation-dashboard` | `uvicorn app.web.app:app --host 0.0.0.0 --port 8080` | 8080 |
+| `scheduler` | `ai-regulation-scheduler` | `python main.py scheduler` | — |
 
-```bash
-docker compose logs -f dashboard
-docker compose logs -f scheduler
-```
+Both services share the same image built from the project `Dockerfile`.
 
-## Health Check
+---
 
-The dashboard exposes a health endpoint for operational monitoring:
+## Environment variables
+
+Copy `.env.example` to `.env`:
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `OPENAI_API_KEY` | Yes | OpenAI API key |
+| `FIRECRAWL_API_KEY` | Yes | Firecrawl crawling API key |
+| `SMTP_PASSWORD` | No | Email delivery for reports |
+| `APP_ENV` | No | Set `development` for dev test site routes |
+
+See [configuration.md](configuration.md) for full SMTP and email settings.
+
+---
+
+## Persistent volumes
+
+| Host path | Container path | Contents |
+|-----------|----------------|----------|
+| `./data` | `/app/data` | `storage.db`, snapshots, reports, run history |
+| `./config` | `/app/config` | Seed monitors, notification, report config |
+| `./logs` | `/app/logs` | Application logs |
+
+**Important (v1.1.5):** Monitor runtime state lives in `data/storage.db`. Back up `data/` before upgrades.
+
+---
+
+## Health check
+
+The dashboard service includes a Docker health check against `/health`:
 
 ```bash
 curl http://localhost:8080/health
@@ -69,108 +98,99 @@ Example response:
 ```json
 {
   "status": "ok",
-  "timestamp": "2026-07-16T16:30:00",
+  "timestamp": "2026-07-21T12:00:00",
   "database": "ok",
   "scheduler": "ok"
 }
 ```
 
-| Field | Description |
-|-------|-------------|
-| `status` | Overall health (`ok` or `error`) |
-| `timestamp` | Time of the health check |
-| `database` | SQLite connectivity (`ok` or `error`) |
-| `scheduler` | Last known scheduler state from `data/scheduler_status.json` (`ok`, `error`, `running`, or `unknown`) |
+---
 
-The dashboard Docker service includes a health check that polls `/health` every 30 seconds. Check container health:
+## Logging
 
-```bash
-docker compose ps
-```
-
-Scheduler job status is written to `data/scheduler_status.json` when jobs start, succeed, or fail.
-
-## Troubleshooting
-
-**Dashboard unhealthy**
-
-- Confirm the container is running: `docker compose ps`
-- Check `curl http://localhost:8080/health` for `database` status
-- Inspect `logs/error.log` for connection or startup errors
-
-**Scheduler shows `unknown` in health check**
-
-- The scheduler runs in a separate container; status appears after the first job runs
-- Verify the scheduler container is up: `docker compose logs scheduler`
-- Inspect `data/scheduler_status.json` for job history
-
-**No log files**
-
-- Ensure the `logs/` directory exists and is writable
-- Confirm volume mounts in `docker-compose.yml` include `./logs:/app/logs`
-
-**Database errors**
-
-- Verify `data/storage.db` is accessible and not locked by another process
-- Check disk space on the host volume mount
-
-## Build
-
-```bash
-docker compose build
-```
-
-Or build the image directly:
-
-```bash
-docker build -t ai-regulation-monitor .
-```
-
-## Start
-
-```bash
-docker compose up
-```
-
-Run in the background:
-
-```bash
-docker compose up -d
-```
-
-Services:
-
-| Service | Container | URL / Purpose |
-|---------|-----------|---------------|
-| `dashboard` | `ai-regulation-dashboard` | http://localhost:8080 |
-| `scheduler` | `ai-regulation-scheduler` | APScheduler jobs (monitors + weekly reports) |
-
-## Stop
-
-```bash
-docker compose down
-```
-
-## View Logs
-
-All services:
-
-```bash
-docker compose logs -f
-```
-
-Single service:
+| File | Level | Contents |
+|------|-------|----------|
+| `logs/app.log` | INFO+ | Pipeline runs, scheduler, monitor execution |
+| `logs/error.log` | ERROR | Exceptions and failures |
 
 ```bash
 docker compose logs -f dashboard
 docker compose logs -f scheduler
+tail -f logs/app.log
 ```
 
-## Manual CLI (outside Docker)
+Startup logs include runtime paths and monitor repository state (`SQLiteMonitorRepository`, enabled count).
+
+---
+
+## Scheduler jobs
+
+When the scheduler container is running:
+
+| Job | Default schedule |
+|-----|------------------|
+| Daily monitors | 08:00 daily |
+| Weekly monitors | Monday 08:00 |
+| Weekly report | Monday 08:30 (configurable in `config/report.json`) |
+
+Manual one-shot run inside container:
 
 ```bash
-python main.py run-once
-python main.py scheduler
-python main.py status
-python main.py generate-report
+docker compose exec scheduler python main.py run-once
 ```
+
+---
+
+## Upgrade procedure (v1.1.5)
+
+1. Back up `data/` directory.
+2. Pull latest code or image.
+3. Rebuild and restart:
+
+```bash
+docker compose down
+docker compose build --no-cache
+docker compose up -d
+```
+
+4. Verify health and monitor count on `/monitors`.
+5. Run a test manual monitor run and open Run Details.
+
+No manual SQL migration is required — schema updates apply on application startup.
+
+---
+
+## Troubleshooting
+
+| Symptom | Likely cause | Action |
+|---------|--------------|--------|
+| Dashboard 503 on `/health` | DB not writable | Check `data/` permissions |
+| Enabled monitors: 0 | Empty or wrong DB | Confirm volume mount; check startup logs |
+| Manual run fails | Missing API keys | Verify `.env` in container |
+| Scheduler not running | Container stopped | `docker compose ps`; restart scheduler |
+| Stale monitor list | Browser cache | Hard refresh; confirm SQLite has rows |
+
+Inspect SQLite inside container:
+
+```bash
+docker compose exec dashboard sqlite3 /app/data/storage.db "SELECT COUNT(*) FROM monitors;"
+```
+
+---
+
+## Production recommendations
+
+- Run behind a reverse proxy with TLS for non-localhost access.
+- Restrict port 8080 to internal network/VPN.
+- Schedule regular `data/` backups including `storage.db`.
+- Monitor `logs/error.log` and `/health` with your ops tooling.
+- Do not expose the development change-test routes in production (`APP_ENV` ≠ development).
+
+---
+
+## Related documents
+
+- [Architecture.md](Architecture.md)
+- [Database.md](Database.md)
+- [DeveloperGuide.md](DeveloperGuide.md)
+- [configuration.md](configuration.md)

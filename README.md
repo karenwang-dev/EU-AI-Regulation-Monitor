@@ -1,48 +1,67 @@
-# AI Regulation Monitoring Platform
+# EU AI Regulation Monitor
 
-An internal platform for monitoring EU and related regulation sources, detecting website changes, analyzing compliance impact with AI, and producing structured reports for Smart TV, DVB, CI+, HbbTV, and connected device teams.
+**Smart Monitoring & Compliance Analysis Platform**
+
+An internal platform for monitoring European regulations relevant to Smart TV products. It automatically detects website updates, performs AI-assisted impact analysis, tracks historical changes, and provides compliance insights through an interactive web dashboard.
+
+**Current version:** v1.1.5 Stable (see [`VERSION`](VERSION))
+
+---
 
 ## Features
 
-- **Multi-source monitoring** — track official regulation websites with configurable daily/weekly schedules
-- **Change detection** — snapshot comparison and diff generation for page content updates
-- **AI impact analysis** — OpenAI-powered assessment of risk level, affected modules, and recommended actions
-- **Knowledge base** — searchable regulation items with relationships, statistics, and timelines
-- **Compliance insights** — dashboard views grouped by impact, category, and product module
-- **Weekly reports** — AI-generated executive summaries with optional email delivery
-- **Web dashboard** — FastAPI/Jinja2 UI for monitors, changes, knowledge, reports, and insights
-- **Operational monitoring** — centralized logging, health checks, and configuration validation
-- **Docker deployment** — containerized dashboard and scheduler services
+- **Multi-source monitoring** — configurable daily/weekly schedules per regulation source
+- **Multi-page website crawling** — homepage plus discovered child pages with per-page change detection
+- **AI-assisted impact analysis** — OpenAI-powered risk and module impact assessment
+- **Snapshot management** — content hashing and markdown storage under `data/raw/`
+- **Change detection** — diff engine with unified change views
+- **Run history** — persistent run records in SQLite with page-level results
+- **Run Details** — drill-down page for each manual or linked historical run
+- **Dashboard** — overview, recent activity, and risk cards
+- **Manual monitoring** — Run button per monitor in Monitor Management
+- **Scheduled monitoring** — APScheduler daily/weekly jobs via CLI or Docker scheduler service
+- **Report generation** — weekly AI executive summaries with optional email delivery
+- **REST API** — monitors, runs, changes, knowledge, reports, search
+- **SQLite persistence** — unified `data/storage.db` for monitors, snapshots, diffs, knowledge, and runs
+- **Category management** — extensible monitor categories with normalization and suggestions
+- **Docker deployment** — dashboard and scheduler containers
 
-## Architecture Summary
+---
 
+## Architecture
+
+```mermaid
+flowchart LR
+    Sources[Regulation Websites] --> Crawler[Firecrawl]
+    Crawler --> Pipeline[Monitoring Pipeline]
+    Pipeline --> SQLite[(SQLite)]
+    Pipeline --> AI[OpenAI]
+    UI[Web Dashboard] --> API[FastAPI]
+    API --> SQLite
+    Scheduler[APScheduler] --> Pipeline
 ```
-Monitor Sources → Crawler → Diff Engine → AI Analyzer → Knowledge Base
-                              ↓                              ↓
-                         SQLite Storage  ←  Dashboard (FastAPI)
-                              ↓
-                    Report Generator → Weekly Reports / Email
-```
 
-Scheduler (APScheduler) triggers pipeline runs and weekly report jobs. See [docs/architecture.md](docs/architecture.md) for the full system diagram.
+See [docs/Architecture.md](docs/Architecture.md) for the full v1.1.5 diagram and component reference.
 
-## Tech Stack
+---
 
-- Python 3.11
-- FastAPI + Uvicorn + Jinja2
-- APScheduler
-- Firecrawl (web crawling)
-- OpenAI (analysis and reports)
-- SQLite (persistence)
+## Tech stack
 
-## Installation
+| Layer | Technology |
+|-------|------------|
+| Backend | FastAPI, Uvicorn |
+| Frontend | Jinja2, Bootstrap 5 |
+| Database | SQLite |
+| Crawler | Firecrawl |
+| AI | OpenAI Responses API |
+| Scheduler | APScheduler |
+| Runtime | Python 3.11 |
 
-### Prerequisites
+---
 
-- Python 3.11+
-- API keys for OpenAI and Firecrawl
+## Quick start
 
-### Local Setup
+### Local development
 
 ```bash
 git clone <repository-url>
@@ -54,84 +73,14 @@ python -m venv .venv
 
 pip install -r requirements.txt
 cp .env.example .env
-```
+# Edit .env with OPENAI_API_KEY and FIRECRAWL_API_KEY
 
-Edit `.env` with your credentials. See [docs/configuration.md](docs/configuration.md) for details.
-
-## Configuration
-
-| Variable | Required | Purpose |
-|----------|----------|---------|
-| `OPENAI_API_KEY` | Yes | Regulation analysis and report generation |
-| `FIRECRAWL_API_KEY` | Yes | Web crawling |
-| `SMTP_PASSWORD` | No | Email notifications and report delivery |
-
-Monitor sources: `config/monitors.json`  
-Notifications: `config/notification.json`  
-Reports: `config/report.json`
-
-Demo sample files (examples only): `data/demo/`
-
-## Running the Dashboard
-
-```bash
-uvicorn app.web.app:app --host 0.0.0.0 --port 8080
+uvicorn app.web.app:app --reload --host 0.0.0.0 --port 8080
 ```
 
 Open http://localhost:8080
 
-Pages: Dashboard, Monitors, Changes, Knowledge Base, Insights, Reports, Manage Monitors, About
-
-Health check: `GET http://localhost:8080/health`
-
-## Running the Scheduler
-
-```bash
-python main.py scheduler
-```
-
-Runs daily monitors (08:00), weekly monitors (Monday 08:00), and weekly report generation (Monday 08:30, configurable).
-
-### Other CLI Commands
-
-```bash
-python main.py run-once          # Run all enabled monitors once
-python main.py status            # Show monitor and run history status
-python main.py generate-report   # Generate a weekly report manually
-```
-
-## Report Generation
-
-Reports aggregate regulation changes over a configurable period, generate an AI executive summary, and save JSON to `data/reports/`.
-
-- **Manual:** `python main.py generate-report` or use the Reports page in the dashboard
-- **Scheduled:** enabled via `config/report.json` when the scheduler is running
-- **Email:** optional delivery when SMTP is configured from the Reports page or legacy `config/` files
-
-See [docs/user-guide.md](docs/user-guide.md) for step-by-step usage and [docs/configuration.md](docs/configuration.md#email-settings-dashboard) for Gmail, Hisense Coremail, Outlook, and custom SMTP examples.
-
-## Testing
-
-```bash
-python -m pytest
-```
-
-Run a specific test file:
-
-```bash
-python -m pytest tests/test_about_page.py -v
-```
-
-## Documentation
-
-| Document | Description |
-|----------|-------------|
-| [docs/architecture.md](docs/architecture.md) | System design and Mermaid diagram |
-| [docs/user-guide.md](docs/user-guide.md) | Day-to-day usage |
-| [docs/configuration.md](docs/configuration.md) | Environment variables |
-| [docs/deployment.md](docs/deployment.md) | Docker deployment |
-
-## Docker Deployment
+### Docker
 
 ```bash
 cp .env.example .env
@@ -139,33 +88,95 @@ docker compose build
 docker compose up -d
 ```
 
-Dashboard: http://localhost:8080  
-See [docs/deployment.md](docs/deployment.md) for logging, health checks, and troubleshooting.
+See [docs/Deployment.md](docs/Deployment.md).
 
-## Project Structure
+---
+
+## Configuration
+
+| Variable | Required | Purpose |
+|----------|----------|---------|
+| `OPENAI_API_KEY` | Yes | Regulation analysis and reports |
+| `FIRECRAWL_API_KEY` | Yes | Web crawling |
+| `SMTP_PASSWORD` | No | Email notifications |
+
+Monitor seed file: `config/monitors.json` (imports new monitors into SQLite on first run)  
+Runtime monitor source of truth: `data/storage.db`
+
+Full reference: [docs/configuration.md](docs/configuration.md)
+
+---
+
+## CLI
+
+```bash
+python main.py run-once          # Run all enabled monitors once
+python main.py scheduler         # Start scheduled jobs
+python main.py status            # Monitor and run history status
+python main.py generate-report   # Generate weekly report
+```
+
+---
+
+## Testing
+
+```bash
+python -m pytest
+```
+
+**470 tests** passing at v1.1.5 Stable release.
+
+---
+
+## Documentation
+
+| Document | Description |
+|----------|-------------|
+| [docs/ReleaseNotes.md](docs/ReleaseNotes.md) | v1.1.5 Stable release summary |
+| [CHANGELOG.md](CHANGELOG.md) | Version history |
+| [docs/Architecture.md](docs/Architecture.md) | System design and diagrams |
+| [docs/API.md](docs/API.md) | REST API reference |
+| [docs/Database.md](docs/Database.md) | SQLite schema |
+| [docs/DeveloperGuide.md](docs/DeveloperGuide.md) | Local development |
+| [docs/Deployment.md](docs/Deployment.md) | Docker deployment |
+| [docs/Roadmap.md](docs/Roadmap.md) | v1.2.0 planned features |
+| [docs/user-guide.md](docs/user-guide.md) | Day-to-day operator guide |
+| [docs/configuration.md](docs/configuration.md) | Environment variables |
+
+---
+
+## Project structure
 
 ```
 app/
-  ai/           AI analysis and extraction
-  crawler/      Firecrawl integration
-  knowledge/    Knowledge base builder and search
-  pipeline.py   Monitoring pipeline orchestration
-  report/       Weekly report generation
-  scheduler.py  APScheduler jobs
-  storage/      SQLite persistence
-  web/          FastAPI dashboard
-config/         Monitor, notification, and report settings
-data/           Database, snapshots, reports, demo samples
-docs/           Architecture, user guide, deployment
-tests/          Unit and integration tests
+  monitors/       Repository, run store, execution, categories
+  web/            FastAPI dashboard and templates
+  pipeline.py     Monitoring orchestration
+  storage/        Snapshots, diffs, knowledge
+  scheduler.py    Scheduled jobs
+config/           Seed configuration
+data/             SQLite DB, raw snapshots, reports
+docs/             Architecture, API, deployment guides
+tests/            Pytest suite
+main.py           CLI entry point
 ```
+
+---
+
+## v1.1.5 Stable release summary
+
+This release delivers:
+
+1. **Multi-page monitoring** with per-page change tracking
+2. **SQLiteMonitorRepository** as the single monitor source of truth
+3. **Manual runs** from Monitor Management with Run Details pages
+4. **Category management** — custom categories with datalist suggestions
+5. **Monitor UI polish** — responsive table, dropdown actions, status badges
+
+Details: [docs/ReleaseNotes.md](docs/ReleaseNotes.md)
+
+---
 
 ## License
 
 Internal use only.
-
-## Release
-
-- **Current version:** see `VERSION` (1.0.0)
-- [Release notes v1.0](docs/release_notes_v1.0.md)
-- [Test report](docs/test_report.md)
