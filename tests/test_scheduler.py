@@ -11,7 +11,9 @@ from app.run_history import (
     load_run_history,
     save_run_history,
 )
-from app.scheduler import create_scheduler, execute_scheduled_run
+from apscheduler.triggers.cron import CronTrigger
+
+from app.scheduler import create_scheduler, execute_scheduled_run, start_scheduler
 
 
 class TestRunHistory(unittest.TestCase):
@@ -78,6 +80,74 @@ class TestScheduler(unittest.TestCase):
             },
         )
         self.assertEqual(len(scheduler.get_jobs()), 3)
+
+    def test_create_scheduler_job_triggers_unchanged(self):
+        scheduler = create_scheduler()
+
+        daily_trigger = scheduler.get_job("daily_monitors").trigger
+        weekly_trigger = scheduler.get_job("weekly_monitors").trigger
+        report_trigger = scheduler.get_job("weekly_report_generation").trigger
+
+        self.assertEqual(str(daily_trigger), str(CronTrigger(hour=8, minute=0)))
+        self.assertEqual(
+            str(weekly_trigger),
+            str(CronTrigger(day_of_week="mon", hour=8, minute=0)),
+        )
+        self.assertIn("mon", str(report_trigger).lower())
+        self.assertIn("30", str(report_trigger))
+
+    @patch("app.scheduler.logger")
+    @patch("app.scheduler.create_scheduler")
+    @patch("app.scheduler.load_monitors")
+    def test_start_scheduler_logs_triggers_without_next_run_time(
+        self,
+        mock_load_monitors,
+        mock_create_scheduler,
+        mock_logger,
+    ):
+        mock_load_monitors.return_value = [
+            {"frequency": "daily", "enabled": True},
+            {"frequency": "weekly", "enabled": True},
+        ]
+
+        pending_job = MagicMock(spec=["id", "trigger"])
+        pending_job.id = "daily_monitors"
+        pending_job.trigger = CronTrigger(hour=8, minute=0)
+
+        mock_scheduler = MagicMock()
+        mock_scheduler.get_jobs.return_value = [pending_job]
+        mock_create_scheduler.return_value = mock_scheduler
+
+        start_scheduler()
+
+        mock_scheduler.start.assert_called_once()
+        mock_logger.info.assert_any_call(
+            "- %s: configured trigger=%s",
+            "daily_monitors",
+            pending_job.trigger,
+        )
+
+    @patch("app.scheduler.create_scheduler")
+    @patch("app.scheduler.load_monitors")
+    def test_start_scheduler_does_not_access_next_run_time(
+        self,
+        mock_load_monitors,
+        mock_create_scheduler,
+    ):
+        mock_load_monitors.return_value = [{"frequency": "daily", "enabled": True}]
+
+        pending_job = MagicMock()
+        pending_job.id = "weekly_monitors"
+        pending_job.trigger = CronTrigger(day_of_week="mon", hour=8, minute=0)
+        del pending_job.next_run_time
+
+        mock_scheduler = MagicMock()
+        mock_scheduler.get_jobs.return_value = [pending_job]
+        mock_create_scheduler.return_value = mock_scheduler
+
+        start_scheduler()
+
+        mock_scheduler.start.assert_called_once()
 
 
 class TestCliCommands(unittest.TestCase):

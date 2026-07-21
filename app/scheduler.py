@@ -104,7 +104,7 @@ def start_scheduler() -> None:
     )
 
     for job in scheduler.get_jobs():
-        logger.info("- %s: next run at %s", job.id, job.next_run_time)
+        logger.info("- %s: configured trigger=%s", job.id, job.trigger)
 
     logger.info("Press Ctrl+C to stop.")
     logger.info("=" * 60)
