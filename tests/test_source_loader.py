@@ -1,8 +1,10 @@
+import gc
 import json
 import tempfile
 import unittest
 from pathlib import Path
 
+from app.monitors.repository import MonitorRepository, reset_monitor_repository
 from app.source.source_loader import (
     MonitorConfigError,
     load_monitors,
@@ -14,8 +16,11 @@ from app.source.source_loader import (
 
 class TestSourceLoader(unittest.TestCase):
 
-    def _valid_monitor(self) -> dict:
-        return {
+    def tearDown(self):
+        reset_monitor_repository()
+        gc.collect()
+
+    def _valid_monitor(self) -> dict:        return {
             "id": "eu_ai_act",
             "name": "EU AI Act",
             "url": "https://example.com/ai-act",
@@ -56,25 +61,30 @@ class TestSourceLoader(unittest.TestCase):
         self.assertIn("frequency must be one of", str(error.exception))
 
     def test_load_monitors_from_monitors_json(self):
-        with tempfile.TemporaryDirectory() as temp_dir:
+        with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as temp_dir:
             monitors_file = Path(temp_dir) / "monitors.json"
+            db_path = Path(temp_dir) / "storage.db"
             monitors_file.write_text(
                 json.dumps({"monitors": [self._valid_monitor()]}),
                 encoding="utf-8",
             )
 
-            monitors = load_monitors(
-                monitors_file=monitors_file,
-                sources_file=Path(temp_dir) / "missing-sources.json",
+            repository = MonitorRepository(
+                db_path=db_path,
+                seed_file=monitors_file,
             )
+            monitors = load_monitors(repository=repository)
+            reset_monitor_repository()
+            gc.collect()
 
             self.assertEqual(len(monitors), 1)
             self.assertEqual(monitors[0]["id"], "eu_ai_act")
             self.assertEqual(monitors[0]["keywords"], ["AI Act", "cybersecurity"])
 
     def test_load_monitors_falls_back_to_legacy_sources_json(self):
-        with tempfile.TemporaryDirectory() as temp_dir:
+        with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as temp_dir:
             sources_file = Path(temp_dir) / "sources.json"
+            db_path = Path(temp_dir) / "storage.db"
             sources_file.write_text(
                 json.dumps(
                     {
@@ -97,10 +107,14 @@ class TestSourceLoader(unittest.TestCase):
                 encoding="utf-8",
             )
 
-            monitors = load_monitors(
-                monitors_file=Path(temp_dir) / "missing-monitors.json",
+            repository = MonitorRepository(
+                db_path=db_path,
+                seed_file=Path(temp_dir) / "missing-monitors.json",
                 sources_file=sources_file,
             )
+            monitors = load_monitors(repository=repository)
+            reset_monitor_repository()
+            gc.collect()
 
             self.assertEqual(len(monitors), 1)
             self.assertEqual(monitors[0]["keywords"], ["EU Regulation", "Smart TV"])
@@ -172,17 +186,21 @@ class TestSourceLoader(unittest.TestCase):
         self.assertIn("max_pages must be > 0", str(error.exception))
 
     def test_load_monitors_applies_defaults_for_legacy_monitor(self):
-        with tempfile.TemporaryDirectory() as temp_dir:
+        with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as temp_dir:
             monitors_file = Path(temp_dir) / "monitors.json"
+            db_path = Path(temp_dir) / "storage.db"
             monitors_file.write_text(
                 json.dumps({"monitors": [self._valid_monitor()]}),
                 encoding="utf-8",
             )
 
-            monitors = load_monitors(
-                monitors_file=monitors_file,
-                sources_file=Path(temp_dir) / "missing-sources.json",
+            repository = MonitorRepository(
+                db_path=db_path,
+                seed_file=monitors_file,
             )
+            monitors = load_monitors(repository=repository)
+            reset_monitor_repository()
+            gc.collect()
 
             self.assertEqual(monitors[0]["crawl_mode"], "single")
             self.assertEqual(monitors[0]["max_depth"], 0)
@@ -194,33 +212,34 @@ class TestSourceLoader(unittest.TestCase):
         self.assertGreaterEqual(len(monitors), 6)
         self.assertTrue(all("keywords" in monitor for monitor in monitors))
         self.assertTrue(all("category" in monitor for monitor in monitors))
-        self.assertTrue(all(monitor["crawl_mode"] in {"single", "smart"} for monitor in monitors))
+        self.assertTrue(all(monitor["crawl_mode"] in {"single", "smart", "multi_page"} for monitor in monitors))
         self.assertTrue(all(isinstance(monitor["max_depth"], int) for monitor in monitors))
         self.assertTrue(all(isinstance(monitor["max_pages"], int) for monitor in monitors))
 
         eu_ai_act = next(monitor for monitor in monitors if monitor["id"] == "eu_ai_act")
         self.assertEqual(eu_ai_act["crawl_mode"], "smart")
-        self.assertEqual(eu_ai_act["max_depth"], 2)
+        self.assertEqual(eu_ai_act["max_depth"], 3)
         self.assertEqual(eu_ai_act["max_pages"], 10)
 
     def test_load_sources_is_alias_for_load_monitors(self):
-        with tempfile.TemporaryDirectory() as temp_dir:
+        with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as temp_dir:
             monitors_file = Path(temp_dir) / "monitors.json"
+            db_path = Path(temp_dir) / "storage.db"
             monitors_file.write_text(
                 json.dumps({"monitors": [self._valid_monitor()]}),
                 encoding="utf-8",
             )
 
-            self.assertEqual(
-                load_sources(
-                    monitors_file=monitors_file,
-                    sources_file=Path(temp_dir) / "missing-sources.json",
-                ),
-                load_monitors(
-                    monitors_file=monitors_file,
-                    sources_file=Path(temp_dir) / "missing-sources.json",
-                ),
+            repository = MonitorRepository(
+                db_path=db_path,
+                seed_file=monitors_file,
             )
+            self.assertEqual(
+                load_sources(repository=repository),
+                load_monitors(repository=repository),
+            )
+            reset_monitor_repository()
+            gc.collect()
 
 
 if __name__ == "__main__":

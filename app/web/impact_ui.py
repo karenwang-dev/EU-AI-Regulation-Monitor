@@ -15,6 +15,10 @@ IMPACT_UI = {
         "badge_class": "text-bg-success",
         "risk_class": "risk-low",
     },
+    "UNASSESSED": {
+        "badge_class": "text-bg-secondary",
+        "risk_class": "risk-neutral",
+    },
 }
 
 NEUTRAL_RISK_CLASS = "risk-neutral"

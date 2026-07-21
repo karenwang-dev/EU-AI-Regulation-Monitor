@@ -90,9 +90,27 @@ class TestCliCommands(unittest.TestCase):
             text=True,
         )
 
+    @patch("app.monitors.repository.log_monitor_repository_state")
+    @patch("main.load_monitors")
     @patch("main.run_pipeline")
     @patch("main.save_run_history")
-    def test_run_once_command(self, mock_save_history, mock_run_pipeline):
+    def test_run_once_command(
+        self,
+        mock_save_history,
+        mock_run_pipeline,
+        mock_load_monitors,
+        mock_log_monitor_state,
+    ):
+        mock_load_monitors.return_value = [
+            {
+                "id": "eu_ai_act",
+                "name": "EU AI Act",
+                "enabled": True,
+                "frequency": "daily",
+                "crawl_mode": "single",
+                "skip_ai_analysis": False,
+            }
+        ]
         mock_run_pipeline.return_value = [
             {
                 "name": "EU AI Act",

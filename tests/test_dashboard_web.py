@@ -538,7 +538,7 @@ class TestDashboardWeb(unittest.TestCase):
         self.assertIn(b"2 changed page(s)", content)
         self.assertIn(b"2 source URL(s)", content)
         self.assertIn(b"https://example.com/ec/ai-act", content)
-        self.assertIn(b"Discovered Page", content)
+        self.assertIn(b"Child page", content)
 
     @mock.patch("app.web.app.load_monitors", autospec=True)
     def test_monitors_page_shows_management_and_summary(

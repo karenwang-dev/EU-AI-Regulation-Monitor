@@ -5,7 +5,17 @@ IMPACT_ALIASES = {
     "MEDIUM": "MEDIUM",
     "LOW": "LOW",
     "NONE": "NONE",
+    "UNASSESSED": "UNASSESSED",
 }
+
+
+def format_impact_label(value) -> str:
+    normalized = normalize_impact(value)
+    if normalized == "UNASSESSED":
+        return "Unassessed"
+    if normalized == "UNKNOWN":
+        return "Unknown"
+    return normalized
 
 
 def normalize_impact(value) -> str:
@@ -41,7 +51,7 @@ def is_displayable_change(change: dict) -> bool:
 
 
 def count_changes_by_impact(changes: list[dict]) -> dict[str, int]:
-    counts = {"HIGH": 0, "MEDIUM": 0, "LOW": 0}
+    counts = {"HIGH": 0, "MEDIUM": 0, "LOW": 0, "UNASSESSED": 0}
     for change in changes:
         if not is_displayable_change(change):
             continue

@@ -1,15 +1,18 @@
-import json
 from pathlib import Path
-
 
 MONITORS_FILE = Path("config/monitors.json")
 SOURCES_FILE = Path("config/sources.json")
 
 ALLOWED_FREQUENCIES = {"daily", "weekly"}
-ALLOWED_CRAWL_MODES = {"single", "smart"}
+ALLOWED_CRAWL_MODES = {"single", "smart", "multi_page"}
 DEFAULT_CRAWL_MODE = "single"
 DEFAULT_MAX_DEPTH = 0
 DEFAULT_MAX_PAGES = 1
+OPTIONAL_LIST_FIELDS = (
+    "include_patterns",
+    "exclude_patterns",
+    "seed_paths",
+)
 
 REQUIRED_MONITOR_FIELDS = (
     "id",
@@ -88,6 +91,29 @@ def validate_monitor(monitor: dict, index: int | None = None) -> None:
             f"{label} '{monitor.get('id', '')}': max_pages must be > 0"
         )
 
+    for field in OPTIONAL_LIST_FIELDS:
+        if field not in monitor:
+            continue
+        value = monitor[field]
+        if not isinstance(value, list) or not all(
+            isinstance(item, str) and item.strip() for item in value
+        ):
+            raise MonitorConfigError(
+                f"{label} '{monitor.get('id', '')}': {field} must be a list of strings"
+            )
+
+    content_mode = monitor.get("content_normalization_mode", "raw")
+    if content_mode not in {"raw", "normalized"}:
+        raise MonitorConfigError(
+            f"{label} '{monitor.get('id', '')}': content_normalization_mode must be raw or normalized"
+        )
+
+    fetch_mode = monitor.get("fetch_mode")
+    if fetch_mode is not None and str(fetch_mode).strip().lower() not in {"firecrawl", "http"}:
+        raise MonitorConfigError(
+            f"{label} '{monitor.get('id', '')}': fetch_mode must be firecrawl or http"
+        )
+
 
 def normalize_legacy_source(source: dict) -> dict:
     return {
@@ -104,48 +130,48 @@ def normalize_legacy_source(source: dict) -> dict:
         "crawl_mode": source.get("crawl_mode", DEFAULT_CRAWL_MODE),
         "max_depth": source.get("max_depth", DEFAULT_MAX_DEPTH),
         "max_pages": source.get("max_pages", DEFAULT_MAX_PAGES),
+        "include_patterns": source.get("include_patterns", []),
+        "exclude_patterns": source.get("exclude_patterns", []),
+        "seed_paths": source.get("seed_paths", []),
+        "same_domain_only": source.get("same_domain_only", True),
+        "fetch_mode": source.get("fetch_mode"),
+        "skip_ai_analysis": source.get("skip_ai_analysis", False),
+        "content_normalization_mode": source.get(
+            "content_normalization_mode",
+            "raw",
+        ),
+        "content_cleaner_profile": source.get("content_cleaner_profile"),
+        "description": source.get("description", ""),
     }
 
 
-def _load_json(path: Path) -> dict:
-    with open(path, "r", encoding="utf-8") as file:
-        return json.load(file)
-
-
-def _validate_monitors(monitors: list[dict]) -> list[dict]:
-    validated = []
-    for index, monitor in enumerate(monitors):
-        normalized = normalize_legacy_source(monitor)
-        validate_monitor(normalized, index=index)
-        validated.append(normalized)
-    return validated
-
-
 def load_monitors(
-    monitors_file: Path = MONITORS_FILE,
-    sources_file: Path = SOURCES_FILE,
+    repository=None,
+    monitors_file: Path | None = None,
+    sources_file: Path | None = None,
 ) -> list[dict]:
-    if monitors_file.exists():
-        data = _load_json(monitors_file)
-        monitors = data.get("monitors", [])
-        return _validate_monitors(monitors)
+    from app.monitors.repository import get_monitor_repository
 
-    if sources_file.exists():
-        data = _load_json(sources_file)
-        legacy_sources = data.get("sources", [])
-        return _validate_monitors(legacy_sources)
+    if repository is not None:
+        return repository.list_all()
 
-    raise FileNotFoundError(
-        f"No monitor configuration found. Expected {monitors_file} "
-        f"or legacy {sources_file}."
-    )
+    if monitors_file is not None or sources_file is not None:
+        repo = get_monitor_repository(
+            seed_file=monitors_file,
+            sources_file=sources_file,
+        )
+        return repo.list_all()
+
+    return get_monitor_repository().list_all()
 
 
 def load_sources(
-    monitors_file: Path = MONITORS_FILE,
-    sources_file: Path = SOURCES_FILE,
+    repository=None,
+    monitors_file: Path | None = None,
+    sources_file: Path | None = None,
 ) -> list[dict]:
     return load_monitors(
+        repository=repository,
         monitors_file=monitors_file,
         sources_file=sources_file,
     )

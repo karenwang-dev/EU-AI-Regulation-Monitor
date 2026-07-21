@@ -1,17 +1,12 @@
-import json
 import re
 from pathlib import Path
 
 from fastapi import APIRouter, FastAPI, HTTPException
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
-from app.source.source_loader import (
-    ALLOWED_FREQUENCIES,
-    MONITORS_FILE,
-    MonitorConfigError,
-    normalize_legacy_source,
-    validate_monitor,
-)
+from app.monitors.execution import MonitorAlreadyRunningError, MonitorExecutionService
+from app.monitors.repository import MonitorRepository, get_monitor_repository
+from app.source.source_loader import MonitorConfigError, normalize_legacy_source
 
 
 def generate_monitor_id(name: str, existing_ids: set[str]) -> str:
@@ -53,57 +48,29 @@ class MonitorUpdateRequest(BaseModel):
 
 
 class MonitorStore:
-
-    def __init__(self, monitors_file: Path = MONITORS_FILE):
-        self.monitors_file = Path(monitors_file)
-
-    def _read_monitors(self) -> list[dict]:
-        if not self.monitors_file.exists():
-            return []
-
-        with open(self.monitors_file, "r", encoding="utf-8") as file:
-            data = json.load(file)
-
-        return data.get("monitors", [])
-
-    def _write_monitors(self, monitors: list[dict]) -> None:
-        normalized_monitors = []
-        for index, monitor in enumerate(monitors):
-            normalized = normalize_legacy_source(monitor)
-            validate_monitor(normalized, index=index)
-            normalized_monitors.append(normalized)
-
-        self.monitors_file.parent.mkdir(parents=True, exist_ok=True)
-        with open(self.monitors_file, "w", encoding="utf-8") as file:
-            json.dump(
-                {"monitors": normalized_monitors},
-                file,
-                indent=2,
-                ensure_ascii=False,
-            )
-            file.write("\n")
+    def __init__(self, repository: MonitorRepository | None = None):
+        self.repository = repository or get_monitor_repository()
 
     def list_monitors(self) -> list[dict]:
-        return [
-            normalize_legacy_source(monitor)
-            for monitor in self._read_monitors()
-        ]
+        return self.repository.list_all()
 
     def get_monitor(self, monitor_id: str) -> dict | None:
-        for monitor in self.list_monitors():
-            if monitor["id"] == monitor_id:
-                return monitor
-        return None
+        return self.repository.get_by_id(monitor_id)
 
     def create_monitor(self, payload: MonitorCreateRequest) -> dict:
-        monitors = self._read_monitors()
-        existing_ids = {monitor["id"] for monitor in monitors}
+        existing_ids = {
+            monitor["id"] for monitor in self.repository.list_all()
+        }
 
         monitor = {
             "id": generate_monitor_id(payload.name, existing_ids),
             "name": payload.name.strip(),
             "url": payload.url.strip(),
-            "keywords": [keyword.strip() for keyword in payload.keywords if keyword.strip()],
+            "keywords": [
+                keyword.strip()
+                for keyword in payload.keywords
+                if keyword.strip()
+            ],
             "category": payload.category.strip(),
             "frequency": payload.frequency.strip(),
             "enabled": payload.enabled,
@@ -113,84 +80,54 @@ class MonitorStore:
         }
 
         try:
-            validate_monitor(normalize_legacy_source(monitor))
+            return self.repository.create(monitor)
         except MonitorConfigError as error:
             raise ValueError(str(error)) from error
-
-        monitors.append(monitor)
-        self._write_monitors(monitors)
-        return normalize_legacy_source(monitor)
 
     def update_monitor(
         self,
         monitor_id: str,
         payload: MonitorUpdateRequest,
     ) -> dict:
-        monitors = self._read_monitors()
-        updated_monitor = None
+        updates = {
+            key: value
+            for key, value in payload.model_dump().items()
+            if value is not None
+        }
+        if "name" in updates:
+            updates["name"] = updates["name"].strip()
+        if "url" in updates:
+            updates["url"] = updates["url"].strip()
+        if "keywords" in updates:
+            updates["keywords"] = [
+                keyword.strip()
+                for keyword in updates["keywords"]
+                if keyword.strip()
+            ]
+        if "category" in updates:
+            updates["category"] = updates["category"].strip()
+        if "frequency" in updates:
+            updates["frequency"] = updates["frequency"].strip()
+        if "crawl_mode" in updates:
+            updates["crawl_mode"] = updates["crawl_mode"].strip()
 
-        for index, monitor in enumerate(monitors):
-            if monitor["id"] != monitor_id:
-                continue
-
-            if payload.name is not None:
-                monitor["name"] = payload.name.strip()
-            if payload.url is not None:
-                monitor["url"] = payload.url.strip()
-            if payload.keywords is not None:
-                monitor["keywords"] = [
-                    keyword.strip()
-                    for keyword in payload.keywords
-                    if keyword.strip()
-                ]
-            if payload.category is not None:
-                monitor["category"] = payload.category.strip()
-            if payload.frequency is not None:
-                monitor["frequency"] = payload.frequency.strip()
-            if payload.enabled is not None:
-                monitor["enabled"] = payload.enabled
-            if payload.crawl_mode is not None:
-                monitor["crawl_mode"] = payload.crawl_mode.strip()
-            if payload.max_depth is not None:
-                monitor["max_depth"] = payload.max_depth
-            if payload.max_pages is not None:
-                monitor["max_pages"] = payload.max_pages
-
-            try:
-                validate_monitor(normalize_legacy_source(monitor), index=index)
-            except MonitorConfigError as error:
-                raise ValueError(str(error)) from error
-
-            updated_monitor = normalize_legacy_source(monitor)
-            monitors[index] = monitor
-            break
-
-        if updated_monitor is None:
-            raise LookupError(f"Monitor not found: {monitor_id}")
-
-        self._write_monitors(monitors)
-        return updated_monitor
+        try:
+            return self.repository.update(monitor_id, updates)
+        except LookupError:
+            raise
+        except MonitorConfigError as error:
+            raise ValueError(str(error)) from error
 
     def delete_monitor(self, monitor_id: str) -> dict:
-        monitors = self._read_monitors()
-        remaining = []
-        deleted_monitor = None
-
-        for monitor in monitors:
-            if monitor["id"] == monitor_id:
-                deleted_monitor = monitor
-            else:
-                remaining.append(monitor)
-
-        if deleted_monitor is None:
-            raise LookupError(f"Monitor not found: {monitor_id}")
-
-        self._write_monitors(remaining)
-        return deleted_monitor
+        return self.repository.delete(monitor_id)
 
 
-def create_monitor_router(store: MonitorStore) -> APIRouter:
+def create_monitor_router(
+    store: MonitorStore,
+    execution_service: MonitorExecutionService | None = None,
+) -> APIRouter:
     router = APIRouter()
+    runner = execution_service or MonitorExecutionService(repository=store.repository)
 
     @router.get("/api/monitors")
     def get_monitors():
@@ -233,13 +170,37 @@ def create_monitor_router(store: MonitorStore) -> APIRouter:
             "monitor": deleted,
         }
 
+    @router.post("/api/monitors/{monitor_id}/run")
+    def run_monitor(monitor_id: str):
+        try:
+            return runner.run_monitor(monitor_id, triggered_by="manual_ui")
+        except MonitorAlreadyRunningError as error:
+            raise HTTPException(
+                status_code=409,
+                detail="Monitor is already running",
+            ) from error
+        except LookupError as error:
+            raise HTTPException(status_code=404, detail=str(error)) from error
+
     return router
 
 
 def register_monitor_routes(
     app: FastAPI,
     monitors_file: Path | None = None,
+    monitors_repository: MonitorRepository | None = None,
+    execution_service: MonitorExecutionService | None = None,
 ) -> MonitorStore:
-    store = MonitorStore(monitors_file=monitors_file or MONITORS_FILE)
-    app.include_router(create_monitor_router(store))
+    if monitors_repository is not None:
+        repository = monitors_repository
+    elif monitors_file is not None:
+        repository = get_monitor_repository(seed_file=monitors_file)
+    else:
+        repository = get_monitor_repository()
+
+    store = MonitorStore(repository=repository)
+    runner = execution_service or MonitorExecutionService(repository=repository)
+    app.include_router(create_monitor_router(store, execution_service=runner))
+    app.state.monitor_repository = repository
+    app.state.monitor_execution_service = runner
     return store

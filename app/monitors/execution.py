@@ -1,0 +1,196 @@
+from __future__ import annotations
+
+import threading
+from datetime import datetime
+from pathlib import Path
+
+from app.core.logging import get_logger
+from app.monitors.repository import SQLiteMonitorRepository, get_monitor_repository
+from app.monitors.run_store import (
+    build_page_results,
+    derive_change_status,
+    get_monitor_run_store,
+)
+from app.pipeline import MonitoringPipeline
+from app.run_history import save_run_history
+
+logger = get_logger(__name__)
+
+
+class MonitorAlreadyRunningError(Exception):
+    pass
+
+
+class MonitorExecutionService:
+    def __init__(
+        self,
+        repository: SQLiteMonitorRepository | None = None,
+        pipeline_factory=None,
+        history_file: Path | None = None,
+        run_store=None,
+    ):
+        self.repository = repository or get_monitor_repository()
+        self.pipeline_factory = pipeline_factory or MonitoringPipeline
+        self.history_file = history_file
+        self.run_store = run_store or get_monitor_run_store(
+            db_path=self.repository.db_path
+        )
+        self._running: set[str] = set()
+        self._lock = threading.Lock()
+
+    def is_running(self, monitor_id: str) -> bool:
+        with self._lock:
+            return monitor_id in self._running
+
+    def run_monitor(
+        self,
+        monitor_id: str,
+        *,
+        triggered_by: str = "manual_ui",
+    ) -> dict:
+        with self._lock:
+            if monitor_id in self._running:
+                raise MonitorAlreadyRunningError()
+            self._running.add(monitor_id)
+
+        started_at = datetime.now()
+        monitor = self.repository.get_by_id(monitor_id)
+        if monitor is None:
+            with self._lock:
+                self._running.discard(monitor_id)
+            raise LookupError(f"Monitor not found: {monitor_id}")
+
+        self.repository.save_execution_state(
+            monitor_id,
+            execution_status="running",
+            last_change_status="running",
+        )
+
+        logger.info(
+            "Manual monitor execution started: monitor_id=%s monitor_name=%s "
+            "triggered_by=%s",
+            monitor_id,
+            monitor.get("name"),
+            triggered_by,
+        )
+
+        error_message = None
+        pipeline_result: dict
+        try:
+            pipeline = self.pipeline_factory()
+            pipeline_result = pipeline.process_source(monitor)
+        except Exception as error:
+            error_message = str(error)
+            pipeline_result = {
+                "source_id": monitor_id,
+                "name": monitor.get("name", monitor_id),
+                "status": "error",
+                "snapshot_id": None,
+                "diff_id": None,
+                "analysis_id": None,
+                "message": error_message,
+            }
+
+        finished_at = datetime.now()
+        duration_ms = int((finished_at - started_at).total_seconds() * 1000)
+        summary = pipeline_result.get("page_change_summary") or {}
+        pages_checked = int(
+            summary.get("pages_checked", pipeline_result.get("pages_crawled", 0))
+        )
+        pages_changed = int(summary.get("pages_changed", 0))
+        pages_added = int(summary.get("pages_added", 0))
+        pages_removed = int(summary.get("pages_removed", 0))
+        homepage_changed = bool(summary.get("homepage_changed", False))
+        child_pages_changed = int(summary.get("child_pages_changed", 0))
+        url_results = pipeline_result.get("url_results") or []
+        pages_failed = sum(1 for item in url_results if item.get("status") == "error")
+        page_results = build_page_results(url_results)
+
+        execution_failed = pipeline_result.get("status") == "error" or bool(error_message)
+        execution_status = "failed" if execution_failed else "success"
+        change_status = derive_change_status(
+            pipeline_result,
+            pages_changed,
+            execution_failed,
+        )
+
+        run_history_id = self.run_store.save_run(
+            monitor_id=monitor_id,
+            monitor_name=monitor.get("name", monitor_id),
+            triggered_by=triggered_by,
+            execution_status=execution_status,
+            change_status=change_status,
+            started_at=started_at.isoformat(),
+            finished_at=finished_at.isoformat(),
+            duration_ms=duration_ms,
+            pages_checked=pages_checked,
+            pages_changed=pages_changed,
+            homepage_changed=homepage_changed,
+            child_pages_changed=child_pages_changed,
+            pages_added=pages_added,
+            pages_removed=pages_removed,
+            pages_failed=pages_failed,
+            snapshot_id=pipeline_result.get("snapshot_id"),
+            diff_id=pipeline_result.get("diff_id"),
+            error=error_message,
+            page_results=page_results,
+        )
+
+        history_entry = save_run_history(
+            [pipeline_result],
+            history_file=self.history_file,
+            run_ids=[run_history_id],
+        )
+
+        self.repository.save_execution_state(
+            monitor_id,
+            execution_status=execution_status,
+            last_run_at=finished_at.isoformat(),
+            last_change_status=change_status,
+            last_pages_changed=pages_changed,
+            last_pages_checked=pages_checked,
+            last_snapshot_id=pipeline_result.get("snapshot_id"),
+            last_diff_id=pipeline_result.get("diff_id"),
+            last_error=error_message,
+            last_run_history_id=str(run_history_id),
+        )
+
+        discovered_urls = [item.get("url") for item in url_results if item.get("url")]
+
+        logger.info(
+            "Manual monitor execution finished: monitor_id=%s monitor_name=%s "
+            "triggered_by=%s discovered_urls=%s pages_checked=%s pages_changed=%s "
+            "duration_ms=%s execution_status=%s change_status=%s run_history_id=%s",
+            monitor_id,
+            monitor.get("name"),
+            triggered_by,
+            discovered_urls,
+            pages_checked,
+            pages_changed,
+            duration_ms,
+            execution_status,
+            change_status,
+            run_history_id,
+        )
+
+        with self._lock:
+            self._running.discard(monitor_id)
+
+        return {
+            "monitor_id": monitor_id,
+            "status": change_status,
+            "change_status": change_status,
+            "execution_status": execution_status,
+            "pages_checked": pages_checked,
+            "pages_changed": pages_changed,
+            "homepage_changed": homepage_changed,
+            "child_pages_changed": child_pages_changed,
+            "snapshot_id": pipeline_result.get("snapshot_id"),
+            "diff_id": pipeline_result.get("diff_id"),
+            "started_at": started_at.isoformat(),
+            "finished_at": finished_at.isoformat(),
+            "error": error_message,
+            "run_history_id": run_history_id,
+            "duration_ms": duration_ms,
+            "run_history_summary_id": history_entry.get("run_history_id"),
+        }

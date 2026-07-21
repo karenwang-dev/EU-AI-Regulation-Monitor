@@ -31,23 +31,61 @@ def _log_pipeline_summary(results: list[dict]) -> None:
     logger.info("=" * 60)
 
     for result in results:
+        summary = result.get("page_change_summary") or {}
         logger.info(
-            "- %s: %s (snapshot=%s, diff=%s, analysis=%s)",
+            "- %s: %s (snapshot=%s, diff=%s, analysis=%s, "
+            "pages_changed=%s, homepage_changed=%s, child_pages_changed=%s)",
             result["name"],
             result["status"],
-            result["snapshot_id"],
+            result.get("snapshot_id"),
             result.get("diff_id"),
             result.get("analysis_id"),
+            summary.get("pages_changed", result.get("pages_changed", 0)),
+            summary.get("homepage_changed", result.get("homepage_changed", False)),
+            summary.get(
+                "child_pages_changed",
+                result.get("child_pages_changed", 0),
+            ),
         )
+        for url_result in result.get("url_results", []):
+            logger.info(
+                "  · %s status=%s page_changed=%s diff_id=%s "
+                "previous_snapshot_id=%s snapshot_id=%s",
+                url_result.get("url"),
+                url_result.get("status"),
+                url_result.get("page_changed"),
+                url_result.get("diff_id"),
+                url_result.get("previous_snapshot_id"),
+                url_result.get("snapshot_id"),
+            )
 
     logger.info("=" * 60)
 
 
 def run_once() -> int:
+    from app.core.paths import get_runtime_paths, log_runtime_paths
+    from app.monitors.repository import log_monitor_repository_state
+
     logger.info("=" * 60)
     logger.info("AI Regulation Monitoring Pipeline")
     logger.info("Running once for all enabled monitors")
     logger.info("=" * 60)
+    log_runtime_paths(prefix="run-once")
+    log_monitor_repository_state(prefix="run-once")
+
+    monitors = load_monitors()
+    enabled_monitors = [
+        monitor for monitor in monitors if monitor.get("enabled", True)
+    ]
+    logger.info("Enabled monitors: %s", len(enabled_monitors))
+    for monitor in enabled_monitors:
+        logger.info(
+            "- %s (%s) crawl_mode=%s skip_ai_analysis=%s",
+            monitor["name"],
+            monitor["id"],
+            monitor.get("crawl_mode"),
+            monitor.get("skip_ai_analysis", False),
+        )
 
     results = run_pipeline()
     history_entry = save_run_history(results)

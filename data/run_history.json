@@ -40,5 +40,287 @@
     "changed_count": 0,
     "analyzed_count": 0,
     "failed_count": 0
+  },
+  {
+    "timestamp": "2026-07-20T17:22:17.903133",
+    "total_monitors": 1,
+    "changed_count": 0,
+    "analyzed_count": 0,
+    "failed_count": 0
+  },
+  {
+    "timestamp": "2026-07-20T18:08:13.578147",
+    "total_monitors": 1,
+    "changed_count": 0,
+    "analyzed_count": 0,
+    "failed_count": 0
+  },
+  {
+    "timestamp": "2026-07-20T18:09:32.648042",
+    "total_monitors": 1,
+    "changed_count": 0,
+    "analyzed_count": 0,
+    "failed_count": 0
+  },
+  {
+    "timestamp": "2026-07-20T18:09:59.602880",
+    "total_monitors": 1,
+    "changed_count": 0,
+    "analyzed_count": 0,
+    "failed_count": 0
+  },
+  {
+    "timestamp": "2026-07-20T18:10:59.155900",
+    "total_monitors": 1,
+    "changed_count": 0,
+    "analyzed_count": 0,
+    "failed_count": 0
+  },
+  {
+    "timestamp": "2026-07-20T18:11:13.152757",
+    "total_monitors": 1,
+    "changed_count": 0,
+    "analyzed_count": 0,
+    "failed_count": 0
+  },
+  {
+    "timestamp": "2026-07-20T18:12:12.632718",
+    "total_monitors": 1,
+    "changed_count": 0,
+    "analyzed_count": 0,
+    "failed_count": 0
+  },
+  {
+    "timestamp": "2026-07-20T18:13:19.742562",
+    "total_monitors": 1,
+    "changed_count": 0,
+    "analyzed_count": 0,
+    "failed_count": 0
+  },
+  {
+    "timestamp": "2026-07-21T08:55:47.646247",
+    "total_monitors": 1,
+    "changed_count": 0,
+    "analyzed_count": 0,
+    "failed_count": 0
+  },
+  {
+    "timestamp": "2026-07-21T08:56:24.943720",
+    "total_monitors": 1,
+    "changed_count": 0,
+    "analyzed_count": 0,
+    "failed_count": 0
+  },
+  {
+    "timestamp": "2026-07-21T08:57:10.826014",
+    "total_monitors": 1,
+    "changed_count": 0,
+    "analyzed_count": 0,
+    "failed_count": 0
+  },
+  {
+    "timestamp": "2026-07-21T09:03:42.391141",
+    "total_monitors": 1,
+    "changed_count": 0,
+    "analyzed_count": 0,
+    "failed_count": 0
+  },
+  {
+    "timestamp": "2026-07-21T09:07:43.614700",
+    "total_monitors": 1,
+    "changed_count": 0,
+    "analyzed_count": 0,
+    "failed_count": 0
+  },
+  {
+    "timestamp": "2026-07-21T09:08:16.036885",
+    "total_monitors": 1,
+    "changed_count": 0,
+    "analyzed_count": 0,
+    "failed_count": 0
+  },
+  {
+    "timestamp": "2026-07-21T09:45:59.121475",
+    "total_monitors": 0,
+    "changed_count": 0,
+    "analyzed_count": 0,
+    "failed_count": 0
+  },
+  {
+    "timestamp": "2026-07-21T09:46:22.796509",
+    "total_monitors": 0,
+    "changed_count": 0,
+    "analyzed_count": 0,
+    "failed_count": 0
+  },
+  {
+    "timestamp": "2026-07-21T09:48:03.078647",
+    "total_monitors": 0,
+    "changed_count": 0,
+    "analyzed_count": 0,
+    "failed_count": 0
+  },
+  {
+    "timestamp": "2026-07-21T09:48:14.456572",
+    "total_monitors": 0,
+    "changed_count": 0,
+    "analyzed_count": 0,
+    "failed_count": 0
+  },
+  {
+    "timestamp": "2026-07-21T09:48:36.109918",
+    "total_monitors": 0,
+    "changed_count": 0,
+    "analyzed_count": 0,
+    "failed_count": 0
+  },
+  {
+    "timestamp": "2026-07-21T09:48:43.171442",
+    "total_monitors": 0,
+    "changed_count": 0,
+    "analyzed_count": 0,
+    "failed_count": 0
+  },
+  {
+    "timestamp": "2026-07-21T09:52:48.278537",
+    "total_monitors": 1,
+    "changed_count": 3,
+    "analyzed_count": 0,
+    "failed_count": 0
+  },
+  {
+    "timestamp": "2026-07-21T09:53:32.120237",
+    "total_monitors": 1,
+    "changed_count": 3,
+    "analyzed_count": 0,
+    "failed_count": 0
+  },
+  {
+    "timestamp": "2026-07-21T09:53:44.478537",
+    "total_monitors": 1,
+    "changed_count": 1,
+    "analyzed_count": 0,
+    "failed_count": 0
+  },
+  {
+    "timestamp": "2026-07-21T09:53:52.646957",
+    "total_monitors": 1,
+    "changed_count": 1,
+    "analyzed_count": 0,
+    "failed_count": 0
+  },
+  {
+    "timestamp": "2026-07-21T10:14:07.064625",
+    "total_monitors": 1,
+    "changed_count": 2,
+    "analyzed_count": 0,
+    "failed_count": 0
+  },
+  {
+    "timestamp": "2026-07-21T10:14:17.219140",
+    "total_monitors": 1,
+    "changed_count": 1,
+    "analyzed_count": 0,
+    "failed_count": 0
+  },
+  {
+    "timestamp": "2026-07-21T10:14:23.760860",
+    "total_monitors": 1,
+    "changed_count": 1,
+    "analyzed_count": 0,
+    "failed_count": 0
+  },
+  {
+    "timestamp": "2026-07-21T10:14:31.921455",
+    "total_monitors": 1,
+    "changed_count": 1,
+    "analyzed_count": 0,
+    "failed_count": 0
+  },
+  {
+    "timestamp": "2026-07-21T10:14:40.200024",
+    "total_monitors": 1,
+    "changed_count": 3,
+    "analyzed_count": 0,
+    "failed_count": 0
+  },
+  {
+    "timestamp": "2026-07-21T10:19:12.042746",
+    "total_monitors": 1,
+    "changed_count": 0,
+    "analyzed_count": 0,
+    "failed_count": 0
+  },
+  {
+    "timestamp": "2026-07-21T10:41:33.536376",
+    "total_monitors": 5,
+    "changed_count": 1,
+    "analyzed_count": 1,
+    "failed_count": 1,
+    "run_history_id": "37"
+  },
+  {
+    "timestamp": "2026-07-21T10:43:11.562937",
+    "total_monitors": 4,
+    "changed_count": 0,
+    "analyzed_count": 0,
+    "failed_count": 0,
+    "run_history_id": "38"
+  },
+  {
+    "timestamp": "2026-07-21T10:44:14.242800",
+    "total_monitors": 1,
+    "changed_count": 0,
+    "analyzed_count": 0,
+    "failed_count": 0,
+    "run_history_id": "39"
+  },
+  {
+    "timestamp": "2026-07-21T10:44:42.244532",
+    "total_monitors": 1,
+    "changed_count": 0,
+    "analyzed_count": 0,
+    "failed_count": 0,
+    "run_history_id": "40"
+  },
+  {
+    "timestamp": "2026-07-21T10:44:54.240036",
+    "total_monitors": 1,
+    "changed_count": 0,
+    "analyzed_count": 0,
+    "failed_count": 0,
+    "run_history_id": "41"
+  },
+  {
+    "timestamp": "2026-07-21T10:45:02.235210",
+    "total_monitors": 1,
+    "changed_count": 0,
+    "analyzed_count": 0,
+    "failed_count": 0,
+    "run_history_id": "42"
+  },
+  {
+    "timestamp": "2026-07-21T10:45:16.985330",
+    "total_monitors": 1,
+    "changed_count": 0,
+    "analyzed_count": 0,
+    "failed_count": 0,
+    "run_history_id": "43"
+  },
+  {
+    "timestamp": "2026-07-21T10:46:31.983552",
+    "total_monitors": 1,
+    "changed_count": 2,
+    "analyzed_count": 0,
+    "failed_count": 0,
+    "run_history_id": "44"
+  },
+  {
+    "timestamp": "2026-07-21T11:33:39.172915",
+    "total_monitors": 1,
+    "changed_count": 0,
+    "analyzed_count": 0,
+    "failed_count": 0,
+    "run_history_id": "45"
   }
 ]

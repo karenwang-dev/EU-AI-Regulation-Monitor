@@ -208,12 +208,14 @@ class StorageService:
         source_id: str,
         markdown: str,
         captured_at: datetime,
+        url_slug: str | None = None,
     ) -> Path:
         date_folder = captured_at.strftime("%Y-%m-%d")
         time_suffix = captured_at.strftime("%H%M%S")
         folder = self.raw_dir / date_folder
         folder.mkdir(parents=True, exist_ok=True)
-        file_path = folder / f"{source_id}_{time_suffix}.md"
+        suffix = f"_{url_slug}" if url_slug else ""
+        file_path = folder / f"{source_id}{suffix}_{time_suffix}.md"
         file_path.write_text(markdown, encoding="utf-8")
         return file_path
 
@@ -247,6 +249,7 @@ class StorageService:
             crawl_result["source_id"],
             markdown,
             captured_at,
+            url_slug=crawl_result.get("url_slug"),
         )
 
         snapshot = {
@@ -256,6 +259,10 @@ class StorageService:
             "timestamp": crawl_result["timestamp"],
             "file_path": str(file_path),
             "hash": content_hash,
+            "normalized_url": crawl_result.get("normalized_url", crawl_result["url"]),
+            "crawl_depth": crawl_result.get("crawl_depth", 0),
+            "parent_url": crawl_result.get("parent_url"),
+            "cleaned_content": markdown,
         }
 
         with self._connect() as connection:
@@ -316,6 +323,17 @@ class StorageService:
             return None
 
         return self._row_to_snapshot(row)
+
+    def get_distinct_monitor_urls(self, source_id: str) -> set[str]:
+        with self._connect() as connection:
+            rows = connection.execute(
+                """
+                SELECT DISTINCT url FROM snapshots
+                WHERE source_id = ?
+                """,
+                (source_id,),
+            ).fetchall()
+        return {row["url"] for row in rows}
 
     def get_snapshot_by_id(self, snapshot_id: int) -> dict | None:
         with self._connect() as connection:
@@ -738,7 +756,13 @@ _default_service: StorageService | None = None
 def _get_service() -> StorageService:
     global _default_service
     if _default_service is None:
-        _default_service = StorageService()
+        from app.core.paths import PROJECT_ROOT
+
+        _default_service = StorageService(
+            db_path=(PROJECT_ROOT / DB_PATH).resolve(),
+            raw_dir=(PROJECT_ROOT / RAW_DIR).resolve(),
+            meta_file=(PROJECT_ROOT / META_FILE).resolve(),
+        )
     return _default_service
 
 

@@ -33,6 +33,7 @@
                     <option value="HIGH" {% if impact_filter == "HIGH" %}selected{% endif %}>HIGH</option>
                     <option value="MEDIUM" {% if impact_filter == "MEDIUM" %}selected{% endif %}>MEDIUM</option>
                     <option value="LOW" {% if impact_filter == "LOW" %}selected{% endif %}>LOW</option>
+                    <option value="UNASSESSED" {% if impact_filter == "UNASSESSED" %}selected{% endif %}>UNASSESSED</option>
                     <option value="NONE" {% if impact_filter == "NONE" %}selected{% endif %}>NONE</option>
                 </select>
             </div>
@@ -69,9 +70,23 @@
                             <a href="{{ change.source_url }}" target="_blank" rel="noopener noreferrer">{{ change.source_url }}</a>
                         </div>
                         {% endif %}
-                        {% if change.depth_label %}
+                        {% if change.page_type_label %}
+                        <div class="mt-1">
+                            <span class="badge text-bg-light text-dark border">{{ change.page_type_label }}</span>
+                        </div>
+                        {% elif change.depth_label %}
                         <div class="mt-1">
                             <span class="badge text-bg-light text-dark border">{{ change.depth_label }}</span>
+                        </div>
+                        {% endif %}
+                        {% if change.change_kind_label %}
+                        <div class="text-muted small mt-1">
+                            Change type: {{ change.change_kind_label }}
+                        </div>
+                        {% endif %}
+                        {% if change.analysis_skipped %}
+                        <div class="text-muted small mt-1">
+                            Analysis: Skipped
                         </div>
                         {% endif %}
                         {% if change.changed_pages_count and change.changed_pages_count > 1 %}

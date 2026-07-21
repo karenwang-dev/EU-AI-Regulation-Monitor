@@ -8,6 +8,7 @@ from app.pipeline import MonitoringPipeline, normalize_source
 from app.analysis.diff_processor import create_diff_result
 from app.ai.regulation_extractor import EXTRACTION_MODE_DIFF
 from app.crawler.crawl_cache import should_crawl
+from app.knowledge.statistics import fetch_all_knowledge_items
 from app.storage.service import StorageService
 
 
@@ -122,6 +123,9 @@ class TestMonitoringPipeline(unittest.TestCase):
             "analyze_change_impact_fn": analyze_fn,
             "extract_regulation_fn": extract_regulation_fn,
             "save_analysis_fn": self.store.save_analysis,
+            "fetch_all_knowledge_items_fn": lambda: fetch_all_knowledge_items(
+                self.store
+            ),
             "save_knowledge_item_fn": self.store.save_knowledge_item,
             "notify_if_needed_fn": MagicMock(
                 return_value={"sent": False, "skipped": True, "reason": "test"}
@@ -130,6 +134,7 @@ class TestMonitoringPipeline(unittest.TestCase):
             "get_crawl_cache_fn": self.store.get_crawl_cache,
             "update_crawl_cache_fn": self.store.update_crawl_cache,
             "get_snapshot_by_id_fn": self.store.get_snapshot_by_id,
+            "get_distinct_monitor_urls_fn": self.store.get_distinct_monitor_urls,
             "should_crawl_fn": lambda url, frequency: should_crawl(
                 url,
                 frequency,

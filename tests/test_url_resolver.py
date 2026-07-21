@@ -61,6 +61,7 @@ class TestUrlResolver(unittest.TestCase):
             monitor["keywords"],
             max_depth=2,
             max_pages=10,
+            monitor=monitor,
         )
         self.assertEqual(len(results), 3)
         urls = {item["url"] for item in results}

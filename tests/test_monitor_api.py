@@ -1,3 +1,4 @@
+import gc
 import json
 import tempfile
 import unittest
@@ -5,6 +6,8 @@ from pathlib import Path
 
 from fastapi.testclient import TestClient
 
+from app.monitors.repository import MonitorRepository, reset_monitor_repository
+from app.storage.service import StorageService
 from app.web.app import create_dashboard_app
 from app.web.monitor_api import MonitorStore, generate_monitor_id
 
@@ -12,8 +15,11 @@ from app.web.monitor_api import MonitorStore, generate_monitor_id
 class TestMonitorApi(unittest.TestCase):
 
     def setUp(self):
-        self.temp_dir = tempfile.TemporaryDirectory()
-        self.monitors_file = Path(self.temp_dir.name) / "monitors.json"
+        reset_monitor_repository()
+        self.temp_dir = tempfile.TemporaryDirectory(ignore_cleanup_errors=True)
+        base_path = Path(self.temp_dir.name)
+        self.db_path = base_path / "storage.db"
+        self.monitors_file = base_path / "monitors.json"
         self.monitors_file.write_text(
             json.dumps(
                 {
@@ -32,11 +38,28 @@ class TestMonitorApi(unittest.TestCase):
             ),
             encoding="utf-8",
         )
+        self.storage = StorageService(
+            db_path=self.db_path,
+            raw_dir=base_path / "raw",
+            meta_file=base_path / "snapshots.json",
+        )
+        self.repository = MonitorRepository(
+            db_path=self.db_path,
+            seed_file=self.monitors_file,
+        )
         self.client = TestClient(
-            create_dashboard_app(monitors_file=self.monitors_file)
+            create_dashboard_app(
+                storage_service=self.storage,
+                monitors_repository=self.repository,
+            )
         )
 
     def tearDown(self):
+        self.client = None
+        self.repository = None
+        self.storage = None
+        reset_monitor_repository()
+        gc.collect()
         self.temp_dir.cleanup()
 
     def test_get_monitors(self):
@@ -90,8 +113,7 @@ class TestMonitorApi(unittest.TestCase):
         self.assertEqual(created["id"], "new_regulation")
         self.assertEqual(created["name"], "New Regulation")
 
-        saved = json.loads(self.monitors_file.read_text(encoding="utf-8"))
-        self.assertEqual(len(saved["monitors"]), 2)
+        self.assertEqual(len(self.repository.list_monitors()), 2)
 
     def test_update_monitor(self):
         response = self.client.put(
@@ -115,8 +137,7 @@ class TestMonitorApi(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn("removed", response.json()["message"])
 
-        remaining = json.loads(self.monitors_file.read_text(encoding="utf-8"))
-        self.assertEqual(remaining["monitors"], [])
+        self.assertEqual(self.repository.list_monitors(), [])
 
     def test_invalid_url_rejected(self):
         response = self.client.post(
@@ -213,6 +234,8 @@ class TestMonitorApi(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn(b"Monitors", response.content)
         self.assertIn(b"+ Add Monitor", response.content)
+        self.assertIn(b"Last Run", response.content)
+        self.assertIn(b"run-monitor-btn", response.content)
         self.assertIn(b"Crawl Mode", response.content)
         self.assertIn(b"Max Depth", response.content)
         self.assertIn(b"Max Pages", response.content)
@@ -231,7 +254,7 @@ class TestMonitorApi(unittest.TestCase):
         self.assertEqual(response.headers["location"], "/monitors")
 
     def test_generate_monitor_id_avoids_duplicates(self):
-        store = MonitorStore(monitors_file=self.monitors_file)
+        store = MonitorStore(repository=self.repository)
         first = generate_monitor_id("EU AI Act", {"eu_ai_act"})
         second = generate_monitor_id("EU AI Act", {"eu_ai_act", first})
 

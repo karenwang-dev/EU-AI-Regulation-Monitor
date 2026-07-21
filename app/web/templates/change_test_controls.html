@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header mb-4">
+    <h1 class="h3 mb-1">Local Multi-page Change Test Controls</h1>
+    <p class="text-muted mb-0">
+        Development-only controls for the deterministic change detection test site.
+    </p>
+</div>
+
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-header bg-white">
+        <strong>Current versions</strong>
+    </div>
+    <div class="card-body">
+        <ul class="mb-0">
+            <li>Homepage v{{ status.homepage_version }}</li>
+            <li>Policy A v{{ status.policy_a_version }}</li>
+            <li>Policy B v{{ status.policy_b_version }}</li>
+            {% if status.policy_c_enabled %}
+            <li>Policy C v{{ status.policy_c_version }}</li>
+            {% endif %}
+        </ul>
+    </div>
+</div>
+
+<div id="alertContainer"></div>
+<div id="runResultContainer"></div>
+
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-white">
+        <strong>Test Controls</strong>
+    </div>
+    <div class="card-body d-flex flex-wrap gap-2">
+        <button class="btn btn-outline-warning" type="button" id="resetSiteBtn">Reset</button>
+        <button class="btn btn-outline-secondary" type="button" id="establishBaselineBtn">Establish Baseline</button>
+        <button class="btn btn-outline-primary" type="button" id="changeHomepageBtn">Change Homepage</button>
+        <button class="btn btn-outline-primary" type="button" id="changePolicyABtn">Change Policy A</button>
+        <button class="btn btn-outline-primary" type="button" id="changePolicyBBtn">Change Policy B</button>
+        <button class="btn btn-primary" type="button" id="runMonitorBtn">Run Test Monitor</button>
+        <a class="btn btn-outline-success" href="/changes">View Changes</a>
+    </div>
+</div>
+
+<script>
+const monitorId = {{ monitor_id|tojson }};
+const alertContainer = document.getElementById("alertContainer");
+const runResultContainer = document.getElementById("runResultContainer");
+
+function showAlert(message, type = "danger") {
+    alertContainer.innerHTML = `
+        <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    `;
+}
+
+function showRunResult(payload) {
+    runResultContainer.innerHTML = `
+        <div class="card shadow-sm border-0 mt-4">
+            <div class="card-body">
+                <h2 class="h6">Last manual run</h2>
+                <p class="mb-2">
+                    Status: <strong>${payload.status}</strong> ·
+                    Pages checked: <strong>${payload.pages_checked}</strong> ·
+                    Pages changed: <strong>${payload.pages_changed}</strong>
+                </p>
+                <a href="/changes" class="btn btn-sm btn-outline-primary">View Changes</a>
+            </div>
+        </div>
+    `;
+}
+
+async function postChange(endpoint, text) {
+    const response = await fetch(endpoint, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({text}),
+    });
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.detail || "Request failed.");
+    }
+    return response.json();
+}
+
+async function runTestMonitor(button) {
+    const originalLabel = button.textContent;
+    button.disabled = true;
+    button.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Running…';
+
+    try {
+        const response = await fetch(`/api/monitors/${monitorId}/run`, {method: "POST"});
+        const payload = await response.json();
+        if (!response.ok) {
+            throw new Error(payload.detail || "Monitor run failed.");
+        }
+        showAlert(
+            `Run completed: ${payload.status} · pages checked ${payload.pages_checked} · pages changed ${payload.pages_changed}`,
+            payload.status === "failed" ? "danger" : "success"
+        );
+        showRunResult(payload);
+    } catch (error) {
+        showAlert(error.message);
+    } finally {
+        button.disabled = false;
+        button.textContent = originalLabel;
+    }
+}
+
+async function refreshPage() {
+    window.location.reload();
+}
+
+document.getElementById("changeHomepageBtn").addEventListener("click", async () => {
+    try {
+        await postChange("/api/dev/change-test-site/homepage/change", "Updated homepage content for change detection testing.");
+        await refreshPage();
+    } catch (error) {
+        showAlert(error.message);
+    }
+});
+
+document.getElementById("changePolicyABtn").addEventListener("click", async () => {
+    try {
+        await postChange("/api/dev/change-test-site/policy-a/change", "Updated Policy A requirement for change detection testing.");
+        await refreshPage();
+    } catch (error) {
+        showAlert(error.message);
+    }
+});
+
+document.getElementById("changePolicyBBtn").addEventListener("click", async () => {
+    try {
+        await postChange("/api/dev/change-test-site/policy-b/change", "Updated Policy B requirement for change detection testing.");
+        await refreshPage();
+    } catch (error) {
+        showAlert(error.message);
+    }
+});
+
+document.getElementById("resetSiteBtn").addEventListener("click", async () => {
+    if (!confirm("Reset the change test site to default content?")) {
+        return;
+    }
+    try {
+        const response = await fetch("/api/dev/change-test-site/reset", {method: "POST"});
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.detail || "Reset failed.");
+        }
+        await refreshPage();
+    } catch (error) {
+        showAlert(error.message);
+    }
+});
+
+document.getElementById("establishBaselineBtn").addEventListener("click", async () => {
+    await runTestMonitor(document.getElementById("establishBaselineBtn"));
+});
+
+document.getElementById("runMonitorBtn").addEventListener("click", async () => {
+    await runTestMonitor(document.getElementById("runMonitorBtn"));
+});
+</script>
+{% endblock %}

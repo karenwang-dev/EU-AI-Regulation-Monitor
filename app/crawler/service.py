@@ -1,9 +1,12 @@
 from datetime import datetime
 from typing import Any
+from urllib.parse import urlparse
 
 from firecrawl import FirecrawlApp
 
 from app.core.config import FIRECRAWL_API_KEY
+from app.crawler.content_cleaner import clean_monitor_content
+from app.crawler.http_fetcher import fetch_http_page, should_use_http_fetch
 from app.crawler.pdf_handler import (
     PdfDownloadError,
     PdfExtractionError,
@@ -12,6 +15,12 @@ from app.crawler.pdf_handler import (
     extract_pdf_title,
     is_pdf_url,
 )
+from app.dev.change_test_site import (
+    LOCAL_TEST_MONITOR_ID,
+    render_page_markdown,
+    resolve_page_metadata,
+)
+from app.crawler.url_normalizer import normalize_page_url
 
 
 _client = FirecrawlApp(
@@ -52,6 +61,14 @@ def _scrape(url: str) -> Any:
     )
 
 
+def _url_slug(url: str) -> str:
+    parsed = urlparse(url)
+    slug = (parsed.path or "root").strip("/").replace("/", "_") or "root"
+    if parsed.query:
+        slug = f"{slug}_{parsed.query.replace('=', '_').replace('&', '_')}"
+    return slug[:80]
+
+
 def _crawl_pdf(source: dict) -> dict:
     url = source["url"]
     fallback_title = source.get("name", "")
@@ -69,8 +86,45 @@ def _crawl_pdf(source: dict) -> dict:
     }
 
 
+def _finalize_crawl_result(source: dict, *, title: str, markdown: str) -> dict:
+    monitor = source.get("monitor") or {}
+    cleaned_markdown = clean_monitor_content(markdown, monitor)
+    target_url = source["url"]
+    return {
+        "source_id": source["source_id"],
+        "url": target_url,
+        "normalized_url": normalize_page_url(target_url),
+        "title": title,
+        "markdown": cleaned_markdown,
+        "raw_markdown": markdown,
+        "timestamp": datetime.now().isoformat(),
+        "crawl_depth": source.get("discovered_depth", 0),
+        "parent_url": source.get("parent_url") or monitor.get("url"),
+        "url_slug": _url_slug(target_url),
+    }
+
+
+def _crawl_local_change_test_site(source: dict) -> dict:
+    url = source["url"]
+    parsed = urlparse(url)
+    path = parsed.path or "/dev/change-test-site"
+    monitor = source.get("monitor") or {}
+    state_file = monitor.get("_change_test_state_file")
+    markdown = render_page_markdown(path, state_file=state_file)
+    metadata = resolve_page_metadata(path, state_file=state_file)
+    return _finalize_crawl_result(
+        source,
+        title=metadata["title"],
+        markdown=markdown,
+    )
+
+
 def crawl(source: dict) -> dict:
     url = source["url"]
+    monitor = source.get("monitor") or {}
+
+    if monitor.get("id") == LOCAL_TEST_MONITOR_ID:
+        return _crawl_local_change_test_site(source)
 
     if is_pdf_url(url):
         try:
@@ -78,12 +132,17 @@ def crawl(source: dict) -> dict:
         except (PdfDownloadError, PdfExtractionError) as error:
             raise RuntimeError(str(error)) from error
 
-    result = _scrape(url)
+    if should_use_http_fetch(url, monitor):
+        fetched = fetch_http_page(url, fallback_title=source.get("name", ""))
+        return _finalize_crawl_result(
+            source,
+            title=fetched["title"],
+            markdown=fetched["markdown"],
+        )
 
-    return {
-        "source_id": source["source_id"],
-        "url": url,
-        "title": _extract_title(result, source.get("name", "")),
-        "markdown": _extract_markdown(result),
-        "timestamp": datetime.now().isoformat(),
-    }
+    result = _scrape(url)
+    return _finalize_crawl_result(
+        source,
+        title=_extract_title(result, source.get("name", "")),
+        markdown=_extract_markdown(result),
+    )

@@ -255,6 +255,7 @@ class TestKnowledgePipelineIntegration(unittest.TestCase):
             get_crawl_cache_fn=self.store.get_crawl_cache,
             update_crawl_cache_fn=self.store.update_crawl_cache,
             get_snapshot_by_id_fn=self.store.get_snapshot_by_id,
+            get_distinct_monitor_urls_fn=self.store.get_distinct_monitor_urls,
         )
 
     @patch("app.pipeline.build_knowledge_item", wraps=build_knowledge_item)

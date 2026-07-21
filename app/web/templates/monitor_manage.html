@@ -46,22 +46,33 @@
 
 <div id="alertContainer"></div>
 
+{% if is_development %}
+<div class="alert alert-info">
+    Development mode: use the
+    <a href="/dev/change-test-site/controls">Local Multi-page Change Test controls</a>
+    to mutate the deterministic test site.
+</div>
+{% endif %}
+
 <div class="card shadow-sm">
-    <div class="table-responsive">
-        <table class="table table-hover mb-0">
+    <div class="monitor-table-scroll">
+        <table class="table table-hover monitor-table mb-0">
             <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>Category</th>
-                    <th>Frequency</th>
-                    <th>Crawl Mode</th>
-                    <th>Status</th>
-                    <th>Action</th>
+                    <th class="monitor-col-name">Name</th>
+                    <th class="monitor-col-category">Category</th>
+                    <th class="monitor-col-nowrap">Frequency</th>
+                    <th class="monitor-col-nowrap">Crawl Mode</th>
+                    <th class="monitor-col-nowrap">Status</th>
+                    <th class="monitor-col-nowrap">Last Run</th>
+                    <th class="monitor-col-nowrap">Last Status</th>
+                    <th class="monitor-col-pages-changed">Pages Changed</th>
+                    <th class="monitor-col-actions">Actions</th>
                 </tr>
             </thead>
             <tbody id="monitorTableBody">
                 <tr>
-                    <td colspan="6" class="text-muted">Loading monitors...</td>
+                    <td colspan="9" class="text-muted">Loading monitors...</td>
                 </tr>
             </tbody>
         </table>
@@ -145,7 +156,9 @@
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock %}
+
+{% block scripts %}
 <script>
 const monitorTableBody = document.getElementById("monitorTableBody");
 const monitorModalElement = document.getElementById("monitorModal");
@@ -167,11 +180,236 @@ function formatFrequency(value) {
     return value.charAt(0).toUpperCase() + value.slice(1);
 }
 
+function formatCategory(value) {
+    if (!value) {
+        return "Other";
+    }
+    if (value.includes(" ") && !value.includes("_")) {
+        return value;
+    }
+    return value
+        .split(/[_-]+/)
+        .filter(Boolean)
+        .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+        .join(" ");
+}
+
 function formatCrawlMode(value) {
     if (value === "smart") {
         return "Smart Discovery";
     }
+    if (value === "multi_page") {
+        return "Multi Page";
+    }
     return "Single Page";
+}
+
+function formatLastRun(value) {
+    if (!value) {
+        return "—";
+    }
+    const parsed = new Date(value);
+    if (Number.isNaN(parsed.getTime())) {
+        return value;
+    }
+    const yyyy = parsed.getFullYear();
+    const mm = String(parsed.getMonth() + 1).padStart(2, "0");
+    const dd = String(parsed.getDate()).padStart(2, "0");
+    const hh = String(parsed.getHours()).padStart(2, "0");
+    const min = String(parsed.getMinutes()).padStart(2, "0");
+    return `${yyyy}-${mm}-${dd} ${hh}:${min}`;
+}
+
+function changeStatusBadge(status) {
+    const mapping = {
+        changed: "text-bg-primary",
+        unchanged: "text-bg-secondary",
+        failed: "text-bg-danger",
+        baseline: "text-bg-info",
+        running: "text-bg-warning text-dark",
+    };
+    return mapping[status] || "text-bg-light text-dark";
+}
+
+function formatChangeStatus(status) {
+    if (!status) {
+        return "—";
+    }
+    return status.charAt(0).toUpperCase() + status.slice(1);
+}
+
+function escapeHtml(value) {
+    return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;");
+}
+
+function initMonitorDropdowns() {
+    document.querySelectorAll(".monitor-actions [data-bs-toggle='dropdown']").forEach((toggle) => {
+        const existing = bootstrap.Dropdown.getInstance(toggle);
+        if (existing) {
+            existing.dispose();
+        }
+        bootstrap.Dropdown.getOrCreateInstance(toggle, {
+            popperConfig(defaultBsPopperConfig) {
+                return {
+                    ...defaultBsPopperConfig,
+                    strategy: "fixed",
+                };
+            },
+        });
+    });
+}
+
+function renderMonitors(monitors) {
+    monitorsCache = monitors;
+    updateSummaryCards(monitors);
+
+    if (!monitors.length) {
+        monitorTableBody.innerHTML = `
+            <tr>
+                <td colspan="9" class="text-muted">No monitors configured.</td>
+            </tr>
+        `;
+        return;
+    }
+
+    monitorTableBody.innerHTML = monitors.map((monitor) => {
+        const changeStatus = monitor.last_change_status || monitor.last_status;
+        const lastRunLink = monitor.last_run_history_id
+            ? `<a href="/runs/${monitor.last_run_history_id}" class="text-decoration-none">${formatLastRun(monitor.last_run_at)}</a>`
+            : formatLastRun(monitor.last_run_at);
+        const viewLastRunItem = monitor.last_run_history_id
+            ? `<li><a class="dropdown-item" href="/runs/${monitor.last_run_history_id}">View Last Run</a></li>`
+            : "";
+        const toggleLabel = monitor.enabled ? "Disable" : "Enable";
+
+        return `
+        <tr>
+            <td class="monitor-col-name">${escapeHtml(monitor.name)}</td>
+            <td class="monitor-col-category">${escapeHtml(formatCategory(monitor.category))}</td>
+            <td class="monitor-col-nowrap">${formatFrequency(monitor.frequency)}</td>
+            <td class="monitor-col-nowrap">${formatCrawlMode(monitor.crawl_mode || "single")}</td>
+            <td class="monitor-col-nowrap">
+                ${monitor.enabled
+                    ? '<span class="badge text-bg-success">ON</span>'
+                    : '<span class="badge text-bg-secondary">OFF</span>'}
+            </td>
+            <td class="monitor-col-nowrap">${lastRunLink}</td>
+            <td class="monitor-col-nowrap">
+                <span class="badge ${changeStatusBadge(changeStatus)}">${formatChangeStatus(changeStatus)}</span>
+            </td>
+            <td class="monitor-col-pages-changed">${monitor.last_pages_changed ?? 0}</td>
+            <td class="monitor-col-actions">
+                <div class="monitor-actions">
+                    <button type="button"
+                        class="btn btn-sm btn-success run-monitor-btn"
+                        data-id="${monitor.id}"
+                        aria-label="Run ${escapeHtml(monitor.name)}">
+                        Run
+                    </button>
+                    <div class="dropdown">
+                        <button type="button"
+                            class="btn btn-sm btn-outline-secondary dropdown-toggle"
+                            data-bs-toggle="dropdown"
+                            data-bs-auto-close="true"
+                            aria-expanded="false"
+                            aria-haspopup="true"
+                            aria-label="More actions for ${escapeHtml(monitor.name)}">
+                            More
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><button type="button" class="dropdown-item edit-monitor-btn" data-id="${monitor.id}">Edit</button></li>
+                            <li><button type="button" class="dropdown-item toggle-monitor-btn" data-id="${monitor.id}">${toggleLabel}</button></li>
+                            ${viewLastRunItem}
+                            <li><hr class="dropdown-divider"></li>
+                            <li><button type="button" class="dropdown-item text-danger delete-monitor-btn" data-id="${monitor.id}">Delete</button></li>
+                        </ul>
+                    </div>
+                </div>
+            </td>
+        </tr>`;
+    }).join("");
+
+    document.querySelectorAll(".run-monitor-btn").forEach((button) => {
+        button.addEventListener("click", () => runMonitor(button));
+    });
+    document.querySelectorAll(".edit-monitor-btn").forEach((button) => {
+        button.addEventListener("click", () => openEditModal(button.dataset.id));
+    });
+    document.querySelectorAll(".toggle-monitor-btn").forEach((button) => {
+        button.addEventListener("click", () => toggleMonitorEnabled(button.dataset.id));
+    });
+    document.querySelectorAll(".delete-monitor-btn").forEach((button) => {
+        button.addEventListener("click", () => deleteMonitor(button.dataset.id));
+    });
+    initMonitorDropdowns();
+}
+
+async function toggleMonitorEnabled(monitorId) {
+    const monitor = monitorsCache.find((item) => item.id === monitorId);
+    if (!monitor) {
+        showAlert("Monitor not found.");
+        return;
+    }
+
+    const response = await fetch(`/api/monitors/${monitorId}`, {
+        method: "PUT",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({enabled: !monitor.enabled}),
+    });
+
+    if (!response.ok) {
+        const error = await response.json();
+        showAlert(error.detail || "Failed to update monitor.");
+        return;
+    }
+
+    showAlert(`Monitor ${monitor.enabled ? "disabled" : "enabled"} successfully.`, "success");
+    await loadMonitors();
+}
+
+async function runMonitor(button) {
+    const monitorId = button.dataset.id;
+    const originalLabel = button.textContent;
+    button.disabled = true;
+    button.setAttribute("aria-busy", "true");
+    button.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>Running…';
+
+    try {
+        const response = await fetch(`/api/monitors/${monitorId}/run`, {
+            method: "POST",
+        });
+        const payload = await response.json();
+        if (!response.ok) {
+            throw new Error(payload.detail || "Monitor run failed.");
+        }
+
+        const runLink = payload.run_history_id
+            ? `<a href="/runs/${payload.run_history_id}" class="alert-link">View Run Details</a>`
+            : "";
+        const changesLink = `<a href="/changes" class="alert-link">View Changes</a>`;
+        const details = [
+            `Result: ${formatChangeStatus(payload.change_status || payload.status)}`,
+            `Pages checked: ${payload.pages_checked}`,
+            `Pages changed: ${payload.pages_changed}`,
+            runLink,
+            changesLink,
+        ].filter(Boolean).join(" · ");
+
+        showAlert(
+            details,
+            (payload.change_status || payload.status) === "failed" ? "danger" : "success"
+        );
+        await loadMonitors();
+    } catch (error) {
+        showAlert(error.message);
+        button.disabled = false;
+        button.removeAttribute("aria-busy");
+        button.textContent = originalLabel;
+    }
 }
 
 function setCrawlDefaults() {
@@ -192,52 +430,6 @@ function updateSummaryCards(monitors) {
     document.getElementById("totalMonitorsCount").textContent = monitors.length;
     document.getElementById("enabledMonitorsCount").textContent = enabledCount;
     document.getElementById("disabledMonitorsCount").textContent = monitors.length - enabledCount;
-}
-
-function renderMonitors(monitors) {
-    monitorsCache = monitors;
-    updateSummaryCards(monitors);
-
-    if (!monitors.length) {
-        monitorTableBody.innerHTML = `
-            <tr>
-                <td colspan="6" class="text-muted">No monitors configured.</td>
-            </tr>
-        `;
-        return;
-    }
-
-    monitorTableBody.innerHTML = monitors.map((monitor) => `
-        <tr>
-            <td>${monitor.name}</td>
-            <td>${monitor.category}</td>
-            <td>${formatFrequency(monitor.frequency)}</td>
-            <td>${formatCrawlMode(monitor.crawl_mode || "single")}</td>
-            <td>
-                ${monitor.enabled
-                    ? '<span class="badge text-bg-success">ON</span>'
-                    : '<span class="badge text-bg-secondary">OFF</span>'}
-            </td>
-            <td>
-                <button class="btn btn-sm btn-outline-primary me-2 edit-monitor-btn"
-                    data-id="${monitor.id}">
-                    Edit
-                </button>
-                <button class="btn btn-sm btn-outline-danger delete-monitor-btn"
-                    data-id="${monitor.id}">
-                    Delete
-                </button>
-            </td>
-        </tr>
-    `).join("");
-
-    document.querySelectorAll(".edit-monitor-btn").forEach((button) => {
-        button.addEventListener("click", () => openEditModal(button.dataset.id));
-    });
-
-    document.querySelectorAll(".delete-monitor-btn").forEach((button) => {
-        button.addEventListener("click", () => deleteMonitor(button.dataset.id));
-    });
 }
 
 async function loadMonitors() {

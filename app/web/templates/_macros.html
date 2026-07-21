@@ -1,6 +1,6 @@
 {% macro impact_badge(level) %}
 {% set normalized = level|upper %}
-<span class="{{ impact_badge_classes(normalized) }}">{{ normalized }}</span>
+<span class="{{ impact_badge_classes(normalized) }}">{{ format_impact_label(normalized) }}</span>
 {% endmacro %}
 
 {% macro dashboard_risk_card(level, count, href, subtitle, aria_label) %}

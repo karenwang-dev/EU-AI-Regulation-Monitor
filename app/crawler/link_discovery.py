@@ -2,9 +2,12 @@ from __future__ import annotations
 
 from collections import deque
 from html.parser import HTMLParser
-from urllib.parse import urljoin, urlparse, urlunparse
+from urllib.parse import urljoin, urlparse
 
 import requests
+
+from app.crawler.pattern_filter import is_url_allowed_for_monitor
+from app.crawler.url_normalizer import normalize_page_url
 
 
 SOCIAL_MEDIA_DOMAINS = {
@@ -98,9 +101,7 @@ def _normalize_domain(netloc: str) -> str:
 
 
 def _normalize_url(url: str) -> str:
-    parsed = urlparse(url)
-    normalized = parsed._replace(fragment="")
-    return urlunparse(normalized)
+    return normalize_page_url(url)
 
 
 def _fetch_html(url: str) -> str:
@@ -169,7 +170,17 @@ def _is_allowed_link(url: str, seed_domain: str) -> bool:
     return True
 
 
-def _matches_keywords(url: str, title: str, keywords: list[str]) -> bool:
+def _matches_keywords(
+    url: str,
+    title: str,
+    keywords: list[str],
+    monitor: dict | None = None,
+) -> bool:
+    monitor = monitor or {}
+    include_patterns = monitor.get("include_patterns") or []
+    if include_patterns:
+        return is_url_allowed_for_monitor(url, monitor)
+
     if not keywords:
         return True
 
@@ -182,6 +193,7 @@ def discover_links(
     keywords: list[str],
     max_depth: int = 1,
     max_pages: int = 10,
+    monitor: dict | None = None,
 ) -> list[dict]:
     if max_depth < 1 or max_pages < 1:
         return []
@@ -211,12 +223,14 @@ def discover_links(
             normalized_link = _normalize_url(link_url)
             if not _is_allowed_link(normalized_link, seed_domain):
                 continue
+            if monitor and not is_url_allowed_for_monitor(normalized_link, monitor):
+                continue
 
             link_depth = depth + 1
             if link_depth > max_depth:
                 continue
 
-            if _matches_keywords(normalized_link, link_title, keywords):
+            if _matches_keywords(normalized_link, link_title, keywords, monitor=monitor):
                 existing = discovered.get(normalized_link)
                 if existing is None or link_depth < existing["depth"]:
                     discovered[normalized_link] = {

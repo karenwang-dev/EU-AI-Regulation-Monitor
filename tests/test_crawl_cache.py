@@ -238,6 +238,7 @@ class TestPipelineCrawlCache(unittest.TestCase):
             get_crawl_cache_fn=self.store.get_crawl_cache,
             update_crawl_cache_fn=self.store.update_crawl_cache,
             get_snapshot_by_id_fn=self.store.get_snapshot_by_id,
+            get_distinct_monitor_urls_fn=self.store.get_distinct_monitor_urls,
         )
 
     def test_pipeline_cache_hit_does_not_call_crawler(self):

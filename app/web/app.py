@@ -7,6 +7,16 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 
+from app.monitors.display_helpers import (
+    change_status_badge_class,
+    execution_status_badge_class,
+    format_category_label,
+    format_change_status_label,
+    format_execution_status_label,
+)
+from app.monitors.execution import MonitorExecutionService
+from app.monitors.repository import MonitorRepository, log_monitor_repository_state
+from app.monitors.run_store import get_monitor_run_store
 from app.run_history import get_latest_run
 from app.source.source_loader import load_monitors
 from app.storage.service import StorageService, _get_service
@@ -15,6 +25,7 @@ from app.web.api import (
     _get_diff_by_id,
 )
 from app.web.monitor_api import register_monitor_routes
+from app.web.run_api import register_run_routes
 from app.web.knowledge_api import register_knowledge_routes
 from app.knowledge.similarity import find_similar_knowledge
 from app.knowledge.statistics import (
@@ -25,6 +36,7 @@ from app.knowledge.timeline import build_regulation_timeline
 from app.web.change_helper import (
     count_changes_by_impact,
     filter_changes_by_impact,
+    format_impact_label,
     is_displayable_change,
     normalize_impact,
     normalized_change_impact,
@@ -57,9 +69,16 @@ from app.web.source_helper import (
     build_source_tree,
     enrich_changes_with_source_metadata,
     extract_discovered_depth_from_evidence,
+    extract_page_type_from_evidence,
     extract_source_url_from_evidence,
     format_depth_label,
+    format_page_type_label,
+    extract_analysis_skipped_from_evidence,
+    extract_change_kind_from_evidence,
 )
+from app.web.dev_change_test_api import register_change_test_site_routes
+from app.core.environment import get_app_env, is_development
+from app.core.paths import log_runtime_paths
 from app.scheduler_status import get_scheduler_health_status
 from app.config.validator import validate_configuration
 from app.core.logging import get_logger
@@ -69,7 +88,10 @@ from app.version import APP_NAME, APP_VERSION
 TEMPLATES_DIR = Path(__file__).resolve().parent / "templates"
 templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
 templates.env.globals["dashboard_risk_card_classes"] = get_dashboard_risk_card_classes
+templates.env.globals["format_category_label"] = format_category_label
+templates.env.globals["change_status_badge_class"] = change_status_badge_class
 templates.env.globals["impact_badge_classes"] = get_impact_badge_classes
+templates.env.globals["format_impact_label"] = format_impact_label
 CHANGES_PAGE_SIZE = 20
 logger = get_logger(__name__)
 
@@ -266,6 +288,18 @@ def _build_dashboard_recent_activity(
             if last_run
             else "N/A"
         ),
+        "last_monitoring_run_id": (
+            (
+                last_run.get("primary_run_id")
+                or (
+                    last_run.get("run_ids", [None])[-1]
+                    if last_run.get("run_ids")
+                    else None
+                )
+            )
+            if last_run
+            else None
+        ),
         "changed_regulations_display": (
             str(last_run.get("changed_count", 0))
             if last_run
@@ -311,6 +345,20 @@ def _get_changes_for_dashboard(
                 snapshot,
                 monitor_info,
             )
+            page_type = extract_page_type_from_evidence(
+                impact_data,
+                snapshot,
+                monitor_info,
+            )
+            analysis_skipped = extract_analysis_skipped_from_evidence(impact_data)
+            change_kind = extract_change_kind_from_evidence(impact_data)
+            impact_level = normalized_change_impact(
+                {
+                    "analysis": impact_data,
+                    "impact_level": impact_data.get("impact_level"),
+                    "impact": impact_data.get("impact"),
+                }
+            )
             change_record = {
                 "diff_id": diff["id"],
                 "analysis_id": analysis["id"] if analysis else None,
@@ -321,19 +369,19 @@ def _get_changes_for_dashboard(
                 "source_id": diff["source_id"],
                 "date": diff["created_at"],
                 "analysis": impact_data,
-                "impact_level": normalized_change_impact(
-                    {
-                        "analysis": impact_data,
-                        "impact_level": impact_data.get("impact_level"),
-                        "impact": impact_data.get("impact"),
-                    }
-                ),
+                "impact_level": impact_level,
+                "impact_label": format_impact_label(impact_level),
+                "analysis_skipped": analysis_skipped,
+                "change_kind": change_kind or "changed",
+                "change_kind_label": (change_kind or "changed").replace("_", " ").title(),
                 "affected_modules": impact_data.get("affected_modules", []),
                 "keywords": monitor_info.get("keywords", []),
                 "summary": _build_change_summary(diff),
                 "source_url": source_url,
                 "discovered_depth": discovered_depth,
                 "depth_label": format_depth_label(discovered_depth),
+                "page_type": page_type,
+                "page_type_label": format_page_type_label(page_type),
             }
 
             if not is_displayable_change(change_record):
@@ -487,6 +535,8 @@ def create_dashboard_app(
     storage_service: StorageService | None = None,
     history_file: Path | None = None,
     monitors_file: Path | None = None,
+    monitors_repository: MonitorRepository | None = None,
+    execution_service: MonitorExecutionService | None = None,
     reports_dir: Path | None = None,
     report_config_file: Path | None = None,
     notification_file: Path | None = None,
@@ -499,6 +549,22 @@ def create_dashboard_app(
 ) -> FastAPI:
     storage = storage_service or _get_service()
     app = FastAPI(title="AI Regulation Monitor Dashboard")
+
+    if monitors_repository is None and monitors_file is not None:
+        from app.monitors.repository import get_monitor_repository
+
+        monitors_repository = get_monitor_repository(
+            db_path=storage.db_path,
+            seed_file=monitors_file,
+        )
+    elif monitors_repository is None:
+        from app.monitors.repository import get_monitor_repository
+
+        monitors_repository = get_monitor_repository(db_path=storage.db_path)
+
+    from app.monitors.repository import set_monitor_repository
+
+    set_monitor_repository(monitors_repository)
 
     @app.on_event("startup")
     def validate_app_configuration() -> None:
@@ -513,7 +579,16 @@ def create_dashboard_app(
         if result["status"] == "ok":
             logger.info("Configuration validation passed")
 
-    register_monitor_routes(app, monitors_file=monitors_file)
+    register_monitor_routes(
+        app,
+        monitors_file=monitors_file,
+        monitors_repository=monitors_repository,
+        execution_service=execution_service,
+    )
+    register_run_routes(
+        app,
+        run_store=get_monitor_run_store(db_path=storage.db_path),
+    )
     register_knowledge_routes(app, storage_service=storage)
     register_report_routes(
         app,
@@ -532,6 +607,36 @@ def create_dashboard_app(
         email_settings_file=email_settings_file or EMAIL_SETTINGS_FILE,
         send_email_fn=settings_send_email_fn,
     )
+    register_change_test_site_routes(app)
+
+    @app.on_event("startup")
+    def configure_change_test_site_state() -> None:
+        app.state.change_test_site_base_url = ""
+        routes_registered = bool(
+            getattr(app.state, "change_test_site_routes_registered", False)
+        )
+        app_env = get_app_env()
+        dev_mode = is_development()
+        logger.info("APP_ENV=%s", app_env)
+        logger.info("Development mode=%s", dev_mode)
+        logger.info(
+            "Development test site routes registered=%s",
+            routes_registered,
+        )
+        if routes_registered:
+            route_paths = getattr(app.state, "change_test_site_route_paths", [])
+            for route_path in sorted(route_paths):
+                logger.info("Development test site route: %s", route_path)
+        if routes_registered and not dev_mode:
+            logger.info(
+                "Change test site endpoints are gated until APP_ENV is "
+                "development, dev, or test."
+            )
+        log_runtime_paths(prefix="startup")
+        log_monitor_repository_state(
+            repository=monitors_repository,
+            prefix="startup",
+        )
 
     def _latest_run():
         if history_file:
@@ -562,6 +667,50 @@ def create_dashboard_app(
                 "missing_config": config_result["missing"],
                 "config_warnings": config_result["warnings"],
                 "architecture_components": ARCHITECTURE_COMPONENTS,
+            },
+        )
+
+    @app.get("/runs/{run_history_id}")
+    def run_details_page(request: Request, run_history_id: int):
+        run_store = get_monitor_run_store(db_path=storage.db_path)
+        run = run_store.get_run(run_history_id)
+        if run is None:
+            raise HTTPException(status_code=404, detail="Run not found")
+
+        page_results = []
+        for page in run.get("page_results", []):
+            page_results.append(
+                {
+                    **page,
+                    "badge_class": change_status_badge_class(page.get("status")),
+                    "status_label": format_change_status_label(page.get("status")),
+                }
+            )
+        run = {**run, "page_results": page_results}
+
+        duration_ms = run.get("duration_ms", 0)
+        duration_display = (
+            f"{duration_ms / 1000:.1f}s" if duration_ms >= 1000 else f"{duration_ms}ms"
+        )
+
+        return templates.TemplateResponse(
+            request,
+            "run_details.html",
+            {
+                "title": f"Run {run_history_id}",
+                "active_page": "monitors",
+                "run": run,
+                "execution_badge": execution_status_badge_class(
+                    run.get("execution_status")
+                ),
+                "execution_label": format_execution_status_label(
+                    run.get("execution_status")
+                ),
+                "change_badge": change_status_badge_class(run.get("change_status")),
+                "change_label": format_change_status_label(run.get("change_status")),
+                "started_display": _format_dashboard_timestamp(run.get("started_at", "")),
+                "finished_display": _format_dashboard_timestamp(run.get("finished_at", "")),
+                "duration_display": duration_display,
             },
         )
 
@@ -606,6 +755,7 @@ def create_dashboard_app(
                 "recent_updates_count": (
                     last_run.get("changed_count", 0) if last_run else 0
                 ),
+                "is_development": is_development(),
             },
         )
 

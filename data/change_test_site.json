@@ -1,0 +1,19 @@
+{
+  "homepage": {
+    "version": 1,
+    "text": "Initial homepage content"
+  },
+  "policy_a": {
+    "version": 2,
+    "text": "Updated Policy A requirement for change detection testing."
+  },
+  "policy_b": {
+    "version": 2,
+    "text": "Updated Policy B requirement for change detection testing."
+  },
+  "policy_c_enabled": false,
+  "policy_c": {
+    "version": 1,
+    "text": "Devices must support requirement C."
+  }
+}

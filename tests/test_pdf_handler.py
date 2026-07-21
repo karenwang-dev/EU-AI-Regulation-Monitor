@@ -210,6 +210,7 @@ class TestPipelinePdfPath(unittest.TestCase):
         pipeline = MonitoringPipeline(
             save_snapshot_fn=self.store.save_snapshot,
             get_latest_snapshot_for_url_fn=lambda source_id, url: None,
+            get_distinct_monitor_urls_fn=lambda source_id: set(),
             get_crawl_cache_fn=lambda url: None,
             update_crawl_cache_fn=lambda url, snapshot_id, content_hash: {},
             get_snapshot_by_id_fn=self.store.get_snapshot_by_id,

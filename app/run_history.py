@@ -7,12 +7,20 @@ RUN_HISTORY_FILE = Path("data/run_history.json")
 
 
 def _summarize_results(results: list[dict]) -> dict:
+    changed_count = 0
+    for result in results:
+        summary = result.get("page_change_summary") or {}
+        page_changes = int(summary.get("pages_changed", 0))
+        if page_changes > 0:
+            changed_count += page_changes
+            continue
+        if result.get("diff_id") is not None:
+            changed_count += 1
+
     return {
         "timestamp": datetime.now().isoformat(),
         "total_monitors": len(results),
-        "changed_count": sum(
-            1 for result in results if result.get("diff_id") is not None
-        ),
+        "changed_count": changed_count,
         "analyzed_count": sum(
             1 for result in results if result.get("status") == "analyzed"
         ),
@@ -25,6 +33,7 @@ def _summarize_results(results: list[dict]) -> dict:
 def save_run_history(
     results: list[dict],
     history_file: Path = RUN_HISTORY_FILE,
+    run_ids: list[int] | None = None,
 ) -> dict:
     entry = _summarize_results(results)
     history_path = Path(history_file)
@@ -37,6 +46,11 @@ def save_run_history(
         history = []
 
     history.append(entry)
+    entry["run_history_id"] = str(len(history))
+    if run_ids:
+        entry["run_ids"] = run_ids
+        if len(run_ids) == 1:
+            entry["primary_run_id"] = run_ids[0]
 
     with open(history_path, "w", encoding="utf-8") as file:
         json.dump(history, file, indent=2, ensure_ascii=False)
