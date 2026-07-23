@@ -3,6 +3,8 @@ from __future__ import annotations
 import json
 from datetime import datetime, timedelta
 
+from app.utils.datetime_utils import parse_datetime, utc_now
+
 from app.knowledge.statistics import fetch_all_knowledge_items
 from app.source.source_loader import load_monitors
 from app.storage.service import StorageService, _get_service
@@ -41,7 +43,7 @@ def _resolve_period(
     end_date=None,
 ) -> tuple[dict[str, str], datetime, datetime]:
     if end_date is None:
-        end = datetime.now()
+        end = utc_now().replace(tzinfo=None)
     else:
         end = _parse_boundary(
             end_date,
@@ -67,20 +69,10 @@ def _resolve_period(
 
 
 def _parse_timestamp(value: str | None) -> datetime | None:
-    if not value:
+    parsed = parse_datetime(value)
+    if parsed is None:
         return None
-    cleaned = str(value).strip()
-    if not cleaned:
-        return None
-    try:
-        return datetime.fromisoformat(cleaned.replace("Z", "+00:00"))
-    except ValueError:
-        if len(cleaned) >= 10:
-            try:
-                return datetime.fromisoformat(cleaned[:10])
-            except ValueError:
-                return None
-    return None
+    return parsed.replace(tzinfo=None)
 
 
 def _in_period(

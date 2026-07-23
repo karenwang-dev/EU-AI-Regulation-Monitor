@@ -1,4 +1,3 @@
-import gc
 import tempfile
 import unittest
 from datetime import datetime
@@ -10,6 +9,7 @@ from fastapi.testclient import TestClient
 from app.run_history import save_run_history
 from app.storage.service import StorageService
 from app.web.app import create_dashboard_app
+from tests.html_test_utils import text_by_testid
 
 
 class TestDashboardWeb(unittest.TestCase):
@@ -94,9 +94,10 @@ class TestDashboardWeb(unittest.TestCase):
         }
 
     def tearDown(self):
+        if getattr(self, "client", None) is not None:
+            self.client.close()
         self.client = None
         self.store = None
-        gc.collect()
         self.temp_dir.cleanup()
 
     @mock.patch("app.web.app.load_monitors", autospec=True)
@@ -205,15 +206,16 @@ class TestDashboardWeb(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         content = response.text
         self.assertIn("Completed successfully", content)
-        self.assertRegex(
-            content,
-            r"Changed regulations</div>\s*<div class=\"fw-semibold\">1</div>",
+        self.assertEqual(
+            text_by_testid(content, "dashboard-monitoring-status"),
+            "Completed successfully",
         )
-        self.assertIn("Latest report", content)
-        self.assertRegex(
-            content,
-            r"Latest report</div>\s*<div class=\"fw-semibold\">N/A</div>",
-        )
+        self.assertEqual(text_by_testid(content, "dashboard-changed-regulations"), "1")
+        self.assertEqual(text_by_testid(content, "dashboard-latest-report"), "N/A")
+        self.assertIn('data-testid="dashboard-last-monitoring-run"', content)
+        self.assertIn('data-testid="dashboard-changed-regulations"', content)
+        self.assertIn('data-testid="dashboard-latest-report"', content)
+        self.assertIn('data-testid="dashboard-monitoring-status"', content)
 
     @mock.patch("app.web.app.load_monitors", autospec=True)
     def test_dashboard_risk_cards_link_to_filtered_changes(

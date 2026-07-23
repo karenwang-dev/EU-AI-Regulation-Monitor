@@ -3,10 +3,13 @@ from __future__ import annotations
 import json
 import sqlite3
 import threading
-from datetime import datetime
+from contextlib import contextmanager
+from app.utils.datetime_utils import format_utc_iso, utc_now_iso
 from pathlib import Path
+from typing import Iterator
 
 from app.core.logging import get_logger
+from app.core.sqlite_utils import open_sqlite_connection
 from app.core.paths import PROJECT_ROOT, get_default_monitor_db_path
 from app.source.source_loader import (
     MONITORS_FILE,
@@ -62,10 +65,10 @@ class SQLiteMonitorRepository:
         self._init_db()
         self.seed_from_config()
 
-    def _connect(self) -> sqlite3.Connection:
-        connection = sqlite3.connect(self.db_path)
-        connection.row_factory = sqlite3.Row
-        return connection
+    @contextmanager
+    def _connect(self) -> Iterator[sqlite3.Connection]:
+        with open_sqlite_connection(self.db_path) as connection:
+            yield connection
 
     def _init_db(self) -> None:
         with self._connect() as connection:
@@ -149,7 +152,7 @@ class SQLiteMonitorRepository:
         return validated
 
     def _insert_monitors(self, monitors: list[dict]) -> int:
-        now = datetime.now().isoformat()
+        now = utc_now_iso()
         inserted = 0
 
         with self._connect() as connection:
@@ -199,7 +202,7 @@ class SQLiteMonitorRepository:
             normalized.update(
                 {
                     "execution_status": execution["execution_status"],
-                    "last_run_at": execution.get("last_run_at"),
+                    "last_run_at": format_utc_iso(execution.get("last_run_at")),
                     "last_change_status": change_status,
                     "last_status": change_status,
                     "last_run_history_id": execution.get("last_run_history_id"),
@@ -253,7 +256,7 @@ class SQLiteMonitorRepository:
         if self.get_by_id(normalized["id"]) is not None:
             raise ValueError(f"Monitor already exists: {normalized['id']}")
 
-        now = datetime.now().isoformat()
+        now = utc_now_iso()
         with self._connect() as connection:
             connection.execute(
                 """
@@ -298,7 +301,7 @@ class SQLiteMonitorRepository:
         normalized = normalize_legacy_source(merged)
         validate_monitor(normalized)
 
-        now = datetime.now().isoformat()
+        now = utc_now_iso()
         with self._connect() as connection:
             connection.execute(
                 """
@@ -377,7 +380,7 @@ class SQLiteMonitorRepository:
         last_error: str | None = None,
         last_run_history_id: str | None = None,
     ) -> None:
-        now = datetime.now().isoformat()
+        now = utc_now_iso()
         with self._connect() as connection:
             connection.execute(
                 """

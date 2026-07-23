@@ -141,13 +141,37 @@
                             </select>
                         </div>
                         <div class="col-md-4 mb-3">
-                            <label for="monitorMaxDepth" class="form-label">Max Depth</label>
+                            <label for="monitorMaxDepth" class="form-label">
+                                Max Depth
+                                <span class="text-muted ms-1" data-bs-toggle="tooltip" title="Depth 0 = homepage only. Depth 1 = homepage + first-level pages. Depth 2 = homepage + second-level pages. Depth 3 = deeper websites.">ⓘ</span>
+                            </label>
                             <input type="number" class="form-control" id="monitorMaxDepth" min="0" value="0" required>
+                            <div id="monitorMaxDepthWarning" class="form-text text-warning d-none">
+                                Large depth may significantly increase runtime.
+                            </div>
                         </div>
                         <div class="col-md-4 mb-3">
-                            <label for="monitorMaxPages" class="form-label">Max Pages</label>
+                            <label for="monitorMaxPages" class="form-label">
+                                Max Pages
+                                <span class="text-muted ms-1" data-bs-toggle="tooltip" title="Maximum monitored pages after discovery. Homepage is included.">ⓘ</span>
+                            </label>
                             <input type="number" class="form-control" id="monitorMaxPages" min="1" value="1" required>
+                            <div id="monitorMaxPagesWarning" class="form-text text-warning d-none">
+                                Large page limits may impact performance.
+                            </div>
                         </div>
+                    </div>
+
+                    <div id="smartDiscoveryHelp" class="alert alert-light border small d-none mb-3">
+                        <strong>Smart Discovery</strong>
+                        <ul class="mb-2 mt-2">
+                            <li>Starts from the homepage</li>
+                            <li>Recursively discovers child pages</li>
+                            <li>Homepage counts toward Max Pages</li>
+                            <li>Discovery depth controls recursion</li>
+                            <li>Only pages within the same site are considered</li>
+                        </ul>
+                        <div class="text-muted">Recommended: Depth <strong>2</strong>, Pages <strong>10</strong></div>
                     </div>
 
                     <div class="form-check">
@@ -175,6 +199,12 @@ const monitorForm = document.getElementById("monitorForm");
 const alertContainer = document.getElementById("alertContainer");
 let monitorsCache = [];
 let categoryOptionsCache = [];
+
+const SINGLE_DEFAULTS = { depth: 0, pages: 1 };
+const SMART_DEFAULTS = { depth: 2, pages: 10 };
+let depthManuallySet = false;
+let pagesManuallySet = false;
+let editingExistingMonitor = false;
 
 const CATEGORY_ACRONYMS = new Set(["eu", "ai", "dsa", "dma", "gdpr", "uk", "us"]);
 
@@ -262,19 +292,7 @@ function formatCrawlMode(value) {
 }
 
 function formatLastRun(value) {
-    if (!value) {
-        return "—";
-    }
-    const parsed = new Date(value);
-    if (Number.isNaN(parsed.getTime())) {
-        return value;
-    }
-    const yyyy = parsed.getFullYear();
-    const mm = String(parsed.getMonth() + 1).padStart(2, "0");
-    const dd = String(parsed.getDate()).padStart(2, "0");
-    const hh = String(parsed.getHours()).padStart(2, "0");
-    const min = String(parsed.getMinutes()).padStart(2, "0");
-    return `${yyyy}-${mm}-${dd} ${hh}:${min}`;
+    return formatTimestamp(value);
 }
 
 function changeStatusBadge(status) {
@@ -506,8 +524,56 @@ async function runMonitor(button) {
 
 function setCrawlDefaults() {
     document.getElementById("monitorCrawlMode").value = "single";
-    document.getElementById("monitorMaxDepth").value = "0";
-    document.getElementById("monitorMaxPages").value = "1";
+    document.getElementById("monitorMaxDepth").value = String(SINGLE_DEFAULTS.depth);
+    document.getElementById("monitorMaxPages").value = String(SINGLE_DEFAULTS.pages);
+    depthManuallySet = false;
+    pagesManuallySet = false;
+    updateSmartDiscoveryUi();
+}
+
+function isSingleDefaultDepth() {
+    const value = Number(document.getElementById("monitorMaxDepth").value);
+    return value === SINGLE_DEFAULTS.depth;
+}
+
+function isSingleDefaultPages() {
+    const value = Number(document.getElementById("monitorMaxPages").value);
+    return value === SINGLE_DEFAULTS.pages;
+}
+
+function applySmartDiscoveryDefaults() {
+    if (editingExistingMonitor) {
+        return;
+    }
+    const mode = document.getElementById("monitorCrawlMode").value;
+    if (mode !== "smart") {
+        return;
+    }
+    if (!depthManuallySet || isSingleDefaultDepth()) {
+        document.getElementById("monitorMaxDepth").value = String(SMART_DEFAULTS.depth);
+    }
+    if (!pagesManuallySet || isSingleDefaultPages()) {
+        document.getElementById("monitorMaxPages").value = String(SMART_DEFAULTS.pages);
+    }
+}
+
+function updateSmartDiscoveryUi() {
+    const mode = document.getElementById("monitorCrawlMode").value;
+    const help = document.getElementById("smartDiscoveryHelp");
+    const depthWarning = document.getElementById("monitorMaxDepthWarning");
+    const pagesWarning = document.getElementById("monitorMaxPagesWarning");
+    const depth = Number(document.getElementById("monitorMaxDepth").value);
+    const pages = Number(document.getElementById("monitorMaxPages").value);
+
+    help.classList.toggle("d-none", mode !== "smart");
+    depthWarning.classList.toggle("d-none", !(mode === "smart" && depth > 5));
+    pagesWarning.classList.toggle("d-none", !(mode === "smart" && pages > 50));
+}
+
+function initMonitorTooltips() {
+    document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach((element) => {
+        bootstrap.Tooltip.getOrCreateInstance(element);
+    });
 }
 
 function parseKeywords(text) {
@@ -538,6 +604,7 @@ function openCreateModal() {
     document.getElementById("monitorId").value = "";
     monitorForm.reset();
     document.getElementById("monitorEnabled").checked = true;
+    editingExistingMonitor = false;
     setCrawlDefaults();
     loadCategoryOptions();
     document.getElementById("monitorCategory").value = "";
@@ -565,6 +632,10 @@ async function openEditModal(monitorId) {
     document.getElementById("monitorMaxDepth").value = monitor.max_depth ?? 0;
     document.getElementById("monitorMaxPages").value = monitor.max_pages ?? 1;
     document.getElementById("monitorEnabled").checked = monitor.enabled;
+    editingExistingMonitor = true;
+    depthManuallySet = true;
+    pagesManuallySet = true;
+    updateSmartDiscoveryUi();
     updateCategoryPreview();
     monitorModal.show();
 }
@@ -627,6 +698,19 @@ monitorForm.addEventListener("submit", async (event) => {
 
 document.getElementById("addMonitorBtn").addEventListener("click", openCreateModal);
 document.getElementById("monitorCategory").addEventListener("input", updateCategoryPreview);
+document.getElementById("monitorCrawlMode").addEventListener("change", () => {
+    applySmartDiscoveryDefaults();
+    updateSmartDiscoveryUi();
+});
+document.getElementById("monitorMaxDepth").addEventListener("input", () => {
+    depthManuallySet = true;
+    updateSmartDiscoveryUi();
+});
+document.getElementById("monitorMaxPages").addEventListener("input", () => {
+    pagesManuallySet = true;
+    updateSmartDiscoveryUi();
+});
+initMonitorTooltips();
 loadCategoryOptions();
 loadMonitors();
 </script>

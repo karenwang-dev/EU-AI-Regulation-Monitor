@@ -43,23 +43,37 @@
                 <div class="text-muted small">Last monitoring run</div>
                 <div class="fw-semibold">
                     {% if recent_activity.last_monitoring_run_id %}
-                    <a href="/runs/{{ recent_activity.last_monitoring_run_id }}">{{ recent_activity.last_monitoring_display }}</a>
+                    <a href="/runs/{{ recent_activity.last_monitoring_run_id }}">
+                        <span
+                            data-testid="dashboard-last-monitoring-run"
+                            data-timestamp="{{ recent_activity.last_monitoring_timestamp or '' }}">—</span>
+                    </a>
                     {% else %}
-                    {{ recent_activity.last_monitoring_display }}
+                    <span
+                        data-testid="dashboard-last-monitoring-run"
+                        data-timestamp="{{ recent_activity.last_monitoring_timestamp or '' }}">N/A</span>
                     {% endif %}
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="text-muted small">Changed regulations</div>
-                <div class="fw-semibold">{{ recent_activity.changed_regulations_display }}</div>
+                <div class="fw-semibold" data-testid="dashboard-changed-regulations">
+                    {{ recent_activity.changed_regulations_display }}
+                </div>
             </div>
             <div class="col-md-3">
                 <div class="text-muted small">Latest report</div>
-                <div class="fw-semibold">{{ recent_activity.latest_report_display }}</div>
+                <div class="fw-semibold">
+                    <span
+                        data-testid="dashboard-latest-report"
+                        data-timestamp="{{ recent_activity.latest_report_timestamp or '' }}">N/A</span>
+                </div>
             </div>
             <div class="col-md-3">
                 <div class="text-muted small">Status</div>
-                <div class="fw-semibold">{{ recent_activity.monitoring_status_display }}</div>
+                <div class="fw-semibold" data-testid="dashboard-monitoring-status">
+                    {{ recent_activity.monitoring_status_display }}
+                </div>
             </div>
         </div>
     </div>

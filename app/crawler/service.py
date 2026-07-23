@@ -1,6 +1,7 @@
-from datetime import datetime
 from typing import Any
 from urllib.parse import urlparse
+
+from app.utils.datetime_utils import utc_now_iso
 
 from firecrawl import FirecrawlApp
 
@@ -82,7 +83,7 @@ def _crawl_pdf(source: dict) -> dict:
         "url": url,
         "title": title,
         "markdown": markdown,
-        "timestamp": datetime.now().isoformat(),
+        "timestamp": utc_now_iso(),
     }
 
 
@@ -97,7 +98,7 @@ def _finalize_crawl_result(source: dict, *, title: str, markdown: str) -> dict:
         "title": title,
         "markdown": cleaned_markdown,
         "raw_markdown": markdown,
-        "timestamp": datetime.now().isoformat(),
+        "timestamp": utc_now_iso(),
         "crawl_depth": source.get("discovered_depth", 0),
         "parent_url": source.get("parent_url") or monitor.get("url"),
         "url_slug": _url_slug(target_url),

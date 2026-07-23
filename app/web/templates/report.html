@@ -18,7 +18,8 @@
         </button>
         {% if report and report.generated_at %}
         <div class="text-muted small">
-            Latest report generated on {{ report.generated_at_display or report.generated_at }}
+            Latest report generated on
+            <span data-timestamp="{{ report.generated_at or '' }}">—</span>
         </div>
         {% endif %}
     </div>

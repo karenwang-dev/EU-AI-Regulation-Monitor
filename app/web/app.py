@@ -5,7 +5,10 @@ from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse, RedirectResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+
+from app.utils.datetime_utils import format_utc_iso, utc_now_iso, utc_today_prefix
 
 from app.monitors.display_helpers import (
     change_status_badge_class,
@@ -86,6 +89,7 @@ from app.version import APP_NAME, APP_VERSION, APP_PRODUCT_TITLE, get_version_di
 
 
 TEMPLATES_DIR = Path(__file__).resolve().parent / "templates"
+STATIC_DIR = Path(__file__).resolve().parent / "static"
 templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
 templates.env.globals["dashboard_risk_card_classes"] = get_dashboard_risk_card_classes
 templates.env.globals["format_category_label"] = format_category_label
@@ -156,7 +160,7 @@ def _build_health_payload(storage: StorageService) -> dict:
 
     return {
         "status": overall_status,
-        "timestamp": datetime.now().isoformat(timespec="seconds"),
+        "timestamp": utc_now_iso(),
         "database": database_status,
         "scheduler": scheduler_status,
         "configuration": configuration_status,
@@ -220,7 +224,7 @@ def _count_changes_by_impact(storage: StorageService) -> dict[str, int]:
 
 
 def _count_todays_changes(storage: StorageService) -> int:
-    today_prefix = datetime.now().strftime("%Y-%m-%d")
+    today_prefix = utc_today_prefix()
 
     with storage._connect() as connection:
         row = connection.execute(
@@ -283,10 +287,10 @@ def _build_dashboard_recent_activity(
     latest_report = get_latest_report(reports_dir=reports_dir)
 
     return {
-        "last_monitoring_display": (
-            _format_dashboard_timestamp(last_run.get("timestamp", ""))
+        "last_monitoring_timestamp": (
+            format_utc_iso(last_run.get("timestamp", ""))
             if last_run
-            else "N/A"
+            else None
         ),
         "last_monitoring_run_id": (
             (
@@ -305,10 +309,10 @@ def _build_dashboard_recent_activity(
             if last_run
             else "N/A"
         ),
-        "latest_report_display": (
-            _format_report_timestamp(latest_report.get("generated_at", ""))
+        "latest_report_timestamp": (
+            format_utc_iso(latest_report.get("generated_at", ""))
             if latest_report
-            else "N/A"
+            else None
         ),
         "monitoring_status_display": _build_monitoring_status_display(last_run),
     }
@@ -367,7 +371,7 @@ def _get_changes_for_dashboard(
                     diff["source_id"],
                 ),
                 "source_id": diff["source_id"],
-                "date": diff["created_at"],
+                "date": format_utc_iso(diff["created_at"]) or diff["created_at"],
                 "analysis": impact_data,
                 "impact_level": impact_level,
                 "impact_label": format_impact_label(impact_level),
@@ -550,6 +554,9 @@ def create_dashboard_app(
     storage = storage_service or _get_service()
     app = FastAPI(title="AI Regulation Monitor Dashboard")
 
+    if STATIC_DIR.exists():
+        app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
+
     if monitors_repository is None and monitors_file is not None:
         from app.monitors.repository import get_monitor_repository
 
@@ -723,8 +730,6 @@ def create_dashboard_app(
                 ),
                 "change_badge": change_status_badge_class(run.get("change_status")),
                 "change_label": format_change_status_label(run.get("change_status")),
-                "started_display": _format_dashboard_timestamp(run.get("started_at", "")),
-                "finished_display": _format_dashboard_timestamp(run.get("finished_at", "")),
                 "duration_display": duration_display,
             },
         )
@@ -857,9 +862,8 @@ def create_dashboard_app(
         if report:
             report_view = {
                 **report,
-                "generated_at_display": _format_report_timestamp(
-                    report.get("generated_at", "")
-                ),
+                "generated_at": format_utc_iso(report.get("generated_at", ""))
+                or report.get("generated_at", ""),
             }
             key_changes = report.get("key_changes", [])
 

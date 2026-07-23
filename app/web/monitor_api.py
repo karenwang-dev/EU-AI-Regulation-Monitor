@@ -18,6 +18,7 @@ from app.monitors.categories import (
 from app.monitors.display_helpers import format_category_label
 from app.monitors.repository import MonitorRepository, get_monitor_repository
 from app.monitors.run_store import get_monitor_run_store
+from app.monitors.smart_discovery import validate_smart_discovery_config
 from app.run_history import RUN_HISTORY_FILE
 from app.source.source_loader import MonitorConfigError, normalize_legacy_source
 
@@ -119,6 +120,9 @@ class MonitorStore:
             "max_pages": payload.max_pages,
         }
 
+        for message in validate_smart_discovery_config(monitor):
+            raise ValueError(message)
+
         try:
             return self.repository.create(monitor)
         except MonitorConfigError as error:
@@ -150,6 +154,14 @@ class MonitorStore:
             updates["frequency"] = updates["frequency"].strip()
         if "crawl_mode" in updates:
             updates["crawl_mode"] = updates["crawl_mode"].strip()
+
+        existing = self.repository.get_by_id(monitor_id)
+        if existing is None:
+            raise LookupError(f"Monitor '{monitor_id}' not found.")
+
+        merged = {**existing, **updates}
+        for message in validate_smart_discovery_config(merged):
+            raise ValueError(message)
 
         try:
             return self.repository.update(monitor_id, updates)

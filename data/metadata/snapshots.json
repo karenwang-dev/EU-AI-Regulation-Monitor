@@ -1265,5 +1265,33 @@
     "timestamp": "2026-07-21T12:42:30.492099",
     "file": "D:\\Volume\\01- Projects\\AI_Regulation_Project\\data\\raw\\2026-07-21\\hbbtv_12th-hbbtv-symposium-and-awards-2024_124230.md",
     "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "source_id": "eu_red",
+    "url": "https://single-market-economy.ec.europa.eu/sectors/electrical-and-electronic-engineering-industries-eei/radio-equipment-directive-red_en?prefLang=el",
+    "timestamp": "2026-07-21T15:39:11.816031",
+    "file": "/app/data/raw/2026-07-21/eu_red_sectors_electrical-and-electronic-engineering-industries-eei_radio-equipment-dir_153911.md",
+    "hash": "756e59e9cccfd6754e7f94a3554f5ac5baa2c55de4de132be162315bc9bef21e"
+  },
+  {
+    "source_id": "espr",
+    "url": "https://environment.ec.europa.eu/strategy/circular-economy/ecodesign-sustainable-products-regulation_en",
+    "timestamp": "2026-07-21T15:58:21.326114",
+    "file": "/app/data/raw/2026-07-21/espr_strategy_circular-economy_ecodesign-sustainable-products-regulation_en_155821.md",
+    "hash": "49b1c4f37f7304a6390f934291a744f979f3de5ac7f2d777041ce50cbf4c5ff3"
+  },
+  {
+    "source_id": "eudr",
+    "url": "https://environment.ec.europa.eu/topics/forests/deforestation/regulation-deforestation-free-products_en",
+    "timestamp": "2026-07-22T06:32:52.334382",
+    "file": "/app/data/raw/2026-07-22/eudr_topics_forests_deforestation_regulation-deforestation-free-products_en_063252.md",
+    "hash": "27b2484307e00807243b50b0643ac7b28b269a9486e4e7cdad0b004c123fd293"
+  },
+  {
+    "source_id": "espr",
+    "url": "https://environment.ec.europa.eu/document/download/5f7ff5e2-ebe9-4bd4-a139-db881bd6398f_en?filename=FAQ-UPDATE-4th-Iteration_clean.pdf",
+    "timestamp": "2026-07-22T08:00:34.774038",
+    "file": "/app/data/raw/2026-07-22/espr_document_download_5f7ff5e2-ebe9-4bd4-a139-db881bd6398f_en_filename_FAQ-UPDATE-4t_080034.md",
+    "hash": "a0db9709d8c70919e9385bd59efcb69117f90f83a9560ac67a0d81c4f5292fcf"
   }
 ]

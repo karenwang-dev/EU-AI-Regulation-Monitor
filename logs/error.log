@@ -387,3 +387,73 @@ Traceback (most recent call last):
   File "D:\Volume\01- Projects\AI_Regulation_Project\app\monitors\execution.py", line 176, in _run_monitor_locked
     raise MonitorRunPersistenceError(
 app.monitors.execution.MonitorRunPersistenceError: Failed to save monitor run
+2026-07-22 09:58:02 ERROR [regulation_monitor.app.notification.email_sender] SMTP delivery failed (SMTPAuthenticationError): host=mail.hisense.com port=465 use_ssl=True use_tls=False
+Traceback (most recent call last):
+  File "/app/app/notification/email_sender.py", line 239, in send_smtp_message
+    server.login(username, password)
+  File "/usr/local/lib/python3.11/smtplib.py", line 750, in login
+    raise last_exception
+  File "/usr/local/lib/python3.11/smtplib.py", line 739, in login
+    (code, resp) = self.auth(
+                   ^^^^^^^^^^
+  File "/usr/local/lib/python3.11/smtplib.py", line 662, in auth
+    raise SMTPAuthenticationError(code, resp)
+smtplib.SMTPAuthenticationError: (550, b'User suspended')
+2026-07-22 09:58:02 ERROR [regulation_monitor.app.web.email_settings_api] Email settings test failed after SMTP send attempt
+Traceback (most recent call last):
+  File "/app/app/notification/email_sender.py", line 239, in send_smtp_message
+    server.login(username, password)
+  File "/usr/local/lib/python3.11/smtplib.py", line 750, in login
+    raise last_exception
+  File "/usr/local/lib/python3.11/smtplib.py", line 739, in login
+    (code, resp) = self.auth(
+                   ^^^^^^^^^^
+  File "/usr/local/lib/python3.11/smtplib.py", line 662, in auth
+    raise SMTPAuthenticationError(code, resp)
+smtplib.SMTPAuthenticationError: (550, b'User suspended')
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/app/app/web/email_settings_api.py", line 68, in api_send_email_settings_test
+    sender(
+  File "/app/app/notification/email_sender.py", line 256, in send_email
+    send_smtp_message(
+  File "/app/app/notification/email_sender.py", line 243, in send_smtp_message
+    raise EmailSendError(str(error)) from error
+app.notification.email_sender.EmailSendError: (550, b'User suspended')
+2026-07-22 10:00:02 ERROR [regulation_monitor.app.notification.email_sender] SMTP delivery failed (SMTPAuthenticationError): host=mail.hisense.com port=465 use_ssl=True use_tls=False
+Traceback (most recent call last):
+  File "/app/app/notification/email_sender.py", line 239, in send_smtp_message
+    server.login(username, password)
+  File "/usr/local/lib/python3.11/smtplib.py", line 750, in login
+    raise last_exception
+  File "/usr/local/lib/python3.11/smtplib.py", line 739, in login
+    (code, resp) = self.auth(
+                   ^^^^^^^^^^
+  File "/usr/local/lib/python3.11/smtplib.py", line 662, in auth
+    raise SMTPAuthenticationError(code, resp)
+smtplib.SMTPAuthenticationError: (550, b'User suspended')
+2026-07-22 10:00:02 ERROR [regulation_monitor.app.web.report_email_helper] Report test email failed: (550, b'User suspended')
+Traceback (most recent call last):
+  File "/app/app/notification/email_sender.py", line 239, in send_smtp_message
+    server.login(username, password)
+  File "/usr/local/lib/python3.11/smtplib.py", line 750, in login
+    raise last_exception
+  File "/usr/local/lib/python3.11/smtplib.py", line 739, in login
+    (code, resp) = self.auth(
+                   ^^^^^^^^^^
+  File "/usr/local/lib/python3.11/smtplib.py", line 662, in auth
+    raise SMTPAuthenticationError(code, resp)
+smtplib.SMTPAuthenticationError: (550, b'User suspended')
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/app/app/web/report_email_helper.py", line 503, in send_test_report_email
+    send_email_fn(
+  File "/app/app/notification/email_sender.py", line 256, in send_email
+    send_smtp_message(
+  File "/app/app/notification/email_sender.py", line 243, in send_smtp_message
+    raise EmailSendError(str(error)) from error
+app.notification.email_sender.EmailSendError: (550, b'User suspended')

@@ -606,12 +606,18 @@ class MonitoringPipeline:
         source_id = normalized["source_id"]
 
         try:
+            discovery_summary: dict | None = None
             if source.get("id") == LOCAL_TEST_MONITOR_ID:
                 from app.dev.change_test_site import build_local_test_monitor_urls
 
                 url_targets = build_local_test_monitor_urls(source["url"], source)
             else:
-                url_targets = self.resolve_monitor_urls_fn(source)
+                resolve_result = self.resolve_monitor_urls_fn(source)
+                if hasattr(resolve_result, "urls"):
+                    url_targets = resolve_result.urls
+                    discovery_summary = resolve_result.discovery_summary
+                else:
+                    url_targets = resolve_result
 
             previous_urls = self.get_distinct_monitor_urls_fn(source_id)
             normalized_previous = {normalize_page_url(url) for url in previous_urls}
@@ -711,6 +717,8 @@ class MonitoringPipeline:
                 url_results,
                 summary,
             )
+            if discovery_summary is not None:
+                aggregated["discovery_summary"] = discovery_summary
             self._log_monitor_run(
                 source,
                 url_targets,

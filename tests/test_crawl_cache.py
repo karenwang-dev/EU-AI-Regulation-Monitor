@@ -7,6 +7,7 @@ from pathlib import Path
 from unittest.mock import MagicMock
 
 from app.crawler.crawl_cache import FREQUENCY_TTL_DAYS, should_crawl
+from app.utils.datetime_utils import utc_now
 from app.pipeline import MonitoringPipeline
 from app.analysis.diff_processor import create_diff_result
 from app.storage.service import StorageService
@@ -111,12 +112,12 @@ class TestShouldCrawl(unittest.TestCase):
             self.snapshot["id"],
             self.snapshot["hash"],
         )
-        now = datetime.now()
+        now = utc_now()
 
         self.assertFalse(self._should_crawl("daily", now))
 
     def test_expired_cache_requires_crawl(self):
-        crawled_at = datetime.now() - timedelta(days=2)
+        crawled_at = utc_now() - timedelta(days=2)
         with self.store._connect() as connection:
             connection.execute(
                 """
@@ -137,7 +138,7 @@ class TestShouldCrawl(unittest.TestCase):
                 ),
             )
 
-        self.assertTrue(self._should_crawl("daily", datetime.now()))
+        self.assertTrue(self._should_crawl("daily", utc_now()))
 
     def test_frequency_ttl_values(self):
         self.assertEqual(FREQUENCY_TTL_DAYS["daily"], 1)
@@ -146,7 +147,7 @@ class TestShouldCrawl(unittest.TestCase):
         self.assertEqual(FREQUENCY_TTL_DAYS["monthly"], 30)
 
     def test_weekly_cache_valid_before_seven_days(self):
-        crawled_at = datetime.now() - timedelta(days=6)
+        crawled_at = utc_now() - timedelta(days=6)
         with self.store._connect() as connection:
             connection.execute(
                 """
@@ -167,7 +168,7 @@ class TestShouldCrawl(unittest.TestCase):
                 ),
             )
 
-        self.assertFalse(self._should_crawl("weekly", datetime.now()))
+        self.assertFalse(self._should_crawl("weekly", utc_now()))
 
 
 class TestPipelineCrawlCache(unittest.TestCase):

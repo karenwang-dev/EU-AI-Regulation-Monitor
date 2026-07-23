@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import json
-from datetime import datetime
+from app.utils.datetime_utils import utc_now_iso
 from pathlib import Path
 
 DEFAULT_STATUS_FILE = Path("data/scheduler_status.json")
@@ -28,7 +28,7 @@ def _save_status(data: dict, status_file: Path | None = None) -> None:
 def record_job_start(job_name: str, status_file: Path | None = None) -> None:
     data = _load_status(status_file)
     jobs = data.setdefault("jobs", {})
-    now = datetime.now().isoformat(timespec="seconds")
+    now = utc_now_iso()
 
     jobs[job_name] = {
         "status": "running",
@@ -43,7 +43,7 @@ def record_job_start(job_name: str, status_file: Path | None = None) -> None:
 def record_job_success(job_name: str, status_file: Path | None = None) -> None:
     data = _load_status(status_file)
     jobs = data.setdefault("jobs", {})
-    now = datetime.now().isoformat(timespec="seconds")
+    now = utc_now_iso()
     job = jobs.setdefault(job_name, {})
 
     job["status"] = "success"
@@ -60,7 +60,7 @@ def record_job_failure(
 ) -> None:
     data = _load_status(status_file)
     jobs = data.setdefault("jobs", {})
-    now = datetime.now().isoformat(timespec="seconds")
+    now = utc_now_iso()
     job = jobs.setdefault(job_name, {})
 
     job["status"] = "failure"

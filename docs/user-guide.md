@@ -26,6 +26,41 @@ Monitors define which regulation websites to track.
    - **Enabled** — toggle to include in scheduled runs
 3. Save the monitor. Changes are written to `config/monitors.json`.
 
+### Smart Discovery
+
+Smart Discovery starts at the monitor homepage, recursively discovers relevant child pages on the same site, ranks candidates, and crawls the top pages up to your **Max Pages** limit.
+
+```mermaid
+flowchart TD
+    A[Homepage] --> B[Recursive Discovery]
+    B --> C[Ranking]
+    C --> D[Selected Pages]
+    D --> E[Content Crawl]
+```
+
+Process overview:
+
+1. **Homepage** — discovery begins at the configured monitor URL.
+2. **Recursive Discovery** — child links are fetched up to **Max Depth**, filtered by keywords, domain rules, and safety limits.
+3. **Ranking** — candidate pages are scored using keywords, category terms, and URL/title signals.
+4. **Selected Pages** — the highest-ranked pages are kept, including the homepage, up to **Max Pages**.
+5. **Content Crawl** — each selected page is fetched and compared against prior snapshots.
+
+Recommended Smart Discovery settings:
+
+- **Max Depth:** `2`
+- **Max Pages:** `10`
+
+The homepage always counts toward **Max Pages**. When you choose Smart Discovery for a new monitor, the dashboard applies these defaults unless you have already changed depth or page limits manually.
+
+Safety limits during discovery:
+
+- Up to **200** candidate URLs per run
+- Up to **100** crawlable links parsed per fetched page
+- Tracking query parameters (for example `utm_*`, `fbclid`, `gclid`) are removed before deduplication
+
+After each run, open **Run Details** to review the **Discovery Summary** (pages fetched, candidates, skips, and any discovery fetch errors).
+
 ### Via Configuration File
 
 Edit `config/monitors.json` directly and restart the scheduler if it is running.
@@ -60,11 +95,17 @@ This crawls all enabled sources, compares snapshots, runs AI analysis on changes
 python main.py scheduler
 ```
 
-The scheduler runs:
+The scheduler runs (all times **Europe/Berlin** by default, configurable via `APP_TIMEZONE`):
 
-- **Daily monitors** — every day at 08:00
-- **Weekly monitors** — every Monday at 08:00
-- **Weekly report** — every Monday at 08:30 (configurable in `config/report.json`)
+- **Daily monitors** — every day at 08:00 Europe/Berlin
+- **Weekly monitors** — every Monday at 08:00 Europe/Berlin
+- **Weekly report** — every Monday at 08:30 Europe/Berlin (configurable in `config/report.json`)
+
+### Time display
+
+- Database timestamps are stored in **UTC** with an explicit offset (`+00:00`).
+- The dashboard converts timestamps to your **browser's local timezone** automatically.
+- Legacy naive timestamps from earlier releases are interpreted as UTC when displayed.
 
 ### Check Status
 

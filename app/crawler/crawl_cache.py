@@ -3,6 +3,7 @@ from __future__ import annotations
 from datetime import datetime, timedelta
 
 from app.storage.service import get_crawl_cache
+from app.utils.datetime_utils import parse_datetime, utc_now
 
 
 FREQUENCY_TTL_DAYS = {
@@ -27,6 +28,8 @@ def should_crawl(
     if ttl_days is None:
         return True
 
-    reference_time = now or datetime.now()
-    last_crawled_at = datetime.fromisoformat(cache_entry["last_crawled_at"])
+    reference_time = now or utc_now()
+    last_crawled_at = parse_datetime(cache_entry["last_crawled_at"])
+    if last_crawled_at is None:
+        return True
     return reference_time - last_crawled_at >= timedelta(days=ttl_days)

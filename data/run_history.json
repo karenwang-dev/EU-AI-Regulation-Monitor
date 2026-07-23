@@ -626,5 +626,97 @@
       31
     ],
     "primary_run_id": 31
+  },
+  {
+    "timestamp": "2026-07-21T15:39:11.958936",
+    "total_monitors": 1,
+    "changed_count": 0,
+    "analyzed_count": 0,
+    "failed_count": 0,
+    "run_history_id": "72",
+    "run_ids": [
+      32
+    ],
+    "primary_run_id": 32
+  },
+  {
+    "timestamp": "2026-07-21T15:58:21.422110",
+    "total_monitors": 1,
+    "changed_count": 0,
+    "analyzed_count": 0,
+    "failed_count": 0,
+    "run_history_id": "73",
+    "run_ids": [
+      33
+    ],
+    "primary_run_id": 33
+  },
+  {
+    "timestamp": "2026-07-22T06:32:52.460986",
+    "total_monitors": 1,
+    "changed_count": 0,
+    "analyzed_count": 0,
+    "failed_count": 0,
+    "run_history_id": "74",
+    "run_ids": [
+      34
+    ],
+    "primary_run_id": 34
+  },
+  {
+    "timestamp": "2026-07-22T08:00:34.903686",
+    "total_monitors": 3,
+    "changed_count": 0,
+    "analyzed_count": 0,
+    "failed_count": 0,
+    "run_history_id": "75"
+  },
+  {
+    "timestamp": "2026-07-22T13:45:20.608030",
+    "total_monitors": 1,
+    "changed_count": 0,
+    "analyzed_count": 0,
+    "failed_count": 0,
+    "run_history_id": "76",
+    "run_ids": [
+      35
+    ],
+    "primary_run_id": 35
+  },
+  {
+    "timestamp": "2026-07-22T13:46:43.675592",
+    "total_monitors": 1,
+    "changed_count": 0,
+    "analyzed_count": 0,
+    "failed_count": 0,
+    "run_history_id": "77",
+    "run_ids": [
+      36
+    ],
+    "primary_run_id": 36
+  },
+  {
+    "timestamp": "2026-07-22T15:12:24.690443",
+    "total_monitors": 1,
+    "changed_count": 0,
+    "analyzed_count": 0,
+    "failed_count": 0,
+    "run_history_id": "78",
+    "run_ids": [
+      37
+    ],
+    "primary_run_id": 37
+  },
+  {
+    "timestamp": "2026-07-22T15:12:39.921736",
+    "total_monitors": 1,
+    "changed_count": 0,
+    "analyzed_count": 0,
+    "failed_count": 0,
+    "run_history_id": "79",
+    "run_ids": [
+      38
+    ],
+    "primary_run_id": 38
   }
 ]

@@ -114,6 +114,11 @@ def validate_monitor(monitor: dict, index: int | None = None) -> None:
             f"{label} '{monitor.get('id', '')}': fetch_mode must be firecrawl or http"
         )
 
+    from app.monitors.smart_discovery import validate_smart_discovery_config
+
+    for message in validate_smart_discovery_config(monitor):
+        raise MonitorConfigError(f"{label} '{monitor.get('id', '')}': {message}")
+
 
 def normalize_legacy_source(source: dict) -> dict:
     return {

@@ -2,9 +2,11 @@ from __future__ import annotations
 
 from apscheduler.schedulers.base import BaseScheduler
 from apscheduler.triggers.cron import CronTrigger
+from zoneinfo import ZoneInfo
 
 from app.core.logging import get_logger
 from app.report.config import load_report_config, normalize_report_config
+from app.utils.datetime_utils import get_app_timezone
 
 logger = get_logger(__name__)
 
@@ -40,6 +42,7 @@ def schedule_weekly_report(
     config: dict | None = None,
     *,
     job_fn=generate_weekly_report_job,
+    timezone: ZoneInfo | None = None,
 ) -> bool:
     report_config = normalize_report_config(
         config or load_report_config()
@@ -51,12 +54,15 @@ def schedule_weekly_report(
     if report_config.get("frequency", "weekly") != "weekly":
         return False
 
+    tz = timezone or get_app_timezone()
+
     scheduler.add_job(
         job_fn,
         CronTrigger(
             day_of_week=report_config["day"],
             hour=report_config["hour"],
             minute=report_config["minute"],
+            timezone=tz,
         ),
         id="weekly_report_generation",
         name="Weekly report generation",

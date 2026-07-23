@@ -1,8 +1,13 @@
 import hashlib
 import json
 import sqlite3
+from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
+from typing import Iterator
+
+from app.core.sqlite_utils import open_sqlite_connection
+from app.utils.datetime_utils import parse_datetime, utc_now_iso
 
 
 RAW_DIR = Path("data/raw")
@@ -125,10 +130,10 @@ class StorageService:
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
         self._init_db()
 
-    def _connect(self) -> sqlite3.Connection:
-        connection = sqlite3.connect(self.db_path)
-        connection.row_factory = sqlite3.Row
-        return connection
+    @contextmanager
+    def _connect(self) -> Iterator[sqlite3.Connection]:
+        with open_sqlite_connection(self.db_path) as connection:
+            yield connection
 
     def _init_db(self) -> None:
         with self._connect() as connection:
@@ -242,7 +247,10 @@ class StorageService:
             json.dump(data, file, indent=2, ensure_ascii=False)
 
     def save_snapshot(self, crawl_result: dict) -> dict:
-        captured_at = datetime.fromisoformat(crawl_result["timestamp"])
+        captured_at = parse_datetime(crawl_result["timestamp"])
+        if captured_at is None:
+            raise ValueError("Crawl result timestamp is required")
+        captured_at = captured_at.replace(tzinfo=None)
         markdown = crawl_result["markdown"]
         content_hash = calculate_hash(markdown)
         file_path = self._write_markdown_file(
@@ -372,7 +380,7 @@ class StorageService:
         snapshot_id: int,
         content_hash: str,
     ) -> dict:
-        now = datetime.now().isoformat()
+        now = utc_now_iso()
 
         with self._connect() as connection:
             existing = connection.execute(
@@ -420,7 +428,7 @@ class StorageService:
             if snapshot is None:
                 raise ValueError(f"Snapshot not found: {snapshot_id}")
 
-            created_at = datetime.now().isoformat()
+            created_at = utc_now_iso()
             cursor = connection.execute(
                 """
                 INSERT INTO analyses (
@@ -475,7 +483,7 @@ class StorageService:
         ]
 
     def save_diff(self, diff_result: dict) -> dict:
-        created_at = datetime.now().isoformat()
+        created_at = utc_now_iso()
 
         with self._connect() as connection:
             cursor = connection.execute(
@@ -628,7 +636,7 @@ class StorageService:
         }
 
     def save_knowledge_item(self, item: dict) -> dict:
-        created_at = datetime.now().isoformat()
+        created_at = utc_now_iso()
         countries = item.get("countries", [])
         products = item.get("products", [])
         modules = item.get("modules", [])

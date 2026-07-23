@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from urllib.parse import parse_qsl, urlencode, urlparse, urlunparse
 
+from app.crawler.discovery_constants import TRACKING_QUERY_PARAMS
+
 
 def normalize_page_url(url: str) -> str:
     parsed = urlparse(str(url or "").strip())
@@ -14,7 +16,11 @@ def normalize_page_url(url: str) -> str:
     if path != "/":
         path = path.rstrip("/")
 
-    query_pairs = parse_qsl(parsed.query, keep_blank_values=True)
+    query_pairs = [
+        (key, value)
+        for key, value in parse_qsl(parsed.query, keep_blank_values=True)
+        if key.lower() not in TRACKING_QUERY_PARAMS
+    ]
     query = urlencode(sorted(query_pairs)) if query_pairs else ""
 
     return urlunparse((scheme, netloc, path, "", query, ""))

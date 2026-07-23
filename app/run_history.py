@@ -1,6 +1,7 @@
 import json
-from datetime import datetime
 from pathlib import Path
+
+from app.utils.datetime_utils import format_utc_iso, utc_now_iso
 
 
 RUN_HISTORY_FILE = Path("data/run_history.json")
@@ -18,7 +19,7 @@ def _summarize_results(results: list[dict]) -> dict:
             changed_count += 1
 
     return {
-        "timestamp": datetime.now().isoformat(),
+        "timestamp": utc_now_iso(),
         "total_monitors": len(results),
         "changed_count": changed_count,
         "analyzed_count": sum(
@@ -55,6 +56,7 @@ def save_run_history(
     with open(history_path, "w", encoding="utf-8") as file:
         json.dump(history, file, indent=2, ensure_ascii=False)
 
+    entry["timestamp"] = format_utc_iso(entry["timestamp"]) or entry["timestamp"]
     return entry
 
 
@@ -75,4 +77,10 @@ def get_latest_run(
     history = load_run_history(history_file=history_file)
     if not history:
         return None
-    return history[-1]
+    latest = history[-1]
+    if latest.get("timestamp"):
+        latest = {
+            **latest,
+            "timestamp": format_utc_iso(latest["timestamp"]) or latest["timestamp"],
+        }
+    return latest

@@ -8,6 +8,9 @@ services:
       - "8080:8080"
     env_file:
       - .env
+    environment:
+      APP_TIMEZONE: Europe/Berlin
+      TZ: Europe/Berlin
     volumes:
       - ./data:/app/data
       - ./config:/app/config
@@ -27,6 +30,9 @@ services:
     command: python main.py scheduler
     env_file:
       - .env
+    environment:
+      APP_TIMEZONE: Europe/Berlin
+      TZ: Europe/Berlin
     volumes:
       - ./data:/app/data
       - ./config:/app/config

@@ -56,7 +56,7 @@ class TestLinkDiscovery(unittest.TestCase):
             max_pages=10,
         )
 
-        urls = {item["url"] for item in results}
+        urls = {item["url"] for item in results.links}
         self.assertIn("https://example.com/policies/ai-act", urls)
         self.assertIn("https://example.com/policies/cybersecurity", urls)
         self.assertIn("https://example.com/downloads/guidance.pdf", urls)
@@ -79,10 +79,10 @@ class TestLinkDiscovery(unittest.TestCase):
             max_pages=10,
         )
 
-        self.assertEqual(len(results), 1)
-        self.assertEqual(results[0]["url"], "https://example.com/policies/ai-act")
-        self.assertEqual(results[0]["title"], "EU AI Act Policy")
-        self.assertEqual(results[0]["depth"], 1)
+        self.assertEqual(len(results.links), 1)
+        self.assertEqual(results.links[0]["url"], "https://example.com/policies/ai-act")
+        self.assertEqual(results.links[0]["title"], "EU AI Act Policy")
+        self.assertEqual(results.links[0]["depth"], 1)
 
     @patch("app.crawler.link_discovery._fetch_html")
     def test_discover_links_excludes_social_and_javascript_links(self, mock_fetch):
@@ -99,7 +99,7 @@ class TestLinkDiscovery(unittest.TestCase):
             max_pages=10,
         )
 
-        self.assertEqual(results, [])
+        self.assertEqual(results.links, [])
 
     @patch("app.crawler.link_discovery._fetch_html")
     def test_discover_links_respects_depth_limit(self, mock_fetch):
@@ -116,7 +116,7 @@ class TestLinkDiscovery(unittest.TestCase):
             max_depth=1,
             max_pages=10,
         )
-        depth_one_urls = {item["url"] for item in depth_one}
+        depth_one_urls = {item["url"] for item in depth_one.links}
         self.assertIn("https://example.com/policies/ai-act", depth_one_urls)
         self.assertNotIn("https://example.com/policies/nested-ai", depth_one_urls)
 
@@ -126,12 +126,53 @@ class TestLinkDiscovery(unittest.TestCase):
             max_depth=2,
             max_pages=10,
         )
-        depth_two_urls = {item["url"] for item in depth_two}
+        depth_two_urls = {item["url"] for item in depth_two.links}
         self.assertIn("https://example.com/policies/nested-ai", depth_two_urls)
         self.assertEqual(
-            next(item for item in depth_two if item["url"].endswith("nested-ai"))["depth"],
+            next(item for item in depth_two.links if item["url"].endswith("nested-ai"))["depth"],
             2,
         )
+
+    @patch("app.crawler.link_discovery._fetch_html")
+    def test_discover_links_depth_zero_only_discovers_from_homepage(self, mock_fetch):
+        mock_fetch.side_effect = self._mock_fetch(
+            {
+                "https://example.com/": ROOT_HTML,
+                "https://example.com/about": NESTED_HTML,
+            }
+        )
+
+        results = discover_links(
+            "https://example.com/",
+            keywords=["AI", "Nested", "News"],
+            max_depth=0,
+            max_pages=10,
+        )
+
+        self.assertEqual(mock_fetch.call_count, 1)
+        urls = {item["url"] for item in results.links}
+        self.assertIn("https://example.com/policies/ai-act", urls)
+        self.assertNotIn("https://example.com/policies/nested-ai", urls)
+
+    @patch("app.crawler.link_discovery._fetch_html")
+    def test_discover_links_depth_one_includes_first_level_only(self, mock_fetch):
+        mock_fetch.side_effect = self._mock_fetch(
+            {
+                "https://example.com/": ROOT_HTML,
+                "https://example.com/about": NESTED_HTML,
+            }
+        )
+
+        results = discover_links(
+            "https://example.com/",
+            keywords=["AI", "Nested", "News"],
+            max_depth=1,
+            max_pages=10,
+        )
+
+        urls = {item["url"] for item in results.links}
+        self.assertIn("https://example.com/policies/ai-act", urls)
+        self.assertNotIn("https://example.com/policies/nested-ai", urls)
 
     @patch("app.crawler.link_discovery._fetch_html")
     def test_discover_links_respects_max_pages(self, mock_fetch):
@@ -150,7 +191,7 @@ class TestLinkDiscovery(unittest.TestCase):
         )
 
         self.assertEqual(mock_fetch.call_count, 1)
-        urls = {item["url"] for item in results}
+        urls = {item["url"] for item in results.links}
         self.assertIn("https://example.com/policies/ai-act", urls)
         self.assertNotIn("https://example.com/policies/nested-ai", urls)
 
@@ -169,7 +210,7 @@ class TestLinkDiscovery(unittest.TestCase):
             max_pages=10,
         )
 
-        pdf = results[0]
+        pdf = results.links[0]
         self.assertEqual(pdf["url"], "https://example.com/downloads/guidance.pdf")
         self.assertEqual(pdf["title"], "Guidance PDF")
 
@@ -189,7 +230,7 @@ class TestLinkDiscovery(unittest.TestCase):
             max_pages=10,
         )
 
-        urls = {item["url"] for item in results}
+        urls = {item["url"] for item in results.links}
         self.assertIn("https://example.com/policies/ai-act", urls)
         self.assertNotIn("https://example.com/policies/nested-ai", urls)
 

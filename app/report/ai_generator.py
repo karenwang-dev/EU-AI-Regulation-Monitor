@@ -3,6 +3,8 @@ from __future__ import annotations
 import json
 from datetime import datetime
 
+from app.utils.datetime_utils import utc_now_iso
+
 from app.ai.analyzer import client as default_client
 from app.core.config import MODEL_NAME
 
@@ -165,7 +167,7 @@ def generate_weekly_report(
     report_data: dict,
     client=None,
 ) -> dict:
-    generated_at = datetime.now().isoformat()
+    generated_at = utc_now_iso()
     ai_client = client or default_client
 
     if not report_data.get("changes"):

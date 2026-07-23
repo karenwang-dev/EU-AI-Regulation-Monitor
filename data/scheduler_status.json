@@ -1,0 +1,11 @@
+{
+  "jobs": {
+    "daily_monitors": {
+      "status": "success",
+      "started_at": "2026-07-22T08:00:00",
+      "completed_at": "2026-07-22T08:00:34",
+      "last_error": null
+    }
+  },
+  "updated_at": "2026-07-22T08:00:34"
+}

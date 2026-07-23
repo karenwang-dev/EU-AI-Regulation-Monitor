@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import json
 from datetime import datetime
+
+from app.utils.datetime_utils import parse_datetime, utc_now, utc_now_iso
 from pathlib import Path
 
 DEFAULT_REPORTS_DIR = Path("data/reports")
@@ -23,7 +25,7 @@ def _extract_generated_date(generated_at: str) -> str:
     cleaned = str(generated_at or "").strip()
     if len(cleaned) >= 10:
         return cleaned[:10]
-    return datetime.now().date().isoformat()
+    return utc_now().date().isoformat()
 
 
 def _build_filename(generated_at: str, reports_dir: Path) -> str:
@@ -44,7 +46,7 @@ def save_report(
     reports_dir: Path | str | None = None,
 ) -> dict:
     directory = _get_reports_dir(reports_dir)
-    generated_at = str(report.get("generated_at") or datetime.now().isoformat())
+    generated_at = str(report.get("generated_at") or utc_now_iso())
     filename = _build_filename(generated_at, directory)
     report_id = _report_id_from_filename(filename)
 

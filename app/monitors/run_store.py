@@ -2,11 +2,14 @@ from __future__ import annotations
 
 import json
 import sqlite3
-from datetime import datetime
+from contextlib import contextmanager
+from app.utils.datetime_utils import format_utc_iso, utc_now_iso
 from pathlib import Path
+from typing import Iterator
 
 from app.core.json_utils import dumps_json_safe, to_json_safe
 from app.core.paths import get_default_monitor_db_path
+from app.core.sqlite_utils import open_sqlite_connection
 
 _RUNS_SCHEMA = """
 CREATE TABLE IF NOT EXISTS monitor_runs (
@@ -123,14 +126,29 @@ class MonitorRunStore:
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
         self._init_db()
 
-    def _connect(self) -> sqlite3.Connection:
-        connection = sqlite3.connect(self.db_path)
-        connection.row_factory = sqlite3.Row
-        return connection
+    @contextmanager
+    def _connect(self) -> Iterator[sqlite3.Connection]:
+        with open_sqlite_connection(self.db_path) as connection:
+            yield connection
 
     def _init_db(self) -> None:
         with self._connect() as connection:
             connection.executescript(_RUNS_SCHEMA)
+            self._migrate_schema(connection)
+
+    def _migrate_schema(self, connection: sqlite3.Connection) -> None:
+        columns = {
+            row[1]
+            for row in connection.execute("PRAGMA table_info(monitor_runs)").fetchall()
+        }
+        if "discovery_summary_json" not in columns:
+            connection.execute(
+                "ALTER TABLE monitor_runs ADD COLUMN discovery_summary_json TEXT"
+            )
+
+    def close(self) -> None:
+        """Release SQLite resources (connections are opened per operation)."""
+        return None
 
     def save_run(
         self,
@@ -154,9 +172,10 @@ class MonitorRunStore:
         diff_id: int | None = None,
         error: str | None = None,
         page_results: list[dict] | None = None,
+        discovery_summary: dict | None = None,
         legacy: bool = False,
     ) -> int:
-        created_at = datetime.now().isoformat()
+        created_at = utc_now_iso()
         with self._connect() as connection:
             cursor = connection.execute(
                 """
@@ -166,8 +185,8 @@ class MonitorRunStore:
                     pages_checked, pages_changed, homepage_changed,
                     child_pages_changed, pages_added, pages_removed,
                     pages_failed, snapshot_id, diff_id, error,
-                    page_results_json, legacy, created_at
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    page_results_json, discovery_summary_json, legacy, created_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
                     monitor_id,
@@ -189,6 +208,7 @@ class MonitorRunStore:
                     diff_id,
                     error,
                     dumps_json_safe(page_results or []),
+                    dumps_json_safe(discovery_summary) if discovery_summary else None,
                     1 if legacy else 0,
                     created_at,
                 ),
@@ -212,6 +232,10 @@ class MonitorRunStore:
 
         page_results_raw = row["page_results_json"]
         page_results = json.loads(page_results_raw) if page_results_raw else []
+        discovery_summary_raw = row["discovery_summary_json"]
+        discovery_summary = (
+            json.loads(discovery_summary_raw) if discovery_summary_raw else None
+        )
         legacy = bool(row["legacy"])
 
         return {
@@ -221,8 +245,8 @@ class MonitorRunStore:
             "triggered_by": row["triggered_by"],
             "execution_status": row["execution_status"],
             "change_status": row["change_status"],
-            "started_at": row["started_at"],
-            "finished_at": row["finished_at"],
+            "started_at": format_utc_iso(row["started_at"]) or row["started_at"],
+            "finished_at": format_utc_iso(row["finished_at"]) or row["finished_at"],
             "duration_ms": row["duration_ms"],
             "pages_checked": row["pages_checked"],
             "pages_changed": row["pages_changed"],
@@ -235,6 +259,7 @@ class MonitorRunStore:
             "diff_id": row["diff_id"],
             "error": row["error"],
             "page_results": page_results,
+            "discovery_summary": discovery_summary,
             "page_details_available": bool(page_results) and not legacy,
             "legacy": legacy,
         }

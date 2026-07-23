@@ -29,9 +29,9 @@ class TestUrlResolver(unittest.TestCase):
         results = resolve_monitor_urls(monitor, discover_links_fn=discover_mock)
 
         discover_mock.assert_not_called()
-        self.assertEqual(len(results), 1)
-        self.assertEqual(results[0]["url"], monitor["url"])
-        self.assertEqual(results[0]["depth"], 0)
+        self.assertEqual(len(results.urls), 1)
+        self.assertEqual(results.urls[0]["url"], monitor["url"])
+        self.assertEqual(results.urls[0]["depth"], 0)
 
     def test_smart_mode_includes_root_and_discovered_urls(self):
         monitor = self._monitor(
@@ -63,13 +63,14 @@ class TestUrlResolver(unittest.TestCase):
             max_pages=10,
             monitor=monitor,
         )
-        self.assertEqual(len(results), 3)
-        urls = {item["url"] for item in results}
+        self.assertEqual(len(results.urls), 3)
+        urls = {item["url"] for item in results.urls}
         self.assertIn(monitor["url"], urls)
         self.assertIn("https://example.com/policies/ai-act", urls)
         self.assertIn("https://example.com/policies/cybersecurity", urls)
-        self.assertTrue(all("score" in item for item in results))
-        self.assertGreater(results[0]["score"], results[-1]["score"])
+        self.assertTrue(all("score" in item for item in results.urls))
+        self.assertGreater(results.urls[0]["score"], results.urls[-1]["score"])
+        self.assertEqual(results.discovery_summary["selected_pages"], 3)
 
     def test_smart_mode_respects_max_pages(self):
         monitor = self._monitor(
@@ -100,9 +101,16 @@ class TestUrlResolver(unittest.TestCase):
         results = resolve_monitor_urls(monitor, discover_links_fn=discover_mock)
 
         self.assertEqual(len(results), 2)
-        urls = [item["url"] for item in results]
+        urls = [item["url"] for item in results.urls]
         self.assertIn("https://example.com/policies/ai-act", urls)
-        self.assertEqual(results[0]["score"], max(item["score"] for item in results))
+        self.assertEqual(
+            results.urls[0]["url"],
+            "https://example.com/policies/ai-act",
+        )
+        self.assertEqual(
+            results.urls[0]["score"],
+            max(item["score"] for item in results.urls),
+        )
 
     def test_smart_mode_deduplicates_urls(self):
         monitor = self._monitor(
@@ -127,9 +135,9 @@ class TestUrlResolver(unittest.TestCase):
 
         results = resolve_monitor_urls(monitor, discover_links_fn=discover_mock)
 
-        urls = [item["url"] for item in results]
+        urls = [item["url"] for item in results.urls]
         self.assertEqual(len(urls), len(set(urls)))
-        self.assertEqual(len(results), 2)
+        self.assertEqual(len(results.urls), 2)
 
     def test_smart_mode_uses_ranking_before_limiting_pages(self):
         monitor = self._monitor(
@@ -173,8 +181,8 @@ class TestUrlResolver(unittest.TestCase):
         )
 
         rank_mock.assert_called_once()
-        self.assertEqual(len(results), 2)
-        self.assertEqual(results[0]["url"], "https://example.com/policies/ai-act")
+        self.assertEqual(len(results.urls), 2)
+        self.assertEqual(results.urls[0]["url"], "https://example.com/policies/ai-act")
 
 
 if __name__ == "__main__":

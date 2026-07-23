@@ -68,8 +68,16 @@ Copy `.env.example` to `.env`:
 | `FIRECRAWL_API_KEY` | Yes | Firecrawl crawling API key |
 | `SMTP_PASSWORD` | No | Email delivery for reports |
 | `APP_ENV` | No | Set `development` for dev test site routes |
+| `APP_TIMEZONE` | No | IANA timezone for scheduler cron jobs (default: `Europe/Berlin`) |
 
 See [configuration.md](configuration.md) for full SMTP and email settings.
+
+### Timezones
+
+- **Scheduler:** cron jobs fire in `APP_TIMEZONE` (default `Europe/Berlin`), including automatic CET/CEST daylight-saving transitions.
+- **Database:** all persisted timestamps are stored as UTC (`+00:00`).
+- **Dashboard:** timestamps render in each user's browser local timezone.
+- **Container logs:** optional `TZ=Europe/Berlin` is set in `docker-compose.yml` for readable log timestamps only.
 
 ---
 

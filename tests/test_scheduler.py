@@ -14,6 +14,7 @@ from app.run_history import (
 from apscheduler.triggers.cron import CronTrigger
 
 from app.scheduler import create_scheduler, execute_scheduled_run, start_scheduler
+from app.utils.datetime_utils import get_app_timezone
 
 
 class TestRunHistory(unittest.TestCase):
@@ -30,6 +31,7 @@ class TestRunHistory(unittest.TestCase):
             entry = save_run_history(results, history_file=history_file)
 
             self.assertEqual(entry["total_monitors"], 3)
+            self.assertIn("+00:00", entry["timestamp"])
             self.assertEqual(entry["changed_count"], 1)
             self.assertEqual(entry["analyzed_count"], 1)
             self.assertEqual(entry["failed_count"], 1)
@@ -42,17 +44,34 @@ class TestRunHistory(unittest.TestCase):
 class TestScheduler(unittest.TestCase):
 
     @patch("app.scheduler.save_run_history")
+    @patch("app.scheduler.persist_monitor_run")
+    @patch("app.scheduler.get_monitor_run_store")
+    @patch("app.scheduler.get_monitor_repository")
+    @patch("app.scheduler.load_monitors")
     @patch("app.scheduler.run_pipeline")
     def test_execute_scheduled_run_calls_pipeline_and_saves_history(
         self,
         mock_run_pipeline,
+        mock_load_monitors,
+        mock_get_monitor_repository,
+        mock_get_monitor_run_store,
+        mock_persist_monitor_run,
         mock_save_run_history,
     ):
         mock_run_pipeline.return_value = [
-            {"status": "analyzed", "diff_id": 2}
+            {"source_id": "eu_ai_act", "status": "analyzed", "diff_id": 2}
         ]
+        mock_load_monitors.return_value = [
+            {
+                "id": "eu_ai_act",
+                "name": "EU AI Act",
+                "frequency": "daily",
+                "enabled": True,
+            }
+        ]
+        mock_persist_monitor_run.return_value = 42
         mock_save_run_history.return_value = {
-            "timestamp": "2026-07-15T12:00:00",
+            "timestamp": "2026-07-15T12:00:00+00:00",
             "total_monitors": 1,
             "changed_count": 1,
             "analyzed_count": 1,
@@ -62,8 +81,10 @@ class TestScheduler(unittest.TestCase):
         results = execute_scheduled_run("daily")
 
         mock_run_pipeline.assert_called_once_with(frequency="daily")
+        mock_persist_monitor_run.assert_called_once()
         mock_save_run_history.assert_called_once_with(
-            mock_run_pipeline.return_value
+            mock_run_pipeline.return_value,
+            run_ids=[42],
         )
         self.assertEqual(len(results), 1)
 
@@ -83,15 +104,19 @@ class TestScheduler(unittest.TestCase):
 
     def test_create_scheduler_job_triggers_unchanged(self):
         scheduler = create_scheduler()
+        tz = get_app_timezone()
 
         daily_trigger = scheduler.get_job("daily_monitors").trigger
         weekly_trigger = scheduler.get_job("weekly_monitors").trigger
         report_trigger = scheduler.get_job("weekly_report_generation").trigger
 
-        self.assertEqual(str(daily_trigger), str(CronTrigger(hour=8, minute=0)))
+        self.assertEqual(
+            str(daily_trigger),
+            str(CronTrigger(hour=8, minute=0, timezone=tz)),
+        )
         self.assertEqual(
             str(weekly_trigger),
-            str(CronTrigger(day_of_week="mon", hour=8, minute=0)),
+            str(CronTrigger(day_of_week="mon", hour=8, minute=0, timezone=tz)),
         )
         self.assertIn("mon", str(report_trigger).lower())
         self.assertIn("30", str(report_trigger))
@@ -112,7 +137,7 @@ class TestScheduler(unittest.TestCase):
 
         pending_job = MagicMock(spec=["id", "trigger"])
         pending_job.id = "daily_monitors"
-        pending_job.trigger = CronTrigger(hour=8, minute=0)
+        pending_job.trigger = CronTrigger(hour=8, minute=0, timezone=get_app_timezone())
 
         mock_scheduler = MagicMock()
         mock_scheduler.get_jobs.return_value = [pending_job]
@@ -138,7 +163,9 @@ class TestScheduler(unittest.TestCase):
 
         pending_job = MagicMock()
         pending_job.id = "weekly_monitors"
-        pending_job.trigger = CronTrigger(day_of_week="mon", hour=8, minute=0)
+        pending_job.trigger = CronTrigger(
+            day_of_week="mon", hour=8, minute=0, timezone=get_app_timezone()
+        )
         del pending_job.next_run_time
 
         mock_scheduler = MagicMock()

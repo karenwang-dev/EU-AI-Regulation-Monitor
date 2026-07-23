@@ -111,6 +111,11 @@ class MonitorUiV115Tests(unittest.TestCase):
         self.assertIn(b"initMonitorDropdowns", content)
         self.assertIn(b'strategy: "fixed"', content)
 
+    def test_base_includes_timestamp_formatter(self):
+        response = self.client.get("/")
+        self.assertIn(b"/static/js/timestamp_formatter.js", response.content)
+        self.assertIn(b"applyLocalTimestamps", response.content)
+
     def test_base_includes_bootstrap_bundle_globally(self):
         response = self.client.get("/")
         self.assertIn(
@@ -165,7 +170,7 @@ class MonitorUiV115Tests(unittest.TestCase):
     def test_last_run_compact_formatting_in_page(self):
         response = self.client.get("/monitors")
         self.assertIn(b"formatLastRun", response.content)
-        self.assertIn(b"${yyyy}-${mm}-${dd} ${hh}:${min}`", response.content)
+        self.assertIn(b"formatTimestamp", response.content)
 
     def test_view_last_run_link_when_available(self):
         self.repository.save_execution_state(

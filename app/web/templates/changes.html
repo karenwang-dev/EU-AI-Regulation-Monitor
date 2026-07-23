@@ -98,7 +98,7 @@
                         </div>
                         {% endif %}
                     </td>
-                    <td>{{ change.date }}</td>
+                    <td><span data-timestamp="{{ change.date or '' }}">—</span></td>
                     <td>{{ impact_badge(change.impact_level) }}</td>
                     <td>
                         {% if change.affected_modules %}

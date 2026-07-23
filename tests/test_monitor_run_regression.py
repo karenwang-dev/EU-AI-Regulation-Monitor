@@ -329,12 +329,13 @@ class MonitorRunRegressionTests(unittest.TestCase):
 
         repository = MonitorRepository(db_path=db_path)
         run_store = MonitorRunStore(db_path=db_path)
-        columns = {
-            row[1]
-            for row in repository._connect().execute(
-                "PRAGMA table_info(monitor_execution)"
-            )
-        }
+        with repository._connect() as connection:
+            columns = {
+                row[1]
+                for row in connection.execute(
+                    "PRAGMA table_info(monitor_execution)"
+                )
+            }
         self.assertIn("last_change_status", columns)
         with repository._connect() as connection:
             tables = {
