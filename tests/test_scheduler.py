@@ -88,6 +88,49 @@ class TestScheduler(unittest.TestCase):
         )
         self.assertEqual(len(results), 1)
 
+    @patch("app.scheduler.attach_job_run_summary")
+    @patch("app.scheduler.save_run_history")
+    @patch("app.scheduler.persist_monitor_run")
+    @patch("app.scheduler.get_monitor_run_store")
+    @patch("app.scheduler.get_monitor_repository")
+    @patch("app.scheduler.load_monitors")
+    @patch("app.scheduler.run_pipeline")
+    def test_execute_scheduled_run_attaches_run_summary(
+        self,
+        mock_run_pipeline,
+        mock_load_monitors,
+        mock_get_monitor_repository,
+        mock_get_monitor_run_store,
+        mock_persist_monitor_run,
+        mock_save_run_history,
+        mock_attach_summary,
+    ):
+        mock_run_pipeline.return_value = [
+            {"source_id": "eu_ai_act", "status": "skipped", "diff_id": None}
+        ]
+        mock_load_monitors.return_value = [
+            {
+                "id": "eu_ai_act",
+                "name": "EU AI Act",
+                "frequency": "daily",
+                "enabled": True,
+            }
+        ]
+        mock_persist_monitor_run.return_value = 7
+        mock_save_run_history.return_value = {
+            "total_monitors": 1,
+            "failed_count": 0,
+            "changed_count": 0,
+            "analyzed_count": 0,
+        }
+
+        execute_scheduled_run("daily")
+
+        mock_attach_summary.assert_called_once_with(
+            "daily_monitors",
+            mock_save_run_history.return_value,
+        )
+
     def test_scheduler_loads_daily_and_weekly_jobs(self):
         scheduler = create_scheduler()
         job_ids = {job.id for job in scheduler.get_jobs()}
@@ -121,6 +164,8 @@ class TestScheduler(unittest.TestCase):
         self.assertIn("mon", str(report_trigger).lower())
         self.assertIn("30", str(report_trigger))
 
+    @patch("app.scheduler.release_scheduler_lock")
+    @patch("app.scheduler.acquire_scheduler_lock")
     @patch("app.scheduler.logger")
     @patch("app.scheduler.create_scheduler")
     @patch("app.scheduler.load_monitors")
@@ -129,7 +174,10 @@ class TestScheduler(unittest.TestCase):
         mock_load_monitors,
         mock_create_scheduler,
         mock_logger,
+        mock_acquire_lock,
+        mock_release_lock,
     ):
+        mock_acquire_lock.return_value = Path("data/.scheduler.lock")
         mock_load_monitors.return_value = [
             {"frequency": "daily", "enabled": True},
             {"frequency": "weekly", "enabled": True},
@@ -146,19 +194,21 @@ class TestScheduler(unittest.TestCase):
         start_scheduler()
 
         mock_scheduler.start.assert_called_once()
-        mock_logger.info.assert_any_call(
-            "- %s: configured trigger=%s",
-            "daily_monitors",
-            pending_job.trigger,
-        )
+        mock_acquire_lock.assert_called_once()
+        mock_logger.info.assert_any_call("Scheduler lock acquired: %s", Path("data/.scheduler.lock"))
 
+    @patch("app.scheduler.release_scheduler_lock")
+    @patch("app.scheduler.acquire_scheduler_lock")
     @patch("app.scheduler.create_scheduler")
     @patch("app.scheduler.load_monitors")
     def test_start_scheduler_does_not_access_next_run_time(
         self,
         mock_load_monitors,
         mock_create_scheduler,
+        mock_acquire_lock,
+        mock_release_lock,
     ):
+        mock_acquire_lock.return_value = Path("data/.scheduler.lock")
         mock_load_monitors.return_value = [{"frequency": "daily", "enabled": True}]
 
         pending_job = MagicMock()

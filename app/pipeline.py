@@ -1,6 +1,7 @@
 from app.core.logging import get_logger
 from app.crawler.service import crawl
 from app.crawler.crawl_cache import should_crawl
+from app.crawler.page_removal import classify_missing_discovered_url
 from app.crawler.url_normalizer import normalize_page_url
 from app.crawler.url_resolver import resolve_monitor_urls
 from app.dev.change_test_site import LOCAL_TEST_MONITOR_ID
@@ -690,16 +691,19 @@ class MonitoringPipeline:
                             }
                         )
                 for url in sorted(removed):
+                    missing_status, missing_message = classify_missing_discovered_url(
+                        url
+                    )
                     url_results.append(
                         {
                             "url": url,
                             "depth": 1,
-                            "status": "page_removed",
+                            "status": missing_status,
                             "snapshot_id": None,
                             "diff_id": None,
                             "analysis_id": None,
                             "first_snapshot": False,
-                            "message": "Previously monitored page no longer discovered.",
+                            "message": missing_message,
                             "parent_monitor_id": source["id"],
                             "discovered_depth": 1,
                         }

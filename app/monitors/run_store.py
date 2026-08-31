@@ -55,6 +55,8 @@ def map_page_result_status(url_result: dict) -> str:
         return "unchanged"
     if status == "page_added":
         return "added"
+    if status == "page_not_discovered":
+        return "not_discovered"
     if status == "page_removed":
         return "removed"
     if status == "error":

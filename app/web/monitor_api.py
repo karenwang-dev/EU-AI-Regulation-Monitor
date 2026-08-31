@@ -11,6 +11,7 @@ from app.monitors.execution import (
     MonitorExecutionService,
     MonitorRunPersistenceError,
 )
+from app.crawler.url_validation import normalize_monitor_url
 from app.monitors.categories import (
     CategoryValidationError,
     normalize_category,
@@ -106,7 +107,7 @@ class MonitorStore:
         monitor = {
             "id": generate_monitor_id(payload.name, existing_ids),
             "name": payload.name.strip(),
-            "url": payload.url.strip(),
+            "url": normalize_monitor_url(payload.url),
             "keywords": [
                 keyword.strip()
                 for keyword in payload.keywords
@@ -141,7 +142,7 @@ class MonitorStore:
         if "name" in updates:
             updates["name"] = updates["name"].strip()
         if "url" in updates:
-            updates["url"] = updates["url"].strip()
+            updates["url"] = normalize_monitor_url(updates["url"])
         if "keywords" in updates:
             updates["keywords"] = [
                 keyword.strip()

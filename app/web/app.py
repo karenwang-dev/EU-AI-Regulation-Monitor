@@ -82,7 +82,11 @@ from app.web.source_helper import (
 from app.web.dev_change_test_api import register_change_test_site_routes
 from app.core.environment import get_app_env, is_development
 from app.core.paths import log_runtime_paths
-from app.scheduler_status import get_scheduler_health_status
+from app.scheduler_status import (
+    build_scheduler_dashboard_view,
+    get_scheduler_health_status,
+    get_scheduler_process_status,
+)
 from app.config.validator import validate_configuration
 from app.core.logging import get_logger
 from app.version import APP_NAME, APP_VERSION, APP_PRODUCT_TITLE, get_version_display
@@ -163,6 +167,7 @@ def _build_health_payload(storage: StorageService) -> dict:
         "timestamp": utc_now_iso(),
         "database": database_status,
         "scheduler": scheduler_status,
+        "scheduler_process": get_scheduler_process_status(),
         "configuration": configuration_status,
         "missing_config": missing_config,
     }
@@ -664,6 +669,13 @@ def create_dashboard_app(
             return get_latest_run(history_file=history_file)
         return get_latest_run()
 
+    @app.get("/api/scheduler/status")
+    def scheduler_status_api():
+        enabled_count = sum(
+            1 for monitor in load_monitors() if monitor.get("enabled", True)
+        )
+        return build_scheduler_dashboard_view(enabled_monitor_count=enabled_count)
+
     @app.get("/health")
     def health_check():
         payload = _build_health_payload(storage)
@@ -738,6 +750,9 @@ def create_dashboard_app(
     def dashboard_home(request: Request):
         latest_run = _latest_run()
         monitors = load_monitors()
+        enabled_monitor_count = sum(
+            1 for monitor in monitors if monitor.get("enabled", True)
+        )
         impact_counts = _count_changes_by_impact(storage)
 
         return templates.TemplateResponse(
@@ -754,6 +769,9 @@ def create_dashboard_app(
                 "recent_activity": _build_dashboard_recent_activity(
                     latest_run,
                     reports_dir=reports_dir,
+                ),
+                "scheduler_status": build_scheduler_dashboard_view(
+                    enabled_monitor_count=enabled_monitor_count,
                 ),
             },
         )

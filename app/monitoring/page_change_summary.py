@@ -17,6 +17,8 @@ def classify_page_change_type(
 ) -> str:
     if change_kind == "page_added":
         return "Added page"
+    if change_kind == "page_not_discovered":
+        return "Not discovered"
     if change_kind == "page_removed":
         return "Removed page"
     if _is_homepage_url(page_url, monitor_url):
@@ -72,6 +74,11 @@ def summarize_monitor_run(
         if result.get("status") in {"analyzed", "changed"}
     ]
     added_results = [result for result in url_results if result.get("status") == "page_added"]
+    not_discovered_results = [
+        result
+        for result in url_results
+        if result.get("status") == "page_not_discovered"
+    ]
     removed_results = [
         result for result in url_results if result.get("status") == "page_removed"
     ]
@@ -89,11 +96,8 @@ def summarize_monitor_run(
     pages_checked = len(url_results)
     pages_changed = len(changed_results)
     pages_added = len(added_results)
+    pages_not_discovered = len(not_discovered_results)
     pages_removed = len(removed_results)
-
-    if previous_urls and current_urls is not None:
-        pages_added = max(pages_added, len(current_urls - previous_urls))
-        pages_removed = max(pages_removed, len(previous_urls - current_urls))
 
     if pages_changed == 0 and pages_added == 0 and pages_removed == 0:
         overall = "no_change"
@@ -106,6 +110,7 @@ def summarize_monitor_run(
         "pages_changed": pages_changed,
         "pages_added": pages_added,
         "pages_removed": pages_removed,
+        "pages_not_discovered": pages_not_discovered,
         "homepage_changed": homepage_changed,
         "child_pages_changed": child_pages_changed,
         "overall_status": overall,

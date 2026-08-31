@@ -32,6 +32,8 @@ def change_status_badge_class(change_status: str | None) -> str:
         "failed": "text-bg-danger",
         "baseline": "text-bg-info",
         "running": "text-bg-warning text-dark",
+        "not_discovered": "text-bg-light text-dark border",
+        "removed": "text-bg-warning text-dark",
     }
     return mapping.get(str(change_status or "").lower(), "text-bg-light text-dark")
 

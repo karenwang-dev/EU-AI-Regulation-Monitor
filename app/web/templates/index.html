@@ -35,6 +35,70 @@
     {{ dashboard_risk_card("LOW", low_risk_count, "/changes?impact=LOW", "For reference", "View low risk changes") }}
 </div>
 
+<div class="card shadow-sm border-0 mb-3">
+    <div class="card-header bg-white py-2 d-flex justify-content-between align-items-center">
+        <span>Scheduler</span>
+        <span
+            class="badge {% if scheduler_status.process_status == 'RUNNING' %}text-bg-success{% elif scheduler_status.process_status == 'NOT RUNNING' %}text-bg-danger{% else %}text-bg-secondary{% endif %}"
+            data-testid="scheduler-process-status"
+        >
+            {{ scheduler_status.process_status }}
+        </span>
+    </div>
+    <div class="card-body py-3">
+        <p class="text-muted small mb-3" data-testid="scheduler-help-text">
+            {{ scheduler_status.help_text }}
+        </p>
+        <div class="row g-3">
+            <div class="col-md-4">
+                <div class="text-muted small">Last scheduled run</div>
+                <div class="fw-semibold">
+                    <span
+                        data-testid="scheduler-last-run"
+                        data-timestamp="{{ scheduler_status.last_run_at or '' }}"
+                    >—</span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-muted small">Last run result</div>
+                <div class="fw-semibold" data-testid="scheduler-last-result">
+                    {{ scheduler_status.last_run_result }}
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-muted small">Next scheduled run</div>
+                <div class="fw-semibold">
+                    <span
+                        data-testid="scheduler-next-run"
+                        data-timestamp="{{ scheduler_status.next_run_at or '' }}"
+                    >—</span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-muted small">Enabled monitors</div>
+                <div class="fw-semibold" data-testid="scheduler-enabled-monitors">
+                    {{ scheduler_status.enabled_monitor_count }}
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-muted small">Monitors in last scheduled run</div>
+                <div class="fw-semibold" data-testid="scheduler-last-run-total">
+                    {{ scheduler_status.last_run_total_monitors }}
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-muted small">Failed monitors (last run)</div>
+                <div class="fw-semibold" data-testid="scheduler-last-run-failed">
+                    {{ scheduler_status.last_run_failed_monitors }}
+                </div>
+            </div>
+        </div>
+        <div class="text-muted small mt-3">
+            Timezone: {{ scheduler_status.timezone }}
+        </div>
+    </div>
+</div>
+
 <div class="card shadow-sm border-0">
     <div class="card-header bg-white py-2">Recent Activity</div>
     <div class="card-body py-3">

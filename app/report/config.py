@@ -12,8 +12,32 @@ DEFAULT_REPORT_CONFIG = {
     "hour": 8,
     "minute": 30,
     "email_enabled": False,
+    # Send routine reports only when they need attention.  Operators can still
+    # send any saved report manually from the Reports page.
+    "email_delivery_policy": "high_or_medium",
     "recipients": [],
 }
+
+EMAIL_DELIVERY_POLICIES = {
+    "always",
+    "changes_only",
+    "high_or_medium",
+    "high_only",
+}
+
+EMAIL_DELIVERY_POLICY_LABELS = {
+    "always": "Send every weekly report",
+    "changes_only": "Send when any change is detected",
+    "high_or_medium": "Send for high- or medium-risk changes",
+    "high_only": "Send for high-risk changes only",
+}
+
+
+def email_delivery_policy_label(policy: str) -> str:
+    return EMAIL_DELIVERY_POLICY_LABELS.get(
+        policy,
+        EMAIL_DELIVERY_POLICY_LABELS["high_or_medium"],
+    )
 
 DAY_ALIASES = {
     "mon": "mon",
@@ -52,6 +76,14 @@ def normalize_report_config(config: dict) -> dict:
     config["enabled"] = bool(config.get("enabled", True))
     config["frequency"] = str(config.get("frequency", "weekly")).strip().lower()
     config["email_enabled"] = bool(config.get("email_enabled", False))
+    delivery_policy = str(
+        config.get("email_delivery_policy", "high_or_medium")
+    ).strip().lower()
+    config["email_delivery_policy"] = (
+        delivery_policy
+        if delivery_policy in EMAIL_DELIVERY_POLICIES
+        else "high_or_medium"
+    )
     config["recipients"] = [
         str(recipient).strip()
         for recipient in config.get("recipients", [])

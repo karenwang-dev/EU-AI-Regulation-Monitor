@@ -3,10 +3,12 @@ from __future__ import annotations
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import HTMLResponse
 
 from app.report.ai_generator import REPORT_TITLE, generate_weekly_report
 from app.report.builder import build_weekly_report
 from app.report.generation import create_and_save_weekly_report
+from app.report.email_sender import build_report_email_html
 from app.report.storage import (
     get_latest_report,
     get_report,
@@ -79,6 +81,13 @@ def register_report_routes(
         if report is None:
             raise HTTPException(status_code=404, detail="Report not found")
         return report
+
+    @app.get("/api/reports/{report_id}/email/preview", response_class=HTMLResponse)
+    def api_preview_report_email(report_id: str):
+        report = get_report_fn(report_id, reports_dir=reports_dir)
+        if report is None:
+            raise HTTPException(status_code=404, detail="Report not found")
+        return build_report_email_html(report)
 
     @app.post("/api/reports/generate")
     def api_generate_report():

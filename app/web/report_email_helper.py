@@ -30,7 +30,8 @@ from app.notification.notifier import (
     NotificationConfigError,
     load_notification_config,
 )
-from app.report.config import load_report_config
+from app.report.config import email_delivery_policy_label, load_report_config
+from app.report.delivery import resolve_report_smtp_config
 from app.report.notifier import notify_weekly_report
 from app.report.storage import DEFAULT_REPORTS_DIR, update_report
 
@@ -40,6 +41,7 @@ DISPLAY_STATUSES = {
     "Disabled",
     "Not Configured",
     "Ready",
+    "Skipped",
     "Sending",
     "Sent",
     "Failed",
@@ -49,6 +51,7 @@ STATUS_MESSAGES = {
     "Disabled": "Report email delivery is turned off.",
     "Not Configured": "SMTP email is not configured yet.",
     "Ready": "Email delivery is configured and ready to send.",
+    "Skipped": "Automatic delivery was skipped because this report did not meet the alert threshold.",
     "Sending": "Sending report email...",
     "Sent": "The latest report email was sent successfully.",
     "Failed": "The report email could not be delivered.",
@@ -214,6 +217,9 @@ def build_email_config_summary(
             ),
             "configuration_complete": public["configured"]
             and configuration_details is None,
+            "delivery_policy": email_delivery_policy_label(
+                load_report_config(report_config_file)["email_delivery_policy"]
+            ),
         }
 
     report_config = load_report_config(report_config_file)
@@ -231,6 +237,9 @@ def build_email_config_summary(
         "sender_address": "N/A",
         "recipients": report_config.get("recipients", []),
         "tls_mode": "N/A",
+        "delivery_policy": email_delivery_policy_label(
+            report_config["email_delivery_policy"]
+        ),
     }
 
     if notification_path.exists():
@@ -267,9 +276,10 @@ def build_email_action_flags(
     report_id = report.get("id") if report else None
     return {
         "report_id": report_id,
-        "can_send": bool(report_id) and status == "Ready",
+        "can_send": bool(report_id) and status in {"Ready", "Skipped"},
         "can_retry": bool(report_id) and status == "Failed",
         "can_test": status not in {"Disabled", "Not Configured"},
+        "can_preview": bool(report_id),
     }
 
 
@@ -349,6 +359,12 @@ def resolve_report_email_display(
         }
 
     if stored_status == "Disabled" or skipped:
+        if stored_status == "Skipped":
+            return {
+                "display_status": "Skipped",
+                "status_message": reason or STATUS_MESSAGES["Skipped"],
+                "status_details": None,
+            }
         return {
             "display_status": "Ready",
             "status_message": STATUS_MESSAGES["Ready"],
@@ -368,17 +384,11 @@ def _build_smtp_config_for_delivery(
     notification_file: Path | str,
     email_settings_file: Path | str | None = None,
 ) -> dict:
-    settings_path = resolve_email_settings_path(email_settings_file)
-    if should_prefer_email_settings(settings_path):
-        return build_smtp_config(settings_path)
-
-    report_config = load_report_config(report_config_file)
-    recipients = report_config.get("recipients", [])
-    smtp_config = load_notification_config(notification_file)
-    return {
-        **smtp_config,
-        "to_addresses": recipients,
-    }
+    return resolve_report_smtp_config(
+        report_config_file=report_config_file,
+        notification_file=notification_file,
+        email_settings_file=email_settings_file,
+    )
 
 
 def _finalize_notification_result(
@@ -447,6 +457,7 @@ def deliver_report_email(
         report_config_file=report_config_file,
         notification_file=notification_path,
         email_settings_file=email_settings_file,
+        force=True,
     )
     notification_result = _finalize_notification_result(
         notification_result,

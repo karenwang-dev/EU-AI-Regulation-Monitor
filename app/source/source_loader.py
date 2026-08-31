@@ -1,5 +1,10 @@
 from pathlib import Path
 
+from app.crawler.url_validation import (
+    MonitorUrlValidationError,
+    validate_monitor_url,
+)
+
 MONITORS_FILE = Path("config/monitors.json")
 SOURCES_FILE = Path("config/sources.json")
 
@@ -37,15 +42,14 @@ def validate_monitor(monitor: dict, index: int | None = None) -> None:
                 f"{label}: missing required field '{field}'"
             )
 
-    url = monitor["url"]
-    if not isinstance(url, str) or not url.strip():
-        raise MonitorConfigError(
-            f"{label} '{monitor.get('id', '')}': url is required"
+    monitor_id = monitor.get("id", "")
+    try:
+        validate_monitor_url(
+            monitor.get("url", ""),
+            label=f"{label} '{monitor_id}'",
         )
-    if not url.startswith(("http://", "https://")):
-        raise MonitorConfigError(
-            f"{label} '{monitor.get('id', '')}': url must start with http:// or https://"
-        )
+    except MonitorUrlValidationError as error:
+        raise MonitorConfigError(str(error)) from error
 
     keywords = monitor["keywords"]
     if not isinstance(keywords, list) or not keywords:
@@ -121,10 +125,12 @@ def validate_monitor(monitor: dict, index: int | None = None) -> None:
 
 
 def normalize_legacy_source(source: dict) -> dict:
+    from app.crawler.url_validation import normalize_monitor_url
+
     return {
         "id": source["id"],
         "name": source["name"],
-        "url": source["url"],
+        "url": normalize_monitor_url(source.get("url", "")),
         "keywords": source.get("keywords", source.get("tags", [])),
         "category": source.get("category", source.get("type", "")),
         "frequency": source.get(

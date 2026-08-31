@@ -32,6 +32,8 @@ def extract_page_type_from_evidence(
             change_kind = evidence[0].get("change_kind")
             if change_kind == "page_added":
                 return "Added page"
+            if change_kind == "page_not_discovered":
+                return "Not discovered"
             if change_kind == "page_removed":
                 return "Removed page"
 

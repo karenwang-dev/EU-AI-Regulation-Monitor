@@ -5,9 +5,14 @@ from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 from app.notification.email_sender import EmailSendError
-from app.report.email_sender import build_report_email_html, send_report_email
+from app.report.email_sender import (
+    build_report_email_html,
+    build_report_email_plain_text,
+    build_report_email_subject,
+    send_report_email,
+)
 from app.report.generation import create_and_save_weekly_report
-from app.report.notifier import notify_weekly_report
+from app.report.notifier import notify_weekly_report, should_send_report_email
 
 
 class TestReportEmail(unittest.TestCase):
@@ -62,6 +67,7 @@ class TestReportEmail(unittest.TestCase):
                     "impact_level": "HIGH",
                     "affected_modules": ["Network"],
                     "recommended_actions": ["Review controls"],
+                    "source_url": "https://example.com/eu-ai-act",
                 }
             ],
             "risk_summary": "HIGH risk changes affect network modules.",
@@ -89,6 +95,29 @@ class TestReportEmail(unittest.TestCase):
         self.assertIn("Executive Summary", html_body)
         self.assertIn("EU AI Act Update", html_body)
         self.assertIn("Risk Summary", html_body)
+        self.assertIn("View source", html_body)
+        self.assertIn("High</span>", html_body)
+        self.assertIn("Review controls", html_body)
+
+    def test_build_report_email_plain_text_contains_report_sections(self):
+        report = self._sample_report()
+        report["key_changes"][0]["source_url"] = "https://example.com/eu-ai-act"
+        plain_body = build_report_email_plain_text(report)
+
+        self.assertIn("EU AI Act Update", plain_body)
+        self.assertIn("Executive Summary", plain_body)
+        self.assertIn("https://example.com/eu-ai-act", plain_body)
+
+    def test_build_report_email_subject_reflects_risk_level(self):
+        report = self._sample_report()
+        self.assertIn("[High Risk x1]", build_report_email_subject(report))
+
+        report["summary"]["high_risk"] = 0
+        report["summary"]["medium_risk"] = 2
+        self.assertIn("[Medium Risk x2]", build_report_email_subject(report))
+
+        report["summary"]["medium_risk"] = 0
+        self.assertIn("[Weekly Report]", build_report_email_subject(report))
 
     @patch("app.notification.email_sender.create_smtp_connection")
     def test_send_report_email_sends_html_with_attachment(self, mock_create):
@@ -161,6 +190,64 @@ class TestReportEmail(unittest.TestCase):
         self.assertEqual(result["status"], "Sent")
         self.assertTrue(result["sent"])
         send_mock.assert_called_once()
+
+    def test_low_risk_report_is_skipped_by_default_automatic_policy(self):
+        self._write_report_config()
+        send_mock = MagicMock()
+        report = self._sample_report()
+        report["summary"] = {
+            "total_changes": 1,
+            "high_risk": 0,
+            "medium_risk": 0,
+            "low_risk": 1,
+            "affected_modules": [],
+        }
+
+        result = notify_weekly_report(
+            report,
+            report_config_file=self.report_config_file,
+            notification_file=self.notification_file,
+            email_settings_file=self.reports_dir / "missing_email_settings.json",
+            send_report_email_fn=send_mock,
+        )
+
+        self.assertEqual(result["status"], "Skipped")
+        self.assertTrue(result["skipped"])
+        self.assertIn("no high- or medium-risk", result["reason"])
+        send_mock.assert_not_called()
+
+    def test_manual_delivery_can_override_the_automatic_policy(self):
+        self._write_report_config()
+        send_mock = MagicMock()
+        report = self._sample_report()
+        report["summary"]["high_risk"] = 0
+        report["summary"]["medium_risk"] = 0
+
+        result = notify_weekly_report(
+            report,
+            report_config_file=self.report_config_file,
+            notification_file=self.notification_file,
+            email_settings_file=self.reports_dir / "missing_email_settings.json",
+            force=True,
+            send_report_email_fn=send_mock,
+        )
+
+        self.assertEqual(result["status"], "Sent")
+        send_mock.assert_called_once()
+
+    def test_delivery_policy_options_are_evaluated_from_risk_summary(self):
+        report = self._sample_report()
+        report["summary"]["high_risk"] = 0
+        report["summary"]["medium_risk"] = 0
+
+        should_send, _ = should_send_report_email(
+            report, {"email_delivery_policy": "changes_only"}
+        )
+        self.assertTrue(should_send)
+        should_send, _ = should_send_report_email(
+            report, {"email_delivery_policy": "high_only"}
+        )
+        self.assertFalse(should_send)
 
     def test_notify_weekly_report_smtp_failure_handled(self):
         self._write_report_config()
@@ -354,6 +441,19 @@ class TestReportEmailWeb(unittest.TestCase):
         self.assertIn(b"Email Delivery", content)
         self.assertIn(b">Sent<", content)
         self.assertIn(b"The latest report email was sent successfully.", content)
+
+    def test_email_preview_returns_rendered_html(self):
+        from app.report.storage import get_latest_report
+
+        report = get_latest_report(reports_dir=self.reports_dir)
+        response = self.client.get(
+            f"/api/reports/{report['id']}/email/preview"
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("text/html", response.headers["content-type"])
+        self.assertIn("Executive Summary", response.text)
+        self.assertIn("AI Regulation Monitor", response.text)
 
 
 if __name__ == "__main__":

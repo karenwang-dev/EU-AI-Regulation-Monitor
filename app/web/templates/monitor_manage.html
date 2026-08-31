@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 
+{% block head_extra %}
+<meta name="monitor-ui-version" content="actions-layout-v4-sticky-body-dropdown">
+{% endblock %}
+
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
@@ -55,7 +59,7 @@
 {% endif %}
 
 <div class="card shadow-sm">
-    <div class="monitor-table-scroll">
+    <div class="monitor-table-scroll monitor-table-wrapper">
         <table class="table table-hover monitor-table mb-0">
             <thead>
                 <tr>
@@ -67,7 +71,7 @@
                     <th class="monitor-col-nowrap">Last Run</th>
                     <th class="monitor-col-nowrap">Last Status</th>
                     <th class="monitor-col-pages-changed">Pages Changed</th>
-                    <th class="monitor-col-actions">Actions</th>
+                    <th class="monitor-actions-column">Actions</th>
                 </tr>
             </thead>
             <tbody id="monitorTableBody">
@@ -322,12 +326,48 @@ function escapeHtml(value) {
 }
 
 function initMonitorDropdowns() {
-    document.querySelectorAll(".monitor-actions [data-bs-toggle='dropdown']").forEach((toggle) => {
+    document.querySelectorAll("body > .dropdown-menu.monitor-more-menu").forEach((menu) => {
+        const host = menu._monitorDropdownHost;
+        if (host) {
+            host.appendChild(menu);
+        } else {
+            menu.remove();
+        }
+    });
+
+    document.querySelectorAll(".monitor-more-toggle").forEach((toggle) => {
         const existing = bootstrap.Dropdown.getInstance(toggle);
         if (existing) {
             existing.dispose();
         }
+
+        const dropdownContainer = toggle.closest(".dropdown");
+        const menu = dropdownContainer?.querySelector(".dropdown-menu.monitor-more-menu");
+        if (!menu) {
+            return;
+        }
+
+        if (toggle._monitorDropdownMoveHandler) {
+            toggle.removeEventListener("show.bs.dropdown", toggle._monitorDropdownMoveHandler);
+            toggle.removeEventListener("hidden.bs.dropdown", toggle._monitorDropdownRestoreHandler);
+        }
+
+        toggle._monitorDropdownMoveHandler = () => {
+            menu._monitorDropdownHost = dropdownContainer;
+            document.body.appendChild(menu);
+        };
+        toggle._monitorDropdownRestoreHandler = () => {
+            const host = menu._monitorDropdownHost;
+            if (host && menu.parentElement === document.body) {
+                host.appendChild(menu);
+            }
+        };
+
+        toggle.addEventListener("show.bs.dropdown", toggle._monitorDropdownMoveHandler);
+        toggle.addEventListener("hidden.bs.dropdown", toggle._monitorDropdownRestoreHandler);
+
         bootstrap.Dropdown.getOrCreateInstance(toggle, {
+            boundary: "viewport",
             popperConfig(defaultBsPopperConfig) {
                 return {
                     ...defaultBsPopperConfig,
@@ -377,25 +417,28 @@ function renderMonitors(monitors) {
                 <span class="badge ${changeStatusBadge(changeStatus)}">${formatChangeStatus(changeStatus)}</span>
             </td>
             <td class="monitor-col-pages-changed">${monitor.last_pages_changed ?? 0}</td>
-            <td class="monitor-col-actions">
-                <div class="monitor-actions">
+            <td class="monitor-actions" data-testid="monitor-actions-${escapeHtml(monitor.id)}">
+                <div class="monitor-action-buttons">
                     <button type="button"
-                        class="btn btn-sm btn-success run-monitor-btn"
+                        class="btn btn-sm btn-success monitor-run-button run-monitor-btn"
+                        data-testid="monitor-run-${escapeHtml(monitor.id)}"
                         data-id="${monitor.id}"
                         aria-label="Run ${escapeHtml(monitor.name)}">
                         Run
                     </button>
                     <div class="dropdown">
                         <button type="button"
-                            class="btn btn-sm btn-outline-secondary dropdown-toggle"
+                            class="btn btn-sm btn-outline-secondary dropdown-toggle monitor-more-toggle"
+                            data-testid="monitor-more-${escapeHtml(monitor.id)}"
                             data-bs-toggle="dropdown"
+                            data-bs-boundary="viewport"
                             data-bs-auto-close="true"
                             aria-expanded="false"
                             aria-haspopup="true"
                             aria-label="More actions for ${escapeHtml(monitor.name)}">
                             More
                         </button>
-                        <ul class="dropdown-menu dropdown-menu-end">
+                        <ul class="dropdown-menu dropdown-menu-end monitor-more-menu">
                             <li><button type="button" class="dropdown-item edit-monitor-btn" data-id="${monitor.id}">Edit</button></li>
                             <li><button type="button" class="dropdown-item toggle-monitor-btn" data-id="${monitor.id}">${toggleLabel}</button></li>
                             ${viewLastRunItem}
@@ -478,8 +521,9 @@ async function runMonitor(button) {
     const monitorId = button.dataset.id;
     const originalLabel = button.textContent;
     button.disabled = true;
+    button.classList.add("is-running");
     button.setAttribute("aria-busy", "true");
-    button.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>Running…';
+    button.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>Running…';
 
     try {
         const response = await fetch(`/api/monitors/${monitorId}/run`, {
@@ -517,6 +561,7 @@ async function runMonitor(button) {
         showAlert(error.message);
     } finally {
         button.disabled = false;
+        button.classList.remove("is-running");
         button.removeAttribute("aria-busy");
         button.textContent = originalLabel;
     }

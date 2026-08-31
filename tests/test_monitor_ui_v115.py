@@ -86,10 +86,13 @@ class MonitorUiV115Tests(unittest.TestCase):
         response = self.client.get("/monitors")
         self.assertEqual(response.status_code, 200)
         content = response.content
-        self.assertIn(b"monitor-actions", content)
+        self.assertIn(b"monitor-actions-column", content)
+        self.assertIn(b"monitor-action-buttons", content)
+        self.assertIn(b"monitor-run-button", content)
         self.assertIn(b"run-monitor-btn", content)
-        self.assertIn(b"dropdown-menu", content)
+        self.assertIn(b"dropdown-menu-end", content)
         self.assertIn(b"monitor-table-scroll", content)
+        self.assertIn(b"monitor-table-wrapper", content)
         self.assertIn(b"dropdown-divider", content)
         self.assertIn(b"delete-monitor-btn", content)
 
@@ -109,7 +112,9 @@ class MonitorUiV115Tests(unittest.TestCase):
         response = self.client.get("/monitors")
         content = response.content
         self.assertIn(b"initMonitorDropdowns", content)
+        self.assertIn(b'boundary: "viewport"', content)
         self.assertIn(b'strategy: "fixed"', content)
+        self.assertIn(b".monitor-more-toggle", content)
 
     def test_base_includes_timestamp_formatter(self):
         response = self.client.get("/")
